@@ -1,4 +1,4 @@
-package uz.suhrob.movieinfoapp
+package uz.suhrob.movieinfoapp.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -8,7 +8,7 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.setContent
 import androidx.ui.tooling.preview.Preview
-import uz.suhrob.movieinfoapp.ui.MovieInfoAppTheme
+import uz.suhrob.movieinfoapp.presentation.ui.MovieInfoAppTheme
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

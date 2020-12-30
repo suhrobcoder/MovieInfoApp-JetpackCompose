@@ -1,4 +1,4 @@
-package uz.suhrob.movieinfoapp.ui
+package uz.suhrob.movieinfoapp.presentation.ui
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes
