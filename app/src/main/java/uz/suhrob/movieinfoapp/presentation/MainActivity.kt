@@ -2,14 +2,16 @@ package uz.suhrob.movieinfoapp.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.Text
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.setContent
-import androidx.ui.tooling.preview.Preview
+import uz.suhrob.movieinfoapp.domain.model.Movie
 import uz.suhrob.movieinfoapp.presentation.ui.MovieInfoAppTheme
+import uz.suhrob.movieinfoapp.presentation.ui.details.DetailsScreen
+import uz.suhrob.movieinfoapp.presentation.ui.home.HomeScreen
 
+@ExperimentalFoundationApi
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,22 +19,10 @@ class MainActivity : AppCompatActivity() {
             MovieInfoAppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+//                    HomeScreen()
+                    DetailsScreen(movie = Movie(1, "Avengers", "Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. ", "", "", listOf("Action", "Science Fiction", "Science Fiction", "Science Fiction", "Science Fiction"), "2019", true, 323324, 8.7))
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    MovieInfoAppTheme {
-        Greeting("Android")
     }
 }
