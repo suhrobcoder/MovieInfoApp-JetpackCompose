@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.setContent
 import uz.suhrob.movieinfoapp.domain.model.Movie
 import uz.suhrob.movieinfoapp.presentation.theme.MovieInfoAppTheme
 import uz.suhrob.movieinfoapp.presentation.ui.details.DetailsScreen
+import uz.suhrob.movieinfoapp.presentation.ui.search.SearchScreen
 
 @ExperimentalFoundationApi
 class MainActivity : AppCompatActivity() {
@@ -19,7 +20,8 @@ class MainActivity : AppCompatActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
 //                    HomeScreen()
-                    DetailsScreen(movie = Movie(1, "Avengers", "Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. ", "", "", listOf("Action", "Science Fiction", "Science Fiction", "Science Fiction", "Science Fiction"), "2019", true, 323324, 8.7))
+//                    DetailsScreen(movie = Movie(1, "Avengers", "Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. ", "", "", listOf("Action", "Science Fiction", "Science Fiction", "Science Fiction", "Science Fiction"), "2019", true, 323324, 8.7))
+                    SearchScreen()
                 }
             }
         }
