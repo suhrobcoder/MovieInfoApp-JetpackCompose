@@ -7,9 +7,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.platform.setContent
 import uz.suhrob.movieinfoapp.domain.model.Movie
-import uz.suhrob.movieinfoapp.presentation.ui.MovieInfoAppTheme
+import uz.suhrob.movieinfoapp.presentation.theme.MovieInfoAppTheme
 import uz.suhrob.movieinfoapp.presentation.ui.details.DetailsScreen
-import uz.suhrob.movieinfoapp.presentation.ui.home.HomeScreen
 
 @ExperimentalFoundationApi
 class MainActivity : AppCompatActivity() {
