@@ -53,7 +53,7 @@ dependencies {
     //Compose
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.ui:ui-tooling:1.0.0-alpha06"
+    implementation "androidx.compose.ui:ui-tooling:$compose_version"
 
     def hilt = "2.29.1-alpha"
     implementation "com.google.dagger:hilt-android:$hilt"
@@ -73,7 +73,7 @@ dependencies {
 
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1"
 
-    testImplementation 'junit:junit:4.+'
+    testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }

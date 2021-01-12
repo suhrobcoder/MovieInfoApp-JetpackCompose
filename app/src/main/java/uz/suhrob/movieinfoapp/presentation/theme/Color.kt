@@ -1,4 +1,4 @@
-package uz.suhrob.movieinfoapp.presentation.ui
+package uz.suhrob.movieinfoapp.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
