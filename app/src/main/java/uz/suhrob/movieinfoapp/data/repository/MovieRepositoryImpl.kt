@@ -84,4 +84,14 @@ class MovieRepositoryImpl(
             )
         }
     }
+
+    override suspend fun searchMovies(query: String, page: Int): Resource<List<Movie>> {
+        return safeCall {
+            Resource.Success(
+                MovieMapper.mapToList(
+                    service.searchMovies(query, page).body()!!.results
+                )
+            )
+        }
+    }
 }
