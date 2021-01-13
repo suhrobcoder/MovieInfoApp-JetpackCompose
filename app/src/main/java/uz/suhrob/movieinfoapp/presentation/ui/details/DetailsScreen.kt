@@ -3,6 +3,7 @@ package uz.suhrob.movieinfoapp.presentation.ui.details
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -12,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.AnnotatedString
@@ -21,13 +21,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import uz.suhrob.movieinfoapp.R
-import uz.suhrob.movieinfoapp.domain.model.Genre
-import uz.suhrob.movieinfoapp.domain.model.Movie
 import uz.suhrob.movieinfoapp.other.loadImage
 import uz.suhrob.movieinfoapp.presentation.components.GenreRow
+import uz.suhrob.movieinfoapp.presentation.components.ReviewItem
+import uz.suhrob.movieinfoapp.presentation.components.VideoItem
 
 @Composable
-fun DetailsScreen(movie: Movie) {
+fun DetailsScreen(viewModel: DetailsViewModel) {
+    val movie = viewModel.movie.value
     Scaffold {
         ScrollableColumn(modifier = Modifier.fillMaxSize()) {
             Box(contentAlignment = Alignment.BottomCenter) {
@@ -79,24 +80,65 @@ fun DetailsScreen(movie: Movie) {
                             Icon(imageVector = Icons.Outlined.Star)
                             Text(text = "Rate This")
                         }
-                        Column(
-                            modifier = Modifier.weight(1f, fill = true).fillMaxHeight(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {}
                     }
                 }
             }
-            Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 8.dp)) {
-                Text(text = movie.title, style = MaterialTheme.typography.h4.copy(fontSize = 32.sp, fontWeight = FontWeight.Medium))
+            Column(
+                modifier = Modifier.padding(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = 24.dp,
+                    bottom = 8.dp
+                )
+            ) {
+                Text(
+                    text = movie.title,
+                    style = MaterialTheme.typography.h4.copy(
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                )
                 Row {
-                    Text(text = movie.releaseDate)
+                    movie.releaseDate?.let { Text(text = movie.releaseDate) }
                 }
             }
-            GenreRow(genres = movie.genres.map { Genre(0, it) })
+            GenreRow(genres = movie.genres)
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(text = "Overview", style = MaterialTheme.typography.h6)
-                Text(text = movie.overview, style = MaterialTheme.typography.body1.copy(color = MaterialTheme.colors.onSurface.copy(alpha = 0.6F)))
+                Text(
+                    text = movie.overview,
+                    style = MaterialTheme.typography.body1.copy(
+                        color = MaterialTheme.colors.onSurface.copy(alpha = 0.6F)
+                    )
+                )
+                val videos = viewModel.videos.value
+                if (videos.isNotEmpty()) {
+                    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
+                        Text(text = "Reviews", style = MaterialTheme.typography.h5)
+                        LazyColumn {
+                            items(items = videos) { video ->
+                                VideoItem(name = video.name) {
+                                    /* TODO */
+                                }
+                            }
+                        }
+                    }
+                }
+                val reviews = viewModel.reviews.value
+                if (reviews.isNotEmpty()) {
+                    Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
+                        Text(text = "Reviews", style = MaterialTheme.typography.h5)
+                        LazyColumn {
+                            items(items = reviews) { review ->
+                                ReviewItem(
+                                    authorName = review.authorName,
+                                    avatarUrl = review.avatarPath,
+                                    content = review.content
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }
