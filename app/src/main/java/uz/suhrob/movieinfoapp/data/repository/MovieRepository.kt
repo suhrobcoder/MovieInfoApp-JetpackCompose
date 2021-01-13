@@ -14,4 +14,5 @@ interface MovieRepository {
     suspend fun getPopularMovies(page: Int): Resource<List<Movie>>
     suspend fun getTopRatedMovies(page: Int): Resource<List<Movie>>
     suspend fun getUpcomingMovies(page: Int): Resource<List<Movie>>
+    suspend fun searchMovies(query: String, page: Int): Resource<List<Movie>>
 }
