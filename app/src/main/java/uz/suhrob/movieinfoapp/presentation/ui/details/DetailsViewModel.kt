@@ -9,31 +9,29 @@ import uz.suhrob.movieinfoapp.domain.model.Movie
 import uz.suhrob.movieinfoapp.domain.model.Review
 import uz.suhrob.movieinfoapp.domain.model.Video
 import uz.suhrob.movieinfoapp.other.DEFAULT_PAGE
+import uz.suhrob.movieinfoapp.other.Resource
 
-class DetailsViewModel(private val repository: MovieRepository, movie: Movie): ViewModel() {
-    val movie = mutableStateOf(movie)
+class DetailsViewModel(private val repository: MovieRepository, movieId: Int): ViewModel() {
+    val movie = mutableStateOf<Resource<Movie>>(Resource.Loading())
     val videos = mutableStateOf<List<Video>>(listOf())
     val reviews = mutableStateOf<List<Review>>(listOf())
 
     init {
-        loadMovie(movie.id)
-        if (movie.video) {
-            loadVideos(movie.id)
-        }
-        loadReviews(movie.id)
+        loadMovie(movieId)
+        loadReviews(movieId)
     }
 
     private fun loadMovie(movieId: Int) = viewModelScope.launch {
         val result = repository.getMovie(movieId)
-        result.data?.let { movie.value = it }
+        movie.value = result
     }
 
-    private fun loadVideos(movieId: Int) = viewModelScope.launch {
+    fun loadVideos(movieId: Int) = viewModelScope.launch {
         val result = repository.getMovieVideos(movieId)
         result.data?.let { videos.value = it }
     }
 
-    private fun loadReviews(movieId: Int) = viewModelScope.launch {
+    fun loadReviews(movieId: Int) = viewModelScope.launch {
         val result = repository.getMovieReviews(movieId, DEFAULT_PAGE)
         result.data?.let { reviews.value = it }
     }

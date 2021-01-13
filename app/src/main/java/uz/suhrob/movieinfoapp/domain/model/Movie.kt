@@ -11,4 +11,10 @@ data class Movie(
     val video: Boolean,
     val voteCount: Int,
     val voteAverage: Double
-)
+) {
+    fun getMovieReleaseYear(): String? {
+        return releaseDate?.let {
+            it.split("-")[0]
+        }
+    }
+}
