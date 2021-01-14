@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.platform.setContent
+import androidx.compose.ui.viewinterop.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -49,13 +50,17 @@ class MainActivity : AppCompatActivity() {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = "home") {
                     composable("home") {
-                        val viewModel =
-                            ViewModelFactory(repository).create(HomeViewModel::class.java)
+                        val viewModel = viewModel(
+                            modelClass = HomeViewModel::class.java,
+                            factory = ViewModelFactory(repository)
+                        )
                         HomeScreen(viewModel = viewModel, navController = navController)
                     }
                     composable("search") {
-                        val viewModel =
-                            ViewModelFactory(repository).create(SearchViewModel::class.java)
+                        val viewModel = viewModel(
+                            modelClass = SearchViewModel::class.java,
+                            factory = ViewModelFactory(repository)
+                        )
                         SearchScreen(viewModel = viewModel, navController = navController)
                     }
                     composable(
@@ -63,8 +68,10 @@ class MainActivity : AppCompatActivity() {
                         arguments = listOf(navArgument(name = "id") { type = NavType.IntType })
                     ) {
                         val id = it.arguments?.getInt("id") ?: 0
-                        val viewModel =
-                            ViewModelFactory(repository, id).create(DetailsViewModel::class.java)
+                        val viewModel = viewModel(
+                            modelClass = DetailsViewModel::class.java,
+                            factory = ViewModelFactory(repository, id)
+                        )
                         DetailsScreen(viewModel = viewModel, navController = navController)
                     }
                 }

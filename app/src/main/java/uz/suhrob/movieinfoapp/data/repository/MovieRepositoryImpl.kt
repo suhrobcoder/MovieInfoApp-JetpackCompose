@@ -69,7 +69,7 @@ class MovieRepositoryImpl(
         return safeCall {
             Resource.Success(
                 MovieMapper.mapToList(
-                    service.getPopularMovies(page).body()!!.results
+                    service.getTopRatedMovies(page).body()!!.results
                 )
             )
         }
@@ -79,7 +79,7 @@ class MovieRepositoryImpl(
         return safeCall {
             Resource.Success(
                 MovieMapper.mapToList(
-                    service.getPopularMovies(page).body()!!.results
+                    service.getUpcomingMovies(page).body()!!.results
                 )
             )
         }

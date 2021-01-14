@@ -3,6 +3,8 @@ package uz.suhrob.movieinfoapp.presentation.ui.home
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import uz.suhrob.movieinfoapp.data.repository.MovieRepository
 import uz.suhrob.movieinfoapp.domain.model.Genre
@@ -18,14 +20,18 @@ class HomeViewModel(private val repository: MovieRepository) : ViewModel() {
     val selectedGenre = mutableStateOf(defaultGenre)
     val movies = mutableStateOf<Resource<List<Movie>>>(Resource.Success(listOf()))
 
+    private var loadMoviesJob: Job? = null
+
     init {
         loadGenres()
         loadMovies()
     }
 
     fun changeCategory(newCategory: Category) {
-        category.value = newCategory
-        loadMovies()
+        if (category.value != newCategory) {
+            category.value = newCategory
+            loadMovies()
+        }
     }
 
     private fun loadGenres() = viewModelScope.launch {
@@ -36,11 +42,15 @@ class HomeViewModel(private val repository: MovieRepository) : ViewModel() {
     }
 
     fun loadMovies() = viewModelScope.launch {
-        val result = when (category.value) {
-            Category.POPULAR -> repository.getPopularMovies(DEFAULT_PAGE)
-            Category.TOP_RATED -> repository.getTopRatedMovies(DEFAULT_PAGE)
-            Category.UPCOMING -> repository.getUpcomingMovies(DEFAULT_PAGE)
+        loadMoviesJob?.cancel()
+        loadMoviesJob = CoroutineScope(viewModelScope.coroutineContext).launch {
+            movies.value = Resource.Loading()
+            val result = when (category.value) {
+                Category.POPULAR -> repository.getPopularMovies(DEFAULT_PAGE)
+                Category.TOP_RATED -> repository.getTopRatedMovies(DEFAULT_PAGE)
+                Category.UPCOMING -> repository.getUpcomingMovies(DEFAULT_PAGE)
+            }
+            movies.value = result
         }
-        movies.value = result
     }
 }

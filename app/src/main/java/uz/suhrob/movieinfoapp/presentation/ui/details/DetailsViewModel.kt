@@ -1,5 +1,6 @@
 package uz.suhrob.movieinfoapp.presentation.ui.details
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,12 +28,16 @@ class DetailsViewModel(private val repository: MovieRepository, movieId: Int): V
     }
 
     fun loadVideos(movieId: Int) = viewModelScope.launch {
+        Log.d("AppDebug", "loadVideos start")
         val result = repository.getMovieVideos(movieId)
         result.data?.let { videos.value = it }
+        Log.d("AppDebug", "loadVideos end")
     }
 
     fun loadReviews(movieId: Int) = viewModelScope.launch {
+        Log.d("AppDebug", "loadReviews start")
         val result = repository.getMovieReviews(movieId, DEFAULT_PAGE)
         result.data?.let { reviews.value = it }
+        Log.d("AppDebug", "loadReviews end")
     }
 }

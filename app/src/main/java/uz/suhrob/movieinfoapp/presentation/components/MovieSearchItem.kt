@@ -14,6 +14,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import uz.suhrob.movieinfoapp.R
 import uz.suhrob.movieinfoapp.domain.model.Movie
+import uz.suhrob.movieinfoapp.other.getImageUrl
 import uz.suhrob.movieinfoapp.other.loadImage
 
 @Composable
@@ -29,7 +30,7 @@ fun MovieSearchItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         val image by loadImage(
-            url = movie.posterPath,
+            url = getImageUrl(movie.posterPath),
             defaultImage = R.drawable.poster_placeholder
         )
         image?.let {

@@ -7,3 +7,5 @@ inline fun <T> safeCall(action: () -> Resource<T>): Resource<T> {
         Resource.Error(e.message ?: "An unknown error occurred")
     }
 }
+
+fun getImageUrl(key: String) = "https://image.tmdb.org/t/p/w500/$key"

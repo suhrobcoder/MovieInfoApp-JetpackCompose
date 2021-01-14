@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -53,8 +52,8 @@ fun SearchScreen(viewModel: SearchViewModel, navController: NavController) {
 
 @Composable
 fun SearchAppBar(viewModel: SearchViewModel, navController: NavController) {
-    TopAppBar(backgroundColor = MaterialTheme.colors.background, elevation = 0.dp) {
-        Row(modifier = Modifier.fillMaxWidth().padding(end = 16.dp)) {
+    TopAppBar {
+        Row(modifier = Modifier.fillMaxWidth()) {
             Icon(
                 imageVector = Icons.Filled.ArrowBack,
                 modifier = Modifier

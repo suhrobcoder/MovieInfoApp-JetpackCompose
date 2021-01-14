@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import uz.suhrob.movieinfoapp.other.loadImage
+import uz.suhrob.movieinfoapp.R
 
 @Composable
 fun ReviewItem(
@@ -24,7 +25,7 @@ fun ReviewItem(
     Card(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                val image by loadImage(url = avatarUrl, defaultImage = 1)
+                val image by loadImage(url = avatarUrl, defaultImage = R.drawable.profile_placeholder)
                 image?.let {
                     Image(
                         bitmap = it.asImageBitmap(),

@@ -3,9 +3,12 @@ package uz.suhrob.movieinfoapp.presentation.ui.home
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Scaffold
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import uz.suhrob.movieinfoapp.other.Resource
@@ -14,7 +17,9 @@ import uz.suhrob.movieinfoapp.presentation.components.*
 @ExperimentalFoundationApi
 @Composable
 fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
-    Scaffold {
+    Scaffold(
+        topBar = { HomeAppBar(onSearchClick = { navController.navigate("search") }) }
+    ) {
         Column(modifier = Modifier.fillMaxSize()) {
             CategoryRow(viewModel.category.value) { category ->
                 viewModel.changeCategory(category)
@@ -32,7 +37,7 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
                     }
                 }
                 is Resource.Loading -> {
-                    Loading()
+                    MovieShimmerGrid()
                 }
                 is Resource.Error -> {
                     Error(onRetry = { viewModel.loadMovies() })
@@ -40,4 +45,24 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
             }
         }
     }
+}
+
+@Composable
+fun HomeAppBar(onSearchClick: () -> Unit) {
+    TopAppBar(
+        title = {
+            Text(text = "Movie Info App")
+        },
+        actions = {
+            IconButton(onClick = onSearchClick) {
+                Icon(imageVector = Icons.Filled.Search)
+            }
+        }
+    )
+}
+
+@Preview
+@Composable
+fun PreviewHomeAppBar() {
+    HomeAppBar(onSearchClick = { })
 }
