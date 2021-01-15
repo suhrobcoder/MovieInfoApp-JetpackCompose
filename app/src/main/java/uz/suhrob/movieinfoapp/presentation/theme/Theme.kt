@@ -37,7 +37,7 @@ fun MovieInfoAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Comp
 
     MaterialTheme(
         colors = colors,
-        typography = typography,
+        typography = SFProTypography,
         shapes = shapes,
         content = content
     )

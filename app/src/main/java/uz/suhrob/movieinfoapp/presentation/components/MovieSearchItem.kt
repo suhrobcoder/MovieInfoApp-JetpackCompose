@@ -26,7 +26,7 @@ fun MovieSearchItem(
         modifier = Modifier.fillMaxWidth()
             .preferredHeight(64.dp)
             .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp),
+            .padding(vertical = 2.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         val image by loadImage(

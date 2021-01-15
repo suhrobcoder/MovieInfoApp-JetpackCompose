@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
+import uz.suhrob.movieinfoapp.domain.model.defaultGenre
 import uz.suhrob.movieinfoapp.other.Resource
 import uz.suhrob.movieinfoapp.presentation.components.*
 
@@ -28,11 +29,16 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
                 genres = viewModel.genres.value,
                 selectedGenre = viewModel.selectedGenre.value
             ) { genre ->
-
+                viewModel.selectedGenre.value = genre
             }
             when (viewModel.movies.value) {
                 is Resource.Success -> {
-                    MovieGrid(movies = viewModel.movies.value.data ?: listOf()) { movie ->
+                    MovieGrid(
+                        movies = viewModel.movies.value.data?.filter {
+                            viewModel.selectedGenre.value == defaultGenre
+                                    || it.genres.contains(viewModel.selectedGenre.value)
+                        } ?: listOf()
+                    ) { movie ->
                         navController.navigate("details/${movie.id}")
                     }
                 }
