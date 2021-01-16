@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
             .addConverterFactory(
                 Json {
                     ignoreUnknownKeys = true
+                    isLenient = true
                 }.asConverterFactory(MediaType.get("application/json"))
             )
             .build()

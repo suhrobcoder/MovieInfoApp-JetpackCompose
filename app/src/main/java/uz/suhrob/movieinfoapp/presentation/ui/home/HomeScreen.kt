@@ -36,7 +36,8 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
                     MovieGrid(
                         movies = viewModel.movies.value.data?.filter {
                             viewModel.selectedGenre.value == defaultGenre
-                                    || it.genres.contains(viewModel.selectedGenre.value)
+                                    || it.genres.map { genre -> genre.name }
+                                .contains(viewModel.selectedGenre.value.name)
                         } ?: listOf()
                     ) { movie ->
                         navController.navigate("details/${movie.id}")

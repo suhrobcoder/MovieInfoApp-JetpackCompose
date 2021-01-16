@@ -30,7 +30,7 @@ import uz.suhrob.movieinfoapp.other.loadImage
 fun MovieGrid(movies: List<Movie>, onMovieClicked: (Movie) -> Unit) {
     LazyVerticalGrid(
         cells = GridCells.Adaptive(minSize = 150.dp),
-        modifier = Modifier.padding(8.dp)
+        modifier = Modifier.padding(horizontal = 8.dp).padding(top = 8.dp)
     ) {
         items(movies) { movie ->
             MovieItem(

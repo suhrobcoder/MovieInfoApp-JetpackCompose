@@ -1,10 +1,10 @@
 package uz.suhrob.movieinfoapp.presentation.ui.details
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -37,64 +37,67 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
     when (val data = viewModel.movie.value) {
         is Resource.Success -> {
             val movie = data.data!!
+            Log.d("AppDebug", "Details: ${movie.video}")
             if (movie.video) {
-                viewModel.loadVideos(movie.id)
+                viewModel.loadVideos()
             }
-            viewModel.loadReviews(movie.id)
+            viewModel.loadReviews()
             Scaffold {
-                DetailsAppBar {navController.popBackStack()}
                 ScrollableColumn(modifier = Modifier.fillMaxSize()) {
-                    Box(contentAlignment = Alignment.BottomCenter) {
-                        val image = loadImage(
-                            url = getImageUrl(movie.backdropPath),
-                            defaultImage = R.drawable.backdrop_placeholder
-                        )
-                        image.value?.let { img ->
-                            Image(
-                                bitmap = img.asImageBitmap(),
-                                modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp).clip(
-                                    RoundedCornerShape(bottomLeft = 32.dp)
-                                ),
-                                contentScale = ContentScale.Crop
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        DetailsAppBar { navController.popBackStack() }
+                        Box(contentAlignment = Alignment.BottomCenter) {
+                            val image = loadImage(
+                                url = getImageUrl(movie.backdropPath),
+                                defaultImage = R.drawable.backdrop_placeholder
                             )
+                            image.value?.let { img ->
+                                Image(
+                                    bitmap = img.asImageBitmap(),
+                                    modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp).clip(
+                                        RoundedCornerShape(bottomLeft = 32.dp)
+                                    ),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                            RatingBar(voteCount = movie.voteCount, voteAverage = movie.voteAverage)
                         }
-                        RatingBar(voteCount = movie.voteCount, voteAverage = movie.voteAverage)
-                    }
-                    Column(
-                        modifier = Modifier.padding(
-                            start = 16.dp,
-                            end = 16.dp,
-                            top = 24.dp,
-                            bottom = 8.dp
-                        )
-                    ) {
-                        Text(
-                            text = movie.title,
-                            style = MaterialTheme.typography.h4.copy(
-                                fontSize = 32.sp,
-                                fontWeight = FontWeight.Medium
+                        Column(
+                            modifier = Modifier.padding(
+                                start = 16.dp,
+                                end = 16.dp,
+                                top = 24.dp,
+                                bottom = 8.dp
                             )
-                        )
-                        Row {
-                            movie.releaseDate?.let { Text(text = movie.releaseDate) }
-                        }
-                    }
-                    GenreRow(genres = movie.genres)
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(text = "Overview", style = MaterialTheme.typography.h6)
-                        Text(
-                            text = movie.overview,
-                            style = MaterialTheme.typography.body1.copy(
-                                color = MaterialTheme.colors.onSurface.copy(alpha = 0.6F)
+                        ) {
+                            Text(
+                                text = movie.title,
+                                style = MaterialTheme.typography.h5.copy(
+                                    fontSize = 32.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
                             )
-                        )
-                        val videos = viewModel.videos.value
-                        if (videos.isNotEmpty()) {
-                            VideosColumn(videos = videos) {}
+                            Row {
+                                movie.releaseDate?.let { Text(text = movie.releaseDate) }
+                            }
                         }
-                        val reviews = viewModel.reviews.value
-                        if (reviews.isNotEmpty()) {
-                            ReviewsColumn(reviews = reviews)
+                        GenreRow(genres = movie.genres)
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(text = "Overview", style = MaterialTheme.typography.h6)
+                            Text(
+                                text = movie.overview,
+                                style = MaterialTheme.typography.body1.copy(
+                                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.6F)
+                                )
+                            )
+                            val videos = viewModel.videos.value
+                            if (videos.isNotEmpty()) {
+                                VideosColumn(videos = videos) {}
+                            }
+                            val reviews = viewModel.reviews.value
+                            if (reviews.isNotEmpty()) {
+                                ReviewsColumn(reviews = reviews)
+                            }
                         }
                     }
                 }
@@ -104,7 +107,8 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
             Loading()
         }
         is Resource.Error -> {
-            Error(onRetry = { /*TODO*/ })
+            Error(onRetry = { viewModel.loadMovie() })
+            Log.d("AppDebug", "Details: ${data.message}")
         }
     }
 }
@@ -156,7 +160,7 @@ fun RatingBar(
 
 @Composable
 fun DetailsAppBar(onNavigationClick: () -> Unit) {
-    TopAppBar {
+    TopAppBar(backgroundColor = Color.Transparent, elevation = 0.dp) {
         Icon(
             imageVector = Icons.Filled.ArrowBack,
             modifier = Modifier
@@ -177,8 +181,8 @@ fun VideosColumn(videos: List<Video>, onClick: () -> Unit) {
         )
     ) {
         Text(text = "Reviews", style = MaterialTheme.typography.h5)
-        LazyColumn {
-            items(items = videos) { video ->
+        Column {
+            videos.forEach { video ->
                 VideoItem(name = video.name, onClick = onClick)
             }
         }
@@ -194,14 +198,12 @@ fun ReviewsColumn(reviews: List<Review>) {
         )
     ) {
         Text(text = "Reviews", style = MaterialTheme.typography.h5)
-        LazyColumn {
-            items(items = reviews) { review ->
-                ReviewItem(
-                    authorName = review.authorName,
-                    avatarUrl = review.avatarPath,
-                    content = review.content
-                )
-            }
+        reviews.forEach { review ->
+            ReviewItem(
+                authorName = review.authorName,
+                avatarUrl = review.avatarPath,
+                content = review.content
+            )
         }
     }
 }

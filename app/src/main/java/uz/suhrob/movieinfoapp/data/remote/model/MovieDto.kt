@@ -7,7 +7,6 @@ import kotlinx.serialization.Serializable
 data class MovieDto(
     @SerialName("adult") val adult: Boolean? = null,
     @SerialName("backdrop_path") val backdrop_path: String? = null,
-    @SerialName("belongs_to_collection") val belongs_to_collection: String? = null,
     @SerialName("budget") val budget: Int? = null,
     @SerialName("genres") val genres: List<GenreDto> = listOf(),
     @SerialName("homepage") val homepage: String? = null,
