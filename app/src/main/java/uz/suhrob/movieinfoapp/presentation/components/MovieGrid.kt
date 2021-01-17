@@ -27,18 +27,23 @@ import uz.suhrob.movieinfoapp.other.loadImage
 
 @ExperimentalFoundationApi
 @Composable
-fun MovieGrid(movies: List<Movie>, onMovieClicked: (Movie) -> Unit) {
+fun MovieGrid(
+    movies: List<Movie>,
+    onChangeScrollPosition: (Int) -> Unit,
+    onMovieClicked: (Movie) -> Unit
+) {
     LazyVerticalGrid(
         cells = GridCells.Adaptive(minSize = 150.dp),
         modifier = Modifier.padding(horizontal = 8.dp).padding(top = 8.dp)
     ) {
-        items(movies) { movie ->
+        itemsIndexed(movies) { index, movie ->
             MovieItem(
                 title = movie.title,
                 imageUrl = getImageUrl(movie.posterPath),
                 rating = movie.voteAverage,
                 onClick = { onMovieClicked(movie) }
             )
+            onChangeScrollPosition(index)
         }
     }
 }
@@ -81,7 +86,9 @@ fun MovieShimmerGrid() {
                     modifier = Modifier.fillMaxWidth().aspectRatio(2f / 3)
                         .clip(RoundedCornerShape(32.dp))
                 )
-                ShimmerView(modifier = Modifier.padding(vertical = 4.dp).height(24.dp).fillMaxWidth(0.9f))
+                ShimmerView(
+                    modifier = Modifier.padding(vertical = 4.dp).height(24.dp).fillMaxWidth(0.9f)
+                )
                 ShimmerView(modifier = Modifier.height(24.dp).fillMaxWidth(0.4f))
             }
         }
