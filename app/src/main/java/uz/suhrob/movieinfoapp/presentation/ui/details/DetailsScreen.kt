@@ -43,9 +43,8 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
             }
             viewModel.loadReviews()
             Scaffold {
-                ScrollableColumn(modifier = Modifier.fillMaxSize()) {
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        DetailsAppBar { navController.popBackStack() }
+                Box(modifier = Modifier.fillMaxSize()) {
+                    ScrollableColumn(modifier = Modifier.fillMaxSize()) {
                         Box(contentAlignment = Alignment.BottomCenter) {
                             val image = loadImage(
                                 url = getImageUrl(movie.backdropPath),
@@ -100,6 +99,7 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
                             }
                         }
                     }
+                    DetailsAppBar { navController.popBackStack() }
                 }
             }
         }
