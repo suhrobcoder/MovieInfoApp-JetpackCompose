@@ -8,12 +8,13 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
+import uz.suhrob.movieinfoapp.R
 import uz.suhrob.movieinfoapp.domain.model.defaultGenre
 import uz.suhrob.movieinfoapp.other.PAGE_SIZE
 import uz.suhrob.movieinfoapp.presentation.components.*
@@ -95,6 +96,8 @@ fun HomeAppBar(onNavigationClick: () -> Unit, onSearchClick: () -> Unit) {
 fun HomeDrawer(navController: NavController) {
     DrawerHeader()
     Divider()
-    DrawerItem(icon = Icons.Filled.Search, title = "Search") {}
-    DrawerItem(icon = Icons.Filled.Star, title = "Favorites") {}
+    DrawerItem(icon = Icons.Filled.Search, title = "Search") { navController.navigate("search") }
+    DrawerItem(icon = vectorResource(id = R.drawable.ic_heart), title = "Favorites") {
+        navController.navigate("favorites")
+    }
 }
