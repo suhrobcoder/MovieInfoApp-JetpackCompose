@@ -31,6 +31,9 @@ import uz.suhrob.movieinfoapp.other.Resource
 import uz.suhrob.movieinfoapp.other.getImageUrl
 import uz.suhrob.movieinfoapp.other.loadImage
 import uz.suhrob.movieinfoapp.presentation.components.*
+import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState
+import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState.INITIAL
+import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState.LIKED
 
 @Composable
 fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
@@ -59,7 +62,14 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
                                     contentScale = ContentScale.Crop
                                 )
                             }
-                            RatingBar(voteCount = movie.voteCount, voteAverage = movie.voteAverage)
+                            RatingBar(
+                                voteCount = movie.voteCount,
+                                voteAverage = movie.voteAverage,
+                                likeState = viewModel.likeState.value,
+                                onLikeClick = {
+                                    viewModel.likeClick()
+                                }
+                            )
                         }
                         Column(
                             modifier = Modifier.padding(
@@ -116,7 +126,9 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
 @Composable
 fun RatingBar(
     voteCount: Int,
-    voteAverage: Double
+    voteAverage: Double,
+    likeState: LikeState,
+    onLikeClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -153,6 +165,13 @@ fun RatingBar(
             ) {
                 Icon(imageVector = Icons.Outlined.Star)
                 Text(text = "Rate This")
+            }
+            Column(
+                modifier = Modifier.weight(1f, fill = true).fillMaxHeight(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                AnimatedLikeButton(state = likeState, onClick = onLikeClick)
             }
         }
     }
