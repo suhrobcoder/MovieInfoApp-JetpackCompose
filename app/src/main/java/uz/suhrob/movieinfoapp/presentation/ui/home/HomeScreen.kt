@@ -34,7 +34,7 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             CategoryRow(viewModel.category.value) { category ->
-                viewModel.changeCategory(category)
+                viewModel.onTriggerEvent(HomeEvent.ChangeCategory(category))
             }
             GenreRow(
                 genres = viewModel.genres.value,
@@ -66,7 +66,7 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
                     }
                 }
                 if (viewModel.error.value && viewModel.movies.value.isEmpty()) {
-                    Error(onRetry = { viewModel.loadMovies() })
+                    Error(onRetry = { viewModel.onTriggerEvent(HomeEvent.LoadMovies) })
                 }
             }
         }

@@ -29,11 +29,21 @@ class HomeViewModel(private val repository: MovieRepository) : ViewModel() {
     var movieListScrollPosition = 0
 
     init {
-        loadGenres()
-        loadMovies()
+        onTriggerEvent(HomeEvent.LoadGenres)
+        onTriggerEvent(HomeEvent.LoadMovies)
     }
 
-    fun changeCategory(newCategory: Category) {
+    fun onTriggerEvent(event: HomeEvent) {
+        viewModelScope.launch {
+            when (event) {
+                is HomeEvent.ChangeCategory -> changeCategory(event.category)
+                is HomeEvent.LoadGenres -> loadGenres()
+                is HomeEvent.LoadMovies -> loadMovies()
+            }
+        }
+    }
+
+    private suspend fun changeCategory(newCategory: Category) {
         if (category.value != newCategory) {
             category.value = newCategory
             currentPage.value = DEFAULT_PAGE
@@ -42,7 +52,7 @@ class HomeViewModel(private val repository: MovieRepository) : ViewModel() {
         }
     }
 
-    private fun loadGenres() = viewModelScope.launch {
+    private suspend fun loadGenres() {
         val result = repository.getGenres()
         genres.value = result.data?.let {
             listOf(defaultGenre) + it
@@ -72,7 +82,7 @@ class HomeViewModel(private val repository: MovieRepository) : ViewModel() {
         movieListScrollPosition = position
     }
 
-    fun loadMovies() = viewModelScope.launch {
+    private suspend fun loadMovies() {
         loadMoviesJob?.cancel()
         loadMoviesJob = CoroutineScope(viewModelScope.coroutineContext).launch {
             loading.value = true

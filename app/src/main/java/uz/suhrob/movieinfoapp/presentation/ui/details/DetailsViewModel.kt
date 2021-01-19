@@ -14,11 +14,14 @@ import uz.suhrob.movieinfoapp.domain.model.Review
 import uz.suhrob.movieinfoapp.domain.model.Video
 import uz.suhrob.movieinfoapp.other.DEFAULT_PAGE
 import uz.suhrob.movieinfoapp.other.Resource
-import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState
 import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState.INITIAL
 import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState.LIKED
 
-class DetailsViewModel(private val repository: MovieRepository, private val favoritesRepository: FavoritesRepository, private val movieId: Int): ViewModel() {
+class DetailsViewModel(
+    private val repository: MovieRepository,
+    private val favoritesRepository: FavoritesRepository,
+    private val movieId: Int
+) : ViewModel() {
     val movie = mutableStateOf<Resource<Movie>>(Resource.Loading())
     val videos = mutableStateOf<List<Video>>(listOf())
     val reviews = mutableStateOf<List<Review>>(listOf())
@@ -29,11 +32,22 @@ class DetailsViewModel(private val repository: MovieRepository, private val favo
         favoritesRepository.isMovieFavorite(movieId).onEach {
             likeState.value = if (it) LIKED else INITIAL
         }.launchIn(viewModelScope)
-        loadMovie()
-        loadReviews()
+        onTriggerEvent(DetailsEvent.LoadMovie)
+        onTriggerEvent(DetailsEvent.LoadReviews)
     }
 
-    fun loadMovie() = viewModelScope.launch {
+    fun onTriggerEvent(event: DetailsEvent) {
+        viewModelScope.launch {
+            when (event) {
+                is DetailsEvent.LoadMovie -> loadMovie()
+                is DetailsEvent.LoadVideos -> loadVideos()
+                is DetailsEvent.LoadReviews -> loadReviews()
+                is DetailsEvent.LikeClick -> likeClick()
+            }
+        }
+    }
+
+    private suspend fun loadMovie() {
         val result = repository.getMovie(movieId)
         if (result is Resource.Error && likeState.value == LIKED) {
             getMovie()
@@ -42,7 +56,7 @@ class DetailsViewModel(private val repository: MovieRepository, private val favo
         }
     }
 
-    fun loadVideos() = viewModelScope.launch {
+    private suspend fun loadVideos() {
         Log.d("AppDebug", "loadVideos start")
         val result = repository.getMovieVideos(movieId)
         result.data?.let { videos.value = it; Log.d("AppDebug", "$it") }
@@ -50,7 +64,7 @@ class DetailsViewModel(private val repository: MovieRepository, private val favo
         Log.d("AppDebug", "loadVideos end")
     }
 
-    fun loadReviews() = viewModelScope.launch {
+    private suspend fun loadReviews() {
         Log.d("AppDebug", "loadReviews start")
         val result = repository.getMovieReviews(movieId, DEFAULT_PAGE)
         result.data?.let { reviews.value = it }
@@ -61,7 +75,7 @@ class DetailsViewModel(private val repository: MovieRepository, private val favo
         movie.value = Resource.Success(favoritesRepository.getMovie(movieId))
     }
 
-    fun likeClick() = viewModelScope.launch {
+    private suspend fun likeClick() {
         if (likeState.value == INITIAL) {
             favoritesRepository.insertMovie(movie.value.data!!)
         } else {

@@ -44,7 +44,7 @@ fun SearchScreen(viewModel: SearchViewModel, navController: NavController) {
                 Loading()
             }
             is Resource.Error -> {
-                Error(onRetry = { viewModel.search() })
+                Error(onRetry = { viewModel.onTriggerEvent(SearchEvent.Search) })
             }
         }
     }
@@ -65,7 +65,7 @@ fun SearchAppBar(viewModel: SearchViewModel, navController: NavController) {
             SearchField(
                 value = viewModel.query.value,
                 onValueChange = { viewModel.onQueryChange(it) },
-                onSearch = { viewModel.search() }
+                onSearch = { viewModel.onTriggerEvent(SearchEvent.Search) }
             )
         }
     }
