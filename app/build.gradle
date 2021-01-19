@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'kotlinx-serialization'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -60,6 +61,11 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+
+    implementation "com.google.dagger:hilt-android:$hiltCoreVersion"
+    kapt "com.google.dagger:hilt-android-compiler:$hiltCoreVersion"
+    implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02'
+    kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha02'
 
     def glide = "4.11.0"
     implementation "com.github.bumptech.glide:glide:$glide"

@@ -10,7 +10,7 @@ import uz.suhrob.movieinfoapp.data.local.entity.MovieEntity
 import uz.suhrob.movieinfoapp.data.local.entity.relations.MovieGenreCrossRef
 
 private const val DATABASE_VERSION = 1
-private const val DATABASE_NAME = "movie.db"
+const val DATABASE_NAME = "movie.db"
 
 @Database(
     entities = [MovieEntity::class, GenreEntity::class, MovieGenreCrossRef::class],

@@ -4,6 +4,7 @@ buildscript {
         compose_version = '1.0.0-alpha10'
     }
     ext.kotlin_version = "1.4.21"
+    ext.hiltCoreVersion = "2.31-alpha"
     repositories {
         google()
         jcenter()
@@ -12,6 +13,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:7.0.0-alpha03'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
+        classpath "com.google.dagger:hilt-android-gradle-plugin:$hiltCoreVersion"
     }
 }
 
