@@ -16,6 +16,7 @@ object MovieEntityMapper : DomainMapper<MovieWithGenre, Movie>() {
             posterPath = model.movie.posterPath,
             genres = GenreEntityMapper.mapToList(model.genres),
             releaseDate = model.movie.releaseDate,
+            runtime = null,
             video = model.movie.video,
             voteCount = model.movie.voteCount,
             voteAverage = model.movie.voteAverage

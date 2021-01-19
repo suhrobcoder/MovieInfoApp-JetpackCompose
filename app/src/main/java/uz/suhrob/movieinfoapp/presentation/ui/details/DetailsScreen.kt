@@ -28,12 +28,11 @@ import uz.suhrob.movieinfoapp.R
 import uz.suhrob.movieinfoapp.domain.model.Review
 import uz.suhrob.movieinfoapp.domain.model.Video
 import uz.suhrob.movieinfoapp.other.Resource
+import uz.suhrob.movieinfoapp.other.formatTime
 import uz.suhrob.movieinfoapp.other.getImageUrl
 import uz.suhrob.movieinfoapp.other.loadImage
 import uz.suhrob.movieinfoapp.presentation.components.*
 import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState
-import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState.INITIAL
-import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState.LIKED
 
 @Composable
 fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
@@ -87,7 +86,8 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
                                 )
                             )
                             Row {
-                                movie.releaseDate?.let { Text(text = movie.releaseDate) }
+                                Text(text = movie.getMovieReleaseYear())
+                                movie.runtime?.let { Text(text = formatTime(it)) }
                             }
                         }
                         GenreRow(genres = movie.genres)

@@ -14,6 +14,7 @@ object MovieMapper : DomainMapper<MovieDto, Movie>() {
             posterPath = model.poster_path ?: "",
             genres = GenreMapper.mapToList(model.genres),
             releaseDate = model.release_date,
+            runtime = model.runtime,
             video = model.video ?: false,
             voteCount = model.vote_count ?: -1,
             voteAverage = model.vote_average ?: -1.0

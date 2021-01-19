@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import uz.suhrob.movieinfoapp.data.repository.MovieRepository
 import uz.suhrob.movieinfoapp.domain.model.Genre
@@ -54,7 +53,6 @@ class HomeViewModel(private val repository: MovieRepository) : ViewModel() {
         viewModelScope.launch {
             if (movieListScrollPosition + 1 >= currentPage.value * PAGE_SIZE) {
                 incrementPage()
-                delay(5000)
                 loadMovies()
             }
         }

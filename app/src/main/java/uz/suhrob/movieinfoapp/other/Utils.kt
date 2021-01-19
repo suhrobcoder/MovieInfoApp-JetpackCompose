@@ -9,3 +9,5 @@ inline fun <T> safeCall(action: () -> Resource<T>): Resource<T> {
 }
 
 fun getImageUrl(key: String) = "https://image.tmdb.org/t/p/w500/$key"
+
+fun formatTime(timeInMinutes: Int) = "${timeInMinutes / 60}:${timeInMinutes % 60}"

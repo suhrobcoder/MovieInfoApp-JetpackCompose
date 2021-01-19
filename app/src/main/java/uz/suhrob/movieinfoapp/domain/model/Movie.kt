@@ -8,13 +8,14 @@ data class Movie(
     val posterPath: String,
     val genres: List<Genre>,
     val releaseDate: String?,
+    val runtime: Int?,
     val video: Boolean,
     val voteCount: Int,
     val voteAverage: Double
 ) {
-    fun getMovieReleaseYear(): String? {
+    fun getMovieReleaseYear(): String {
         return releaseDate?.let {
             it.split("-")[0]
-        }
+        } ?: ""
     }
 }

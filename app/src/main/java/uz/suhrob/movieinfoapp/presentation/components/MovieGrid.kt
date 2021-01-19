@@ -34,7 +34,7 @@ fun MovieGrid(
 ) {
     LazyVerticalGrid(
         cells = GridCells.Adaptive(minSize = 150.dp),
-        modifier = Modifier.padding(horizontal = 8.dp).padding(top = 8.dp)
+        modifier = Modifier.padding(horizontal = 8.dp)
     ) {
         itemsIndexed(movies) { index, movie ->
             MovieItem(
