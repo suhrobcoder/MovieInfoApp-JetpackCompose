@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.viewinterop.viewModel
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -60,17 +59,11 @@ class MainActivity : AppCompatActivity() {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = "home") {
                     composable("home") {
-                        val viewModel = viewModel(
-                            modelClass = HomeViewModel::class.java,
-                            factory = ViewModelFactory(repository)
-                        )
+                        val viewModel = viewModel(modelClass = HomeViewModel::class.java)
                         HomeScreen(viewModel = viewModel, navController = navController)
                     }
                     composable("search") {
-                        val viewModel = viewModel(
-                            modelClass = SearchViewModel::class.java,
-                            factory = ViewModelFactory(repository)
-                        )
+                        val viewModel = viewModel(modelClass = SearchViewModel::class.java)
                         SearchScreen(viewModel = viewModel, navController = navController)
                     }
                     composable(
@@ -78,17 +71,12 @@ class MainActivity : AppCompatActivity() {
                         arguments = listOf(navArgument(name = "id") { type = NavType.IntType })
                     ) {
                         val id = it.arguments?.getInt("id") ?: 0
-                        val viewModel = viewModel(
-                            modelClass = DetailsViewModel::class.java,
-                            factory = ViewModelFactory(repository, favoritesRepository, id)
-                        )
+                        val viewModel = viewModel(modelClass = DetailsViewModel::class.java)
+                        viewModel.movieId = id
                         DetailsScreen(viewModel = viewModel, navController = navController)
                     }
                     composable("favorites") {
-                        val viewModel = viewModel(
-                            modelClass = FavoritesViewModel::class.java,
-                            factory = FavoritesViewModelFactory(favoritesRepository)
-                        )
+                        val viewModel = viewModel(modelClass = FavoritesViewModel::class.java)
                         FavoritesScreen(viewModel = viewModel, navController = navController)
                     }
                 }

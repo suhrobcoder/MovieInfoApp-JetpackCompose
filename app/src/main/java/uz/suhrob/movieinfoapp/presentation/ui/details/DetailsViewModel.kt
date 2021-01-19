@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -14,11 +15,17 @@ import uz.suhrob.movieinfoapp.domain.model.Review
 import uz.suhrob.movieinfoapp.domain.model.Video
 import uz.suhrob.movieinfoapp.other.DEFAULT_PAGE
 import uz.suhrob.movieinfoapp.other.Resource
-import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState
 import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState.INITIAL
 import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState.LIKED
+import javax.inject.Inject
 
-class DetailsViewModel(private val repository: MovieRepository, private val favoritesRepository: FavoritesRepository, private val movieId: Int): ViewModel() {
+@HiltViewModel
+class DetailsViewModel @Inject constructor(
+    private val repository: MovieRepository,
+    private val favoritesRepository: FavoritesRepository
+) : ViewModel() {
+    var movieId: Int = 0
+
     val movie = mutableStateOf<Resource<Movie>>(Resource.Loading())
     val videos = mutableStateOf<List<Video>>(listOf())
     val reviews = mutableStateOf<List<Review>>(listOf())

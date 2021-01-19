@@ -3,6 +3,7 @@ package uz.suhrob.movieinfoapp.presentation.ui.home
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -15,8 +16,12 @@ import uz.suhrob.movieinfoapp.other.DEFAULT_PAGE
 import uz.suhrob.movieinfoapp.other.PAGE_SIZE
 import uz.suhrob.movieinfoapp.other.Resource
 import uz.suhrob.movieinfoapp.presentation.components.Category
+import javax.inject.Inject
 
-class HomeViewModel(private val repository: MovieRepository) : ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val repository: MovieRepository
+) : ViewModel() {
     val category = mutableStateOf(Category.POPULAR)
     val genres = mutableStateOf<List<Genre>>(listOf())
     val selectedGenre = mutableStateOf(defaultGenre)
