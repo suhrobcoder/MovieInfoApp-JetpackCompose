@@ -10,18 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType
-import retrofit2.Retrofit
-import uz.suhrob.movieinfoapp.data.local.MovieDatabase
-import uz.suhrob.movieinfoapp.data.remote.ApiService
-import uz.suhrob.movieinfoapp.data.repository.FavoritesRepository
-import uz.suhrob.movieinfoapp.data.repository.FavoritesRepositoryImpl
-import uz.suhrob.movieinfoapp.data.repository.MovieRepository
-import uz.suhrob.movieinfoapp.data.repository.MovieRepositoryImpl
-import uz.suhrob.movieinfoapp.other.BASE_URL
 import uz.suhrob.movieinfoapp.presentation.theme.MovieInfoAppTheme
 import uz.suhrob.movieinfoapp.presentation.ui.details.DetailsScreen
 import uz.suhrob.movieinfoapp.presentation.ui.details.DetailsViewModel
@@ -35,25 +24,9 @@ import uz.suhrob.movieinfoapp.presentation.ui.search.SearchViewModel
 @ExperimentalSerializationApi
 @ExperimentalFoundationApi
 class MainActivity : AppCompatActivity() {
-    private lateinit var repository: MovieRepository
-    private lateinit var favoritesRepository: FavoritesRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val service = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(
-                Json {
-                    ignoreUnknownKeys = true
-                    isLenient = true
-                }.asConverterFactory(MediaType.get("application/json"))
-            )
-            .build()
-            .create(ApiService::class.java)
-        repository = MovieRepositoryImpl(service)
-        val movieDao = MovieDatabase.getInstance(applicationContext).getMovieDao()
-        favoritesRepository = FavoritesRepositoryImpl(movieDao)
-
         setContent {
             MovieInfoAppTheme {
                 val navController = rememberNavController()
