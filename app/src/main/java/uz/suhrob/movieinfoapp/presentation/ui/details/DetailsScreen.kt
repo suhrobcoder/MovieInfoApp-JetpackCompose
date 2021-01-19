@@ -41,9 +41,9 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
             val movie = data.data!!
             Log.d("AppDebug", "Details: ${movie.video}")
             if (movie.video) {
-                viewModel.loadVideos()
+                viewModel.onTriggerEvent(DetailsEvent.LoadVideos)
             }
-            viewModel.loadReviews()
+            viewModel.onTriggerEvent(DetailsEvent.LoadReviews)
             Scaffold {
                 Box(modifier = Modifier.fillMaxSize()) {
                     ScrollableColumn(modifier = Modifier.fillMaxSize()) {
@@ -66,7 +66,7 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
                                 voteAverage = movie.voteAverage,
                                 likeState = viewModel.likeState.value,
                                 onLikeClick = {
-                                    viewModel.likeClick()
+                                    viewModel.onTriggerEvent(DetailsEvent.LikeClick)
                                 }
                             )
                         }
@@ -117,7 +117,7 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
             Loading()
         }
         is Resource.Error -> {
-            Error(onRetry = { viewModel.loadMovie() })
+            Error(onRetry = { viewModel.onTriggerEvent(DetailsEvent.LoadMovie) })
             Log.d("AppDebug", "Details: ${data.message}")
         }
     }

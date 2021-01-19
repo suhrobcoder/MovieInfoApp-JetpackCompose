@@ -17,7 +17,15 @@ class SearchViewModel(private val repository: MovieRepository): ViewModel() {
         query.value = newQuery
     }
 
-    fun search() = viewModelScope.launch {
+    fun onTriggerEvent(event: SearchEvent) {
+        viewModelScope.launch {
+            when (event) {
+                is SearchEvent -> search()
+            }
+        }
+    }
+
+    private suspend fun search() {
         val result = repository.searchMovies(query.value, DEFAULT_PAGE)
         movies.value = result
     }
