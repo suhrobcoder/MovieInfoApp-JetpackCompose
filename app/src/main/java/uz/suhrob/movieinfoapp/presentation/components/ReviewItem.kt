@@ -25,8 +25,8 @@ fun ReviewItem(
     content: String
 ) {
     val textCollapsed = mutableStateOf(true)
-    Card(modifier = Modifier.fillMaxWidth().padding(all = 8.dp)) {
-        Column {
+    Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 val image by loadImage(
                     url = avatarUrl,
