@@ -6,4 +6,5 @@ sealed class HomeEvent {
     data class ChangeCategory(val category: Category): HomeEvent()
     object LoadGenres: HomeEvent()
     object LoadMovies: HomeEvent()
+    object NextPage: HomeEvent()
 }
