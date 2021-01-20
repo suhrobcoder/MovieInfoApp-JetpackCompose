@@ -48,19 +48,7 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     ScrollableColumn(modifier = Modifier.fillMaxSize()) {
                         Box(contentAlignment = Alignment.BottomCenter) {
-                            val image = loadImage(
-                                url = getImageUrl(movie.backdropPath),
-                                defaultImage = R.drawable.backdrop_placeholder
-                            )
-                            image.value?.let { img ->
-                                Image(
-                                    bitmap = img.asImageBitmap(),
-                                    modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp).clip(
-                                        RoundedCornerShape(bottomLeft = 32.dp)
-                                    ),
-                                    contentScale = ContentScale.Crop
-                                )
-                            }
+                            BackdropImage(backdropPath = movie.backdropPath)
                             RatingBar(
                                 voteCount = movie.voteCount,
                                 voteAverage = movie.voteAverage,
@@ -70,43 +58,20 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
                                 }
                             )
                         }
-                        Column(
-                            modifier = Modifier.padding(
-                                start = 16.dp,
-                                end = 16.dp,
-                                top = 24.dp,
-                                bottom = 8.dp
-                            )
-                        ) {
-                            Text(
-                                text = movie.title,
-                                style = MaterialTheme.typography.h5.copy(
-                                    fontSize = 32.sp,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            )
-                            Row {
-                                Text(text = movie.getMovieReleaseYear())
-                                movie.runtime?.let { Text(text = formatTime(it)) }
-                            }
-                        }
+                        DetailsHeader(
+                            title = movie.title,
+                            movieReleaseYear = movie.getMovieReleaseYear(),
+                            runtime = movie.runtime
+                        )
                         GenreRow(genres = movie.genres)
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Text(text = "Overview", style = MaterialTheme.typography.h6)
-                            Text(
-                                text = movie.overview,
-                                style = MaterialTheme.typography.body1.copy(
-                                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.6F)
-                                )
-                            )
-                            val videos = viewModel.videos.value
-                            if (videos.isNotEmpty()) {
-                                VideosColumn(videos = videos) {}
-                            }
-                            val reviews = viewModel.reviews.value
-                            if (reviews.isNotEmpty()) {
-                                ReviewsColumn(reviews = reviews)
-                            }
+                        MovieOverview(overview = movie.overview)
+                        val videos = viewModel.videos.value
+                        if (videos.isNotEmpty()) {
+                            VideosColumn(videos = videos) {}
+                        }
+                        val reviews = viewModel.reviews.value
+                        if (reviews.isNotEmpty()) {
+                            ReviewsColumn(reviews = reviews)
                         }
                     }
                     DetailsAppBar { navController.popBackStack() }
@@ -120,6 +85,23 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
             Error(onRetry = { viewModel.onTriggerEvent(DetailsEvent.LoadMovie) })
             Log.d("AppDebug", "Details: ${data.message}")
         }
+    }
+}
+
+@Composable
+fun BackdropImage(backdropPath: String) {
+    val image = loadImage(
+        url = getImageUrl(backdropPath),
+        defaultImage = R.drawable.backdrop_placeholder
+    )
+    image.value?.let { img ->
+        Image(
+            bitmap = img.asImageBitmap(),
+            modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp).clip(
+                RoundedCornerShape(bottomLeft = 32.dp)
+            ),
+            contentScale = ContentScale.Crop
+        )
     }
 }
 
@@ -166,14 +148,45 @@ fun RatingBar(
                 Icon(imageVector = Icons.Outlined.Star)
                 Text(text = "Rate This")
             }
-            Column(
+            Box(
                 modifier = Modifier.weight(1f, fill = true).fillMaxHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                contentAlignment = Alignment.Center
             ) {
                 AnimatedLikeButton(state = likeState, onClick = onLikeClick)
             }
         }
+    }
+}
+
+@Composable
+fun DetailsHeader(title: String, movieReleaseYear: String, runtime: Int?) {
+    Column(
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 8.dp)
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.h5.copy(
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Medium
+            )
+        )
+        Row {
+            Text(text = movieReleaseYear)
+            runtime?.let { Text(text = formatTime(it)) }
+        }
+    }
+}
+
+@Composable
+fun MovieOverview(overview: String) {
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text(text = "Overview", style = MaterialTheme.typography.h6)
+        Text(
+            text = overview,
+            style = MaterialTheme.typography.body1.copy(
+                color = MaterialTheme.colors.onSurface.copy(alpha = 0.6F)
+            )
+        )
     }
 }
 

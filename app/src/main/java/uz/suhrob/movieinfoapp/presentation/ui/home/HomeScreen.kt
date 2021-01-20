@@ -15,6 +15,8 @@ import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import uz.suhrob.movieinfoapp.R
+import uz.suhrob.movieinfoapp.domain.model.Genre
+import uz.suhrob.movieinfoapp.domain.model.Movie
 import uz.suhrob.movieinfoapp.domain.model.defaultGenre
 import uz.suhrob.movieinfoapp.other.PAGE_SIZE
 import uz.suhrob.movieinfoapp.presentation.components.*
@@ -42,33 +44,16 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
             ) { genre ->
                 viewModel.selectedGenre.value = genre
             }
-            Box(contentAlignment = Alignment.Center) {
-                MovieGrid(
-                    movies = viewModel.movies.value.filter {
-                        viewModel.selectedGenre.value == defaultGenre
-                                || it.genres.map { genre -> genre.name }
-                            .contains(viewModel.selectedGenre.value.name)
-                    },
-                    onChangeScrollPosition = { index ->
-                        viewModel.onChangeScrollPosition(index)
-                        if ((index + 1) >= (viewModel.currentPage.value * PAGE_SIZE) && !viewModel.loading.value) {
-                            viewModel.nextPage()
-                        }
-                    }
-                ) { movie ->
-                    navController.navigate("details/${movie.id}")
-                }
-                if (viewModel.loading.value) {
-                    if (viewModel.movies.value.isEmpty()) {
-                        MovieShimmerGrid()
-                    } else {
-                        Loading()
-                    }
-                }
-                if (viewModel.error.value && viewModel.movies.value.isEmpty()) {
-                    Error(onRetry = { viewModel.onTriggerEvent(HomeEvent.LoadMovies) })
-                }
-            }
+            HomeBody(
+                navController = navController,
+                movies = viewModel.movies.value,
+                selectedGenre = viewModel.selectedGenre.value,
+                onChangeScrollPosition = { viewModel.onChangeScrollPosition(it) },
+                triggerEvent = { viewModel.onTriggerEvent(it) },
+                currentPage = viewModel.currentPage.value,
+                loading = viewModel.loading.value,
+                error = viewModel.error.value
+            )
         }
     }
 }
@@ -99,5 +84,46 @@ fun HomeDrawer(navController: NavController) {
     DrawerItem(icon = Icons.Filled.Search, title = "Search") { navController.navigate("search") }
     DrawerItem(icon = vectorResource(id = R.drawable.ic_heart), title = "Favorites") {
         navController.navigate("favorites")
+    }
+}
+
+@ExperimentalFoundationApi
+@Composable
+fun HomeBody(
+    navController: NavController,
+    movies: List<Movie>,
+    selectedGenre: Genre,
+    onChangeScrollPosition: (Int) -> Unit,
+    triggerEvent: (HomeEvent) -> Unit,
+    currentPage: Int,
+    loading: Boolean,
+    error: Boolean,
+) {
+    Box(contentAlignment = Alignment.Center) {
+        MovieGrid(
+            movies = movies.filter {
+                selectedGenre == defaultGenre
+                        || it.genres.map { genre -> genre.name }
+                    .contains(selectedGenre.name)
+            },
+            onChangeScrollPosition = { index ->
+                onChangeScrollPosition(index)
+                if ((index + 1) >= (currentPage * PAGE_SIZE) && !loading) {
+                    triggerEvent(HomeEvent.NextPage)
+                }
+            }
+        ) { movie ->
+            navController.navigate("details/${movie.id}")
+        }
+        if (loading) {
+            if (movies.isEmpty()) {
+                MovieShimmerGrid()
+            } else {
+                Loading()
+            }
+        }
+        if (error && movies.isEmpty()) {
+            Error(onRetry = { triggerEvent(HomeEvent.LoadMovies) })
+        }
     }
 }
