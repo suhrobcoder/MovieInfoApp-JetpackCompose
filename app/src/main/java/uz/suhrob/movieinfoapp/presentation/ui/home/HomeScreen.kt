@@ -40,7 +40,8 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
             }
             GenreRow(
                 genres = viewModel.genres.value,
-                selectedGenre = viewModel.selectedGenre.value
+                selectedGenre = viewModel.selectedGenre.value,
+                error = viewModel.error.value
             ) { genre ->
                 viewModel.selectedGenre.value = genre
             }

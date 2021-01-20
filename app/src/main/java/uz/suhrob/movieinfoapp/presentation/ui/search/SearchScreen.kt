@@ -1,6 +1,7 @@
 package uz.suhrob.movieinfoapp.presentation.ui.search
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,10 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import uz.suhrob.movieinfoapp.other.Resource
-import uz.suhrob.movieinfoapp.presentation.components.Error
-import uz.suhrob.movieinfoapp.presentation.components.Loading
-import uz.suhrob.movieinfoapp.presentation.components.MovieSearchItem
-import uz.suhrob.movieinfoapp.presentation.components.SearchField
+import uz.suhrob.movieinfoapp.presentation.components.*
 
 @Composable
 fun SearchScreen(viewModel: SearchViewModel, navController: NavController) {
@@ -41,7 +39,11 @@ fun SearchScreen(viewModel: SearchViewModel, navController: NavController) {
                 }
             }
             is Resource.Loading -> {
-                Loading()
+                Column {
+                    repeat(10) {
+                        SearchItemShimmer()
+                    }
+                }
             }
             is Resource.Error -> {
                 Error(onRetry = { viewModel.onTriggerEvent(SearchEvent.Search) })

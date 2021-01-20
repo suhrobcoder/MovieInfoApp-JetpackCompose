@@ -3,9 +3,7 @@ package uz.suhrob.movieinfoapp.presentation.components
 import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -19,18 +17,29 @@ import androidx.compose.ui.unit.sp
 import uz.suhrob.movieinfoapp.domain.model.Genre
 
 @Composable
-fun GenreRow(genres: List<Genre>, selectedGenre: Genre = Genre(-1, ""), onGenreSelected: (Genre) -> Unit = {}) {
-    ScrollableRow(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
-        genres.forEachIndexed { index, genre ->
-            GenreItem(
-                genre = genre,
-                Modifier.padding(
-                    start = if (index == 0) 16.dp else 6.dp,
-                    end = if (index == genres.size - 1) 16.dp else 6.dp
-                ),
-                selected = selectedGenre == genre
-            ) {
-                onGenreSelected(genre)
+fun GenreRow(
+    genres: List<Genre>,
+    selectedGenre: Genre = Genre(-1, ""),
+    error: Boolean = false,
+    onGenreSelected: (Genre) -> Unit = {}
+) {
+    if (!error) {
+        if (genres.isEmpty()) {
+            GenreShimmer()
+        } else {
+            ScrollableRow(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+                genres.forEachIndexed { index, genre ->
+                    GenreItem(
+                        genre = genre,
+                        Modifier.padding(
+                            start = if (index == 0) 16.dp else 6.dp,
+                            end = if (index == genres.size - 1) 16.dp else 6.dp
+                        ),
+                        selected = selectedGenre == genre
+                    ) {
+                        onGenreSelected(genre)
+                    }
+                }
             }
         }
     }
@@ -51,5 +60,17 @@ fun GenreItem(genre: Genre, modifier: Modifier, selected: Boolean, onClick: () -
         contentAlignment = Alignment.Center
     ) {
         Text(text = genre.name, style = MaterialTheme.typography.button.copy(fontSize = 18.sp))
+    }
+}
+
+@Composable
+fun GenreShimmer() {
+    Row(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+        repeat(3) {
+            ShimmerView(
+                modifier = Modifier.size(width = 128.dp, height = 36.dp)
+                    .padding(horizontal = 8.dp).clip(RoundedCornerShape(percent = 50))
+            )
+        }
     }
 }

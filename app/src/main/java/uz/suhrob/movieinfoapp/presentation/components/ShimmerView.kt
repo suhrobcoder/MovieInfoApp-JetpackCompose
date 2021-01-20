@@ -1,6 +1,5 @@
 package uz.suhrob.movieinfoapp.presentation.components
 
-import androidx.compose.animation.core.*
 import androidx.compose.animation.transition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
@@ -16,8 +15,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.WithConstraints
 import androidx.compose.ui.platform.AmbientDensity
-import uz.suhrob.movieinfoapp.presentation.components.ShimmerAnimationDefinition.ShimmerAnimationState.END
-import uz.suhrob.movieinfoapp.presentation.components.ShimmerAnimationDefinition.ShimmerAnimationState.START
+import uz.suhrob.movieinfoapp.presentation.components.animations.ShimmerAnimationDefinition
+import uz.suhrob.movieinfoapp.presentation.components.animations.ShimmerAnimationDefinition.ShimmerAnimationState.END
+import uz.suhrob.movieinfoapp.presentation.components.animations.ShimmerAnimationDefinition.ShimmerAnimationState.START
 
 @Composable
 fun ShimmerView(
@@ -56,46 +56,6 @@ fun ShimmerView(
         )
         Surface(modifier = Modifier.height(maxHeight).width(maxWidth)) {
             Spacer(modifier = Modifier.fillMaxSize().background(brush = shimmerBrush))
-        }
-    }
-}
-
-class ShimmerAnimationDefinition(
-    private val widthPx: Float,
-    private val heightPx: Float
-) {
-    enum class ShimmerAnimationState {
-        START, END
-    }
-
-    val gradientWidth = widthPx * 0.2f
-
-    val xPropKey = FloatPropKey("xPropKey")
-    val yPropKey = FloatPropKey("yPropKey")
-    val shimmerAnimationDefinition = transitionDefinition<ShimmerAnimationState> {
-        state(START) {
-            this[xPropKey] = -gradientWidth
-            this[yPropKey] = -gradientWidth
-        }
-        state(END) {
-            this[xPropKey] = widthPx + gradientWidth
-            this[yPropKey] = heightPx + gradientWidth
-        }
-        transition(START, END) {
-            xPropKey using infiniteRepeatable(
-                animation = tween(
-                    durationMillis = 1000,
-                    delayMillis = 300,
-                    easing = LinearEasing
-                )
-            )
-            yPropKey using infiniteRepeatable(
-                animation = tween(
-                    durationMillis = 1000,
-                    delayMillis = 300,
-                    easing = LinearEasing
-                )
-            )
         }
     }
 }

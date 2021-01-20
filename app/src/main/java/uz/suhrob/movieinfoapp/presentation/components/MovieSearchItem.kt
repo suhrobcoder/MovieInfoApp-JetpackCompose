@@ -16,6 +16,7 @@ import uz.suhrob.movieinfoapp.R
 import uz.suhrob.movieinfoapp.domain.model.Movie
 import uz.suhrob.movieinfoapp.other.getImageUrl
 import uz.suhrob.movieinfoapp.other.loadImage
+import kotlin.random.Random
 
 @Composable
 fun MovieSearchItem(
@@ -43,5 +44,19 @@ fun MovieSearchItem(
             )
         }
         Text(text = movie.title, style = MaterialTheme.typography.h5)
+    }
+}
+
+@Composable
+fun SearchItemShimmer() {
+    Row(
+        modifier = Modifier.fillMaxWidth()
+            .preferredHeight(64.dp)
+            .padding(vertical = 2.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        ShimmerView(modifier = Modifier.preferredHeight(height = 64.dp).aspectRatio(2f/3))
+        ShimmerView(modifier = Modifier.padding(start = 16.dp).preferredHeight(18.dp).fillMaxWidth(
+            Random.nextInt(3, 6) / 10f))
     }
 }
