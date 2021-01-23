@@ -5,10 +5,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 import uz.suhrob.movieinfoapp.data.remote.model.MovieDto
-import uz.suhrob.movieinfoapp.data.remote.response.GenreResponse
-import uz.suhrob.movieinfoapp.data.remote.response.MovieListResponse
-import uz.suhrob.movieinfoapp.data.remote.response.MovieReviewResponse
-import uz.suhrob.movieinfoapp.data.remote.response.MovieVideoResponse
+import uz.suhrob.movieinfoapp.data.remote.response.*
 
 interface ApiService {
     @GET("genre/movie/list")
@@ -51,4 +48,9 @@ interface ApiService {
         @Query("query") query: String,
         @Query("page") page: Int
     ): Response<MovieListResponse>
+
+    @GET("movie/{movie_id}/credits")
+    suspend fun getMovieCredits(
+        @Path("movie_id") movieId: Int
+    ): Response<CreditsResponse>
 }

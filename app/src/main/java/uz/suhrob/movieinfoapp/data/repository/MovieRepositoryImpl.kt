@@ -1,14 +1,9 @@
 package uz.suhrob.movieinfoapp.data.repository
 
 import uz.suhrob.movieinfoapp.data.remote.ApiService
-import uz.suhrob.movieinfoapp.data.remote.mapper.GenreMapper
-import uz.suhrob.movieinfoapp.data.remote.mapper.MovieMapper
-import uz.suhrob.movieinfoapp.data.remote.mapper.ReviewMapper
-import uz.suhrob.movieinfoapp.data.remote.mapper.VideoMapper
-import uz.suhrob.movieinfoapp.domain.model.Genre
-import uz.suhrob.movieinfoapp.domain.model.Movie
-import uz.suhrob.movieinfoapp.domain.model.Review
-import uz.suhrob.movieinfoapp.domain.model.Video
+import uz.suhrob.movieinfoapp.data.remote.mapper.*
+import uz.suhrob.movieinfoapp.domain.model.*
+import uz.suhrob.movieinfoapp.other.MAX_CAST_COUNT
 import uz.suhrob.movieinfoapp.other.Resource
 import uz.suhrob.movieinfoapp.other.safeCall
 
@@ -90,6 +85,16 @@ class MovieRepositoryImpl(
             Resource.Success(
                 MovieMapper.mapToList(
                     service.searchMovies(query, page).body()!!.results
+                )
+            )
+        }
+    }
+
+    override suspend fun getMovieCredits(movieId: Int): Resource<List<Cast>> {
+        return safeCall {
+            Resource.Success(
+                CastDtoMapper.mapToList(
+                    service.getMovieCredits(movieId).body()!!.cast.filter { it.order < MAX_CAST_COUNT }
                 )
             )
         }
