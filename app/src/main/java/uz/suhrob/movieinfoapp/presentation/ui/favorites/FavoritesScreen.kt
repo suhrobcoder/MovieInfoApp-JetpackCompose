@@ -5,16 +5,20 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import uz.suhrob.movieinfoapp.presentation.components.MovieGrid
 
+@ExperimentalCoroutinesApi
 @ExperimentalFoundationApi
 @Composable
 fun FavoritesScreen(viewModel: FavoritesViewModel, navController: NavController) {
+    val movies = viewModel.movies.collectAsState()
     Scaffold(topBar = { FavoritesAppBar(navController = navController) }) {
         MovieGrid(
-            movies = viewModel.movies.value,
+            movies = movies.value,
             onChangeScrollPosition = { },
             onMovieClicked = { movie ->
                 navController.navigate("details/${movie.id}")

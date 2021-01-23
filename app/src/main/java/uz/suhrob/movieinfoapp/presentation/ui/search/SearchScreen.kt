@@ -13,25 +13,33 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import uz.suhrob.movieinfoapp.other.Resource
-import uz.suhrob.movieinfoapp.presentation.components.*
+import uz.suhrob.movieinfoapp.presentation.components.Error
+import uz.suhrob.movieinfoapp.presentation.components.MovieSearchItem
+import uz.suhrob.movieinfoapp.presentation.components.SearchField
+import uz.suhrob.movieinfoapp.presentation.components.SearchItemShimmer
 
+@ExperimentalCoroutinesApi
 @Composable
 fun SearchScreen(viewModel: SearchViewModel, navController: NavController) {
+    val movies = viewModel.movies.collectAsState()
+    val query = viewModel.query.collectAsState()
     Scaffold(
         topBar = {
-            SearchAppBar(viewModel, navController)
+            SearchAppBar(query.value, viewModel, navController)
         }
     ) {
-        when (viewModel.movies.value) {
+        when (movies.value) {
             is Resource.Success -> {
                 LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
-                    items(viewModel.movies.value.data ?: listOf()) { movie ->
+                    items(movies.value.data ?: listOf()) { movie ->
                         MovieSearchItem(movie = movie) {
                             navController.navigate("details/${movie.id}")
                         }
@@ -53,7 +61,7 @@ fun SearchScreen(viewModel: SearchViewModel, navController: NavController) {
 }
 
 @Composable
-fun SearchAppBar(viewModel: SearchViewModel, navController: NavController) {
+fun SearchAppBar(query: String, viewModel: SearchViewModel, navController: NavController) {
     TopAppBar {
         Row(modifier = Modifier.fillMaxWidth()) {
             Icon(
@@ -65,7 +73,7 @@ fun SearchAppBar(viewModel: SearchViewModel, navController: NavController) {
                     .padding(8.dp)
             )
             SearchField(
-                value = viewModel.query.value,
+                value = query,
                 onValueChange = { viewModel.onQueryChange(it) },
                 onSearch = { viewModel.onTriggerEvent(SearchEvent.Search) }
             )

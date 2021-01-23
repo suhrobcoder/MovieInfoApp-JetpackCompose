@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import uz.suhrob.movieinfoapp.R
 import uz.suhrob.movieinfoapp.domain.model.Review
 import uz.suhrob.movieinfoapp.domain.model.Video
@@ -34,11 +36,13 @@ import uz.suhrob.movieinfoapp.other.loadImage
 import uz.suhrob.movieinfoapp.presentation.components.*
 import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState
 
+@ExperimentalCoroutinesApi
 @Composable
 fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
-    when (val data = viewModel.movie.value) {
+    val movieRes = viewModel.movie.collectAsState()
+    when (movieRes.value) {
         is Resource.Success -> {
-            val movie = data.data!!
+            val movie = movieRes.value.data!!
             Log.d("AppDebug", "Details: ${movie.video}")
             if (movie.video) {
                 viewModel.onTriggerEvent(DetailsEvent.LoadVideos)
@@ -47,12 +51,13 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
             Scaffold {
                 Box(modifier = Modifier.fillMaxSize()) {
                     ScrollableColumn(modifier = Modifier.fillMaxSize()) {
+                        val likeState = viewModel.likeState.collectAsState()
                         Box(contentAlignment = Alignment.BottomCenter) {
                             BackdropImage(backdropPath = movie.backdropPath)
                             RatingBar(
                                 voteCount = movie.voteCount,
                                 voteAverage = movie.voteAverage,
-                                likeState = viewModel.likeState.value,
+                                likeState = likeState.value,
                                 onLikeClick = {
                                     viewModel.onTriggerEvent(DetailsEvent.LikeClick)
                                 }
@@ -65,13 +70,13 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
                         )
                         GenreRow(genres = movie.genres)
                         MovieOverview(overview = movie.overview)
-                        val videos = viewModel.videos.value
-                        if (videos.isNotEmpty()) {
-                            VideosColumn(videos = videos) {}
+                        val videos = viewModel.videos.collectAsState()
+                        if (videos.value.isNotEmpty()) {
+                            VideosColumn(videos = videos.value) {}
                         }
-                        val reviews = viewModel.reviews.value
-                        if (reviews.isNotEmpty()) {
-                            ReviewsColumn(reviews = reviews)
+                        val reviews = viewModel.reviews.collectAsState()
+                        if (reviews.value.isNotEmpty()) {
+                            ReviewsColumn(reviews = reviews.value)
                         }
                     }
                     DetailsAppBar { navController.popBackStack() }
@@ -83,7 +88,7 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
         }
         is Resource.Error -> {
             Error(onRetry = { viewModel.onTriggerEvent(DetailsEvent.LoadMovie) })
-            Log.d("AppDebug", "Details: ${data.message}")
+            Log.d("AppDebug", "Details: ${movieRes.value.message}")
         }
     }
 }

@@ -9,11 +9,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import uz.suhrob.movieinfoapp.R
 import uz.suhrob.movieinfoapp.domain.model.Genre
 import uz.suhrob.movieinfoapp.domain.model.Movie
@@ -21,9 +23,19 @@ import uz.suhrob.movieinfoapp.domain.model.defaultGenre
 import uz.suhrob.movieinfoapp.other.PAGE_SIZE
 import uz.suhrob.movieinfoapp.presentation.components.*
 
+@ExperimentalCoroutinesApi
 @ExperimentalFoundationApi
 @Composable
 fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
+    val movies = viewModel.movies.collectAsState()
+    val category = viewModel.category.collectAsState()
+    val genres = viewModel.genres.collectAsState()
+    val selectedGenre = viewModel.selectedGenre.collectAsState()
+    val currentPage = viewModel.currentPage.collectAsState()
+
+    val error = viewModel.error.collectAsState()
+    val loading = viewModel.loading.collectAsState()
+
     val scaffoldState = rememberScaffoldState()
     Scaffold(
         topBar = {
@@ -35,25 +47,25 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
         scaffoldState = scaffoldState
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            CategoryRow(viewModel.category.value) { category ->
+            CategoryRow(category.value) { category ->
                 viewModel.onTriggerEvent(HomeEvent.ChangeCategory(category))
             }
             GenreRow(
-                genres = viewModel.genres.value,
-                selectedGenre = viewModel.selectedGenre.value,
-                error = viewModel.error.value
+                genres = genres.value,
+                selectedGenre = selectedGenre.value,
+                error = error.value
             ) { genre ->
-                viewModel.selectedGenre.value = genre
+                viewModel.setSelectedGenre(genre)
             }
             HomeBody(
                 navController = navController,
-                movies = viewModel.movies.value,
-                selectedGenre = viewModel.selectedGenre.value,
+                movies = movies.value,
+                selectedGenre = selectedGenre.value,
                 onChangeScrollPosition = { viewModel.onChangeScrollPosition(it) },
                 triggerEvent = { viewModel.onTriggerEvent(it) },
-                currentPage = viewModel.currentPage.value,
-                loading = viewModel.loading.value,
-                error = viewModel.error.value
+                currentPage = currentPage.value,
+                loading = loading.value,
+                error = error.value
             )
         }
     }
