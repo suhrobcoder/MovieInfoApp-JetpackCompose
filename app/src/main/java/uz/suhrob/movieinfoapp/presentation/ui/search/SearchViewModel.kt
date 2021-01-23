@@ -21,11 +21,13 @@ class SearchViewModel(private val repository: MovieRepository): ViewModel() {
         viewModelScope.launch {
             when (event) {
                 is SearchEvent -> search()
+                else -> Unit
             }
         }
     }
 
     private suspend fun search() {
+        movies.value = Resource.Loading()
         val result = repository.searchMovies(query.value, DEFAULT_PAGE)
         movies.value = result
     }

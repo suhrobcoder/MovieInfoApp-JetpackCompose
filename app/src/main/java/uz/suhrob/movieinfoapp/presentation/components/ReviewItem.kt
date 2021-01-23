@@ -24,7 +24,7 @@ fun ReviewItem(
     avatarUrl: String,
     content: String
 ) {
-    val textCollapsed = mutableStateOf(true)
+    val textCollapsed = mutableStateOf(false)
     Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
         Column(modifier = Modifier.padding(8.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -46,7 +46,7 @@ fun ReviewItem(
             }
             Divider()
             Text(
-                text = if (textCollapsed.value) content.substring(0..100) else content,
+                text = if (textCollapsed.value) content else content.substring(0..(if (content.length > 100) 100 else content.length - 1)),
                 style = MaterialTheme.typography.body1
             )
         }

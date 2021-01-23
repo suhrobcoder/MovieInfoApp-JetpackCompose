@@ -39,6 +39,7 @@ class HomeViewModel(private val repository: MovieRepository) : ViewModel() {
                 is HomeEvent.ChangeCategory -> changeCategory(event.category)
                 is HomeEvent.LoadGenres -> loadGenres()
                 is HomeEvent.LoadMovies -> loadMovies()
+                is HomeEvent.NextPage -> nextPage()
             }
         }
     }
