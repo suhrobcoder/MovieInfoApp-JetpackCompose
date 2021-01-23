@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.viewinterop.viewModel
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,9 +14,11 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import uz.suhrob.movieinfoapp.data.local.MovieDatabase
 import uz.suhrob.movieinfoapp.data.remote.ApiService
+import uz.suhrob.movieinfoapp.data.remote.AuthInterceptor
 import uz.suhrob.movieinfoapp.data.repository.FavoritesRepository
 import uz.suhrob.movieinfoapp.data.repository.FavoritesRepositoryImpl
 import uz.suhrob.movieinfoapp.data.repository.MovieRepository
@@ -41,6 +42,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val httpClient = OkHttpClient.Builder()
+        httpClient.addInterceptor(AuthInterceptor())
         val service = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(
@@ -49,6 +52,7 @@ class MainActivity : AppCompatActivity() {
                     isLenient = true
                 }.asConverterFactory(MediaType.get("application/json"))
             )
+            .client(httpClient.build())
             .build()
             .create(ApiService::class.java)
         repository = MovieRepositoryImpl(service)
