@@ -1,10 +1,11 @@
 package uz.suhrob.movieinfoapp.presentation.ui.home
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import uz.suhrob.movieinfoapp.data.repository.MovieRepository
 import uz.suhrob.movieinfoapp.domain.model.Genre
@@ -16,16 +17,29 @@ import uz.suhrob.movieinfoapp.other.Resource
 import uz.suhrob.movieinfoapp.presentation.components.Category
 
 class HomeViewModel(private val repository: MovieRepository) : ViewModel() {
-    val category = mutableStateOf(Category.POPULAR)
-    val genres = mutableStateOf<List<Genre>>(listOf())
-    val selectedGenre = mutableStateOf(defaultGenre)
-    val movies = mutableStateOf<List<Movie>>(listOf())
-    val loading = mutableStateOf(false)
-    val error = mutableStateOf(false)
+    private val _category = MutableStateFlow(Category.POPULAR)
+    val category: StateFlow<Category> get() = _category
+
+    private val _genres = MutableStateFlow(listOf<Genre>())
+    val genres: StateFlow<List<Genre>> get() = _genres
+
+    private val _selectedGenre = MutableStateFlow(defaultGenre)
+    val selectedGenre: StateFlow<Genre> get() = _selectedGenre
+
+    private val _movies = MutableStateFlow(listOf<Movie>())
+    val movies: StateFlow<List<Movie>> get() = _movies
+
+    private val _loading = MutableStateFlow(false)
+    val loading: StateFlow<Boolean> get() = _loading
+
+    private val _error = MutableStateFlow(false)
+    val error: StateFlow<Boolean> get() = _error
 
     private var loadMoviesJob: Job? = null
 
-    val currentPage = mutableStateOf(DEFAULT_PAGE)
+    private val _currentPage = MutableStateFlow(DEFAULT_PAGE)
+    val currentPage: StateFlow<Int> get() = _currentPage
+
     var movieListScrollPosition = 0
 
     init {
@@ -46,21 +60,25 @@ class HomeViewModel(private val repository: MovieRepository) : ViewModel() {
 
     private suspend fun changeCategory(newCategory: Category) {
         if (category.value != newCategory) {
-            category.value = newCategory
-            currentPage.value = DEFAULT_PAGE
-            movies.value = listOf()
+            _category.value = newCategory
+            _currentPage.value = DEFAULT_PAGE
+            _movies.value = listOf()
             loadMovies()
         }
     }
 
+    fun setSelectedGenre(genre: Genre) {
+        _selectedGenre.value = genre
+    }
+
     private suspend fun loadGenres() {
         val result = repository.getGenres()
-        genres.value = result.data?.let {
+        _genres.value = result.data?.let {
             listOf(defaultGenre) + it
         } ?: listOf()
     }
 
-    fun nextPage() {
+    private fun nextPage() {
         viewModelScope.launch {
             if (movieListScrollPosition + 1 >= currentPage.value * PAGE_SIZE) {
                 incrementPage()
@@ -70,13 +88,13 @@ class HomeViewModel(private val repository: MovieRepository) : ViewModel() {
     }
 
     private fun appendMovies(newMovies: List<Movie>) {
-        val current = ArrayList(movies.value)
+        val current = ArrayList(_movies.value)
         current.addAll(newMovies)
-        movies.value = current
+        _movies.value = current
     }
 
     private fun incrementPage() {
-        currentPage.value += 1
+        _currentPage.value += 1
     }
 
     fun onChangeScrollPosition(position: Int) {
@@ -86,15 +104,15 @@ class HomeViewModel(private val repository: MovieRepository) : ViewModel() {
     private suspend fun loadMovies() {
         loadMoviesJob?.cancel()
         loadMoviesJob = CoroutineScope(viewModelScope.coroutineContext).launch {
-            loading.value = true
-            error.value = false
+            _loading.value = true
+            _error.value = false
             val result = when (category.value) {
                 Category.POPULAR -> repository.getPopularMovies(currentPage.value)
                 Category.TOP_RATED -> repository.getTopRatedMovies(currentPage.value)
                 Category.UPCOMING -> repository.getUpcomingMovies(currentPage.value)
             }
-            loading.value = false
-            error.value = result is Resource.Error
+            _loading.value = false
+            _error.value = result is Resource.Error
             appendMovies(result.data ?: listOf())
         }
     }

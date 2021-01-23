@@ -1,9 +1,9 @@
 package uz.suhrob.movieinfoapp.presentation.ui.details
 
-import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -14,6 +14,7 @@ import uz.suhrob.movieinfoapp.domain.model.Review
 import uz.suhrob.movieinfoapp.domain.model.Video
 import uz.suhrob.movieinfoapp.other.DEFAULT_PAGE
 import uz.suhrob.movieinfoapp.other.Resource
+import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState
 import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState.INITIAL
 import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState.LIKED
 
@@ -22,15 +23,21 @@ class DetailsViewModel(
     private val favoritesRepository: FavoritesRepository,
     private val movieId: Int
 ) : ViewModel() {
-    val movie = mutableStateOf<Resource<Movie>>(Resource.Loading())
-    val videos = mutableStateOf<List<Video>>(listOf())
-    val reviews = mutableStateOf<List<Review>>(listOf())
+    private val _movie = MutableStateFlow<Resource<Movie>>(Resource.Loading())
+    val movie: StateFlow<Resource<Movie>> get() = _movie
 
-    val likeState = mutableStateOf(INITIAL)
+    private val _videos = MutableStateFlow<List<Video>>(listOf())
+    val videos: StateFlow<List<Video>> get() = _videos
+
+    private val _reviews = MutableStateFlow<List<Review>>(listOf())
+    val reviews: StateFlow<List<Review>> get() = _reviews
+
+    private val _likeState = MutableStateFlow(INITIAL)
+    val likeState: StateFlow<LikeState> get() = _likeState
 
     init {
         favoritesRepository.isMovieFavorite(movieId).onEach {
-            likeState.value = if (it) LIKED else INITIAL
+            _likeState.value = if (it) LIKED else INITIAL
         }.launchIn(viewModelScope)
         onTriggerEvent(DetailsEvent.LoadMovie)
         onTriggerEvent(DetailsEvent.LoadReviews)
@@ -52,34 +59,29 @@ class DetailsViewModel(
         if (result is Resource.Error && likeState.value == LIKED) {
             getMovie()
         } else {
-            movie.value = result
+            _movie.value = result
         }
     }
 
     private suspend fun loadVideos() {
-        Log.d("AppDebug", "loadVideos start")
         val result = repository.getMovieVideos(movieId)
-        result.data?.let { videos.value = it; Log.d("AppDebug", "$it") }
-        result.message?.let { Log.d("AppDebug", "DetailsViewModel: $it") }
-        Log.d("AppDebug", "loadVideos end")
+        result.data?.let { _videos.value = it }
     }
 
     private suspend fun loadReviews() {
-        Log.d("AppDebug", "loadReviews start")
         val result = repository.getMovieReviews(movieId, DEFAULT_PAGE)
-        result.data?.let { reviews.value = it }
-        Log.d("AppDebug", "loadReviews end")
+        result.data?.let { _reviews.value = it }
     }
 
     fun getMovie() = viewModelScope.launch {
-        movie.value = Resource.Success(favoritesRepository.getMovie(movieId))
+        _movie.emit(Resource.Success(favoritesRepository.getMovie(movieId)))
     }
 
     private suspend fun likeClick() {
         if (likeState.value == INITIAL) {
-            favoritesRepository.insertMovie(movie.value.data!!)
+            favoritesRepository.insertMovie(_movie.value.data!!)
         } else {
-            favoritesRepository.deleteMovie(movie.value.data!!)
+            favoritesRepository.deleteMovie(_movie.value.data!!)
         }
     }
 }
