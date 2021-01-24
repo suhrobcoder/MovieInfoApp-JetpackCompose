@@ -28,16 +28,7 @@ fun ReviewItem(
     Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
         Column(modifier = Modifier.padding(8.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                val image by loadImage(
-                    url = avatarUrl,
-                    defaultImage = R.drawable.profile_placeholder
-                )
-                image?.let {
-                    Image(
-                        bitmap = it.asImageBitmap(),
-                        modifier = Modifier.preferredSize(48.dp).clip(CircleShape)
-                    )
-                }
+                AvatarImage(path = avatarUrl, modifier = Modifier.preferredSize(48.dp))
                 Text(text = authorName, style = MaterialTheme.typography.h6)
                 Spacer(modifier = Modifier.weight(1f))
                 IconButton(onClick = { textCollapsed.value = !textCollapsed.value }) {

@@ -1,9 +1,6 @@
 package uz.suhrob.movieinfoapp.data.repository
 
-import uz.suhrob.movieinfoapp.domain.model.Genre
-import uz.suhrob.movieinfoapp.domain.model.Movie
-import uz.suhrob.movieinfoapp.domain.model.Review
-import uz.suhrob.movieinfoapp.domain.model.Video
+import uz.suhrob.movieinfoapp.domain.model.*
 import uz.suhrob.movieinfoapp.other.Resource
 
 interface MovieRepository {
@@ -15,4 +12,5 @@ interface MovieRepository {
     suspend fun getTopRatedMovies(page: Int): Resource<List<Movie>>
     suspend fun getUpcomingMovies(page: Int): Resource<List<Movie>>
     suspend fun searchMovies(query: String, page: Int): Resource<List<Movie>>
+    suspend fun getMovieCredits(movieId: Int): Resource<List<Cast>>
 }
