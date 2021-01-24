@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import uz.suhrob.movieinfoapp.data.repository.FavoritesRepository
 import uz.suhrob.movieinfoapp.data.repository.MovieRepository
+import uz.suhrob.movieinfoapp.domain.model.Cast
 import uz.suhrob.movieinfoapp.domain.model.Movie
 import uz.suhrob.movieinfoapp.domain.model.Review
 import uz.suhrob.movieinfoapp.domain.model.Video
@@ -29,6 +30,9 @@ class DetailsViewModel(
     private val _videos = MutableStateFlow<List<Video>>(listOf())
     val videos: StateFlow<List<Video>> get() = _videos
 
+    private val _cast = MutableStateFlow(listOf<Cast>())
+    val cast: StateFlow<List<Cast>> get() = _cast
+
     private val _reviews = MutableStateFlow<List<Review>>(listOf())
     val reviews: StateFlow<List<Review>> get() = _reviews
 
@@ -48,6 +52,7 @@ class DetailsViewModel(
             when (event) {
                 is DetailsEvent.LoadMovie -> loadMovie()
                 is DetailsEvent.LoadVideos -> loadVideos()
+                is DetailsEvent.LoadCast -> loadCast()
                 is DetailsEvent.LoadReviews -> loadReviews()
                 is DetailsEvent.LikeClick -> likeClick()
             }
@@ -66,6 +71,11 @@ class DetailsViewModel(
     private suspend fun loadVideos() {
         val result = repository.getMovieVideos(movieId)
         result.data?.let { _videos.value = it }
+    }
+
+    private suspend fun loadCast() {
+        val result = repository.getMovieCredits(movieId)
+        result.data?.let { _cast.value = it }
     }
 
     private suspend fun loadReviews() {

@@ -3,6 +3,7 @@ package uz.suhrob.movieinfoapp.presentation.ui.details
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,7 +44,6 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
     when (movieRes.value) {
         is Resource.Success -> {
             val movie = movieRes.value.data!!
-            Log.d("AppDebug", "Details: ${movie.video}")
             if (movie.video) {
                 viewModel.onTriggerEvent(DetailsEvent.LoadVideos)
             }
@@ -70,6 +70,10 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
                         )
                         GenreRow(genres = movie.genres)
                         MovieOverview(overview = movie.overview)
+                        val cast = viewModel.cast.collectAsState()
+                        if (cast.value.isNotEmpty()) {
+                            CastList(list = cast.value)
+                        }
                         val videos = viewModel.videos.collectAsState()
                         if (videos.value.isNotEmpty()) {
                             VideosColumn(videos = videos.value) {}
@@ -185,7 +189,7 @@ fun DetailsHeader(title: String, movieReleaseYear: String, runtime: Int?) {
 @Composable
 fun MovieOverview(overview: String) {
     Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = "Overview", style = MaterialTheme.typography.h6)
+        Text(text = "Overview", style = MaterialTheme.typography.h5)
         Text(
             text = overview,
             style = MaterialTheme.typography.body1.copy(
@@ -201,10 +205,12 @@ fun DetailsAppBar(onNavigationClick: () -> Unit) {
         Icon(
             imageVector = Icons.Filled.ArrowBack,
             modifier = Modifier
-                .padding(8.dp)
+                .padding(4.dp)
                 .clip(RoundedCornerShape(percent = 50))
+                .background(MaterialTheme.colors.primary)
                 .clickable(onClick = onNavigationClick)
-                .padding(8.dp)
+                .padding(12.dp),
+            tint = MaterialTheme.colors.onPrimary
         )
     }
 }
