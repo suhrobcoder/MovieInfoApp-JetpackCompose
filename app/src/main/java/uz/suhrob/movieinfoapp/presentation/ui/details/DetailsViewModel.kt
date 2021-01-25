@@ -45,6 +45,7 @@ class DetailsViewModel(
         }.launchIn(viewModelScope)
         onTriggerEvent(DetailsEvent.LoadMovie)
         onTriggerEvent(DetailsEvent.LoadReviews)
+        onTriggerEvent(DetailsEvent.LoadCast)
     }
 
     fun onTriggerEvent(event: DetailsEvent) {

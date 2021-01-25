@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import uz.suhrob.movieinfoapp.R
 import uz.suhrob.movieinfoapp.other.loadImage
@@ -24,7 +25,8 @@ fun AvatarImage(
     image?.let {
         Image(
             bitmap = it.asImageBitmap(),
-            modifier = modifier.clip(CircleShape)
+            modifier = modifier.clip(CircleShape),
+            contentScale = ContentScale.Crop
         )
     }
 }
