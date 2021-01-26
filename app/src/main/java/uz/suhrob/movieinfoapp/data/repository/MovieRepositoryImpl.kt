@@ -1,14 +1,18 @@
 package uz.suhrob.movieinfoapp.data.repository
 
+import kotlinx.coroutines.flow.first
+import uz.suhrob.movieinfoapp.data.pref.MovieInfoPref
 import uz.suhrob.movieinfoapp.data.remote.ApiService
 import uz.suhrob.movieinfoapp.data.remote.mapper.*
+import uz.suhrob.movieinfoapp.data.remote.response.RateBody
 import uz.suhrob.movieinfoapp.domain.model.*
 import uz.suhrob.movieinfoapp.other.MAX_CAST_COUNT
 import uz.suhrob.movieinfoapp.other.Resource
 import uz.suhrob.movieinfoapp.other.safeCall
 
 class MovieRepositoryImpl(
-    private val service: ApiService
+    private val service: ApiService,
+    private val prefs: MovieInfoPref
 ) : MovieRepository {
     override suspend fun getGenres(): Resource<List<Genre>> {
         return safeCall {
@@ -98,5 +102,27 @@ class MovieRepositoryImpl(
                 )
             )
         }
+    }
+
+    override suspend fun rateMovie(movieId: Int, value: Float): Resource<Boolean> {
+        val sessionId = try {
+            prefs.guestSessionId.first()
+        } catch (e: Exception) {
+            createSessionId()?.also { id ->
+                prefs.setGuestSessionId(id)
+            }
+        }
+        return sessionId?.let { id ->
+            safeCall {
+                Resource.Success(
+                    service.rateMovie(movieId, id, RateBody(value)).body()!!.statusMessage.contains("Success")
+                )
+            }
+        } ?: Resource.Error(message = "Error")
+    }
+
+    private suspend fun createSessionId(): String? {
+        val result = service.createGuestSession()
+        return result.body()?.guestSessionId
     }
 }
