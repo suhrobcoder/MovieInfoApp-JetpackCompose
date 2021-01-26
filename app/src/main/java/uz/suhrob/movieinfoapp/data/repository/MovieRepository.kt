@@ -13,5 +13,5 @@ interface MovieRepository {
     suspend fun getUpcomingMovies(page: Int): Resource<List<Movie>>
     suspend fun searchMovies(query: String, page: Int): Resource<List<Movie>>
     suspend fun getMovieCredits(movieId: Int): Resource<List<Cast>>
-    suspend fun rateMovie(movieId: Int, value: Float): Resource<Boolean>
+    suspend fun rateMovie(movieId: Int, value: Int): Resource<Boolean>
 }

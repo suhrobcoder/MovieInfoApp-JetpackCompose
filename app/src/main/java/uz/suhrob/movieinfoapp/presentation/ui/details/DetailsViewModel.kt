@@ -15,6 +15,7 @@ import uz.suhrob.movieinfoapp.domain.model.Review
 import uz.suhrob.movieinfoapp.domain.model.Video
 import uz.suhrob.movieinfoapp.other.DEFAULT_PAGE
 import uz.suhrob.movieinfoapp.other.Resource
+import uz.suhrob.movieinfoapp.presentation.components.MAX_RATING
 import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState
 import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState.INITIAL
 import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState.LIKED
@@ -39,6 +40,12 @@ class DetailsViewModel(
     private val _likeState = MutableStateFlow(INITIAL)
     val likeState: StateFlow<LikeState> get() = _likeState
 
+    private val _rating = MutableStateFlow(MAX_RATING)
+    val rating: StateFlow<Int> get() = _rating
+
+    private val _isShowingDialog = MutableStateFlow(false)
+    val isShowingDialog: StateFlow<Boolean> get() = _isShowingDialog
+
     init {
         favoritesRepository.isMovieFavorite(movieId).onEach {
             _likeState.value = if (it) LIKED else INITIAL
@@ -56,6 +63,9 @@ class DetailsViewModel(
                 is DetailsEvent.LoadCast -> loadCast()
                 is DetailsEvent.LoadReviews -> loadReviews()
                 is DetailsEvent.LikeClick -> likeClick()
+                is DetailsEvent.SubmitRating -> submitRating(event.rating)
+                is DetailsEvent.ShowDialog -> showDialog()
+                is DetailsEvent.CloseDialog -> closeDialog()
             }
         }
     }
@@ -94,5 +104,23 @@ class DetailsViewModel(
         } else {
             favoritesRepository.deleteMovie(_movie.value.data!!)
         }
+    }
+
+    private suspend fun submitRating(rating: Int) {
+        repository.rateMovie(movieId, rating)
+        closeDialog()
+    }
+
+    fun setRating(rating: Int) {
+        _rating.value = rating
+    }
+
+    private fun showDialog() {
+        _isShowingDialog.value = true
+    }
+
+    private fun closeDialog() {
+        _isShowingDialog.value = false
+        _rating.value = MAX_RATING
     }
 }

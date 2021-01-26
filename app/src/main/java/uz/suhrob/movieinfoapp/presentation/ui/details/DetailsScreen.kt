@@ -41,6 +41,7 @@ import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState
 @Composable
 fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
     val movieRes = viewModel.movie.collectAsState()
+    val showDialog = viewModel.isShowingDialog.collectAsState()
     when (movieRes.value) {
         is Resource.Success -> {
             val movie = movieRes.value.data!!
@@ -49,6 +50,14 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
             }
             viewModel.onTriggerEvent(DetailsEvent.LoadReviews)
             Scaffold {
+                if (showDialog.value) {
+                    val rating = viewModel.rating.collectAsState()
+                    RatingDialog(
+                        rating = rating.value,
+                        onChange = { viewModel.setRating(it) },
+                        onSubmit = { viewModel.onTriggerEvent(DetailsEvent.SubmitRating(rating.value)) },
+                        onClose = { viewModel.onTriggerEvent(DetailsEvent.CloseDialog) })
+                }
                 Box(modifier = Modifier.fillMaxSize()) {
                     ScrollableColumn(modifier = Modifier.fillMaxSize()) {
                         val likeState = viewModel.likeState.collectAsState()
@@ -58,6 +67,7 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
                                 voteCount = movie.voteCount,
                                 voteAverage = movie.voteAverage,
                                 likeState = likeState.value,
+                                showDialog = { viewModel.onTriggerEvent(DetailsEvent.ShowDialog) },
                                 onLikeClick = {
                                     viewModel.onTriggerEvent(DetailsEvent.LikeClick)
                                 }
@@ -119,6 +129,7 @@ fun RatingBar(
     voteCount: Int,
     voteAverage: Double,
     likeState: LikeState,
+    showDialog: () -> Unit,
     onLikeClick: () -> Unit
 ) {
     Card(
@@ -150,7 +161,8 @@ fun RatingBar(
                 )
             }
             Column(
-                modifier = Modifier.weight(1f, fill = true).fillMaxHeight(),
+                modifier = Modifier.weight(1f, fill = true).fillMaxHeight()
+                    .clickable(onClick = showDialog),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {

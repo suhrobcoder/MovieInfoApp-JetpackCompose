@@ -104,7 +104,7 @@ class MovieRepositoryImpl(
         }
     }
 
-    override suspend fun rateMovie(movieId: Int, value: Float): Resource<Boolean> {
+    override suspend fun rateMovie(movieId: Int, value: Int): Resource<Boolean> {
         val sessionId = try {
             prefs.guestSessionId.first()
         } catch (e: Exception) {

@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RateBody(
-    @SerialName("value") val value: Float
+    @SerialName("value") val value: Int
 )
