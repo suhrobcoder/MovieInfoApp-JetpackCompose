@@ -213,6 +213,7 @@ fun DetailsHeader(title: String, movieReleaseYear: String, runtime: Int?) {
         )
         Row {
             Text(text = movieReleaseYear)
+            Spacer(modifier = Modifier.preferredWidth(16.dp))
             runtime?.let { Text(text = formatTime(it)) }
         }
     }
