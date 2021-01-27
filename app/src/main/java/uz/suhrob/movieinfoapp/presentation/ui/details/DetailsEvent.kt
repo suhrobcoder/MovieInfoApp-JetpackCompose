@@ -6,4 +6,7 @@ sealed class DetailsEvent {
     object LoadCast: DetailsEvent()
     object LoadReviews: DetailsEvent()
     object LikeClick: DetailsEvent()
+    data class SubmitRating(val rating: Int): DetailsEvent()
+    object ShowDialog: DetailsEvent()
+    object CloseDialog: DetailsEvent()
 }

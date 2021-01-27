@@ -2,10 +2,8 @@ package uz.suhrob.movieinfoapp.presentation.ui.details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import uz.suhrob.movieinfoapp.data.repository.FavoritesRepository
 import uz.suhrob.movieinfoapp.data.repository.MovieRepository
@@ -15,6 +13,7 @@ import uz.suhrob.movieinfoapp.domain.model.Review
 import uz.suhrob.movieinfoapp.domain.model.Video
 import uz.suhrob.movieinfoapp.other.DEFAULT_PAGE
 import uz.suhrob.movieinfoapp.other.Resource
+import uz.suhrob.movieinfoapp.presentation.components.MAX_RATING
 import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState
 import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState.INITIAL
 import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState.LIKED
@@ -39,6 +38,15 @@ class DetailsViewModel(
     private val _likeState = MutableStateFlow(INITIAL)
     val likeState: StateFlow<LikeState> get() = _likeState
 
+    private val _rating = MutableStateFlow(MAX_RATING)
+    val rating: StateFlow<Int> get() = _rating
+
+    private val _isShowingDialog = MutableStateFlow(false)
+    val isShowingDialog: StateFlow<Boolean> get() = _isShowingDialog
+
+    private val snackBarChannel = Channel<String>()
+    val snackBarFlow = snackBarChannel.receiveAsFlow()
+
     init {
         favoritesRepository.isMovieFavorite(movieId).onEach {
             _likeState.value = if (it) LIKED else INITIAL
@@ -56,6 +64,9 @@ class DetailsViewModel(
                 is DetailsEvent.LoadCast -> loadCast()
                 is DetailsEvent.LoadReviews -> loadReviews()
                 is DetailsEvent.LikeClick -> likeClick()
+                is DetailsEvent.SubmitRating -> submitRating(event.rating)
+                is DetailsEvent.ShowDialog -> showDialog()
+                is DetailsEvent.CloseDialog -> closeDialog()
             }
         }
     }
@@ -94,5 +105,28 @@ class DetailsViewModel(
         } else {
             favoritesRepository.deleteMovie(_movie.value.data!!)
         }
+    }
+
+    private suspend fun submitRating(rating: Int) {
+        closeDialog()
+        val result = repository.rateMovie(movieId, rating)
+        if (result is Resource.Error || (result is Resource.Success && result.data != true)) {
+            snackBarChannel.send("Movie rating error")
+        } else {
+            snackBarChannel.send("Movie rated successfully")
+        }
+    }
+
+    fun setRating(rating: Int) {
+        _rating.value = rating
+    }
+
+    private fun showDialog() {
+        _isShowingDialog.value = true
+    }
+
+    private fun closeDialog() {
+        _isShowingDialog.value = false
+        _rating.value = MAX_RATING
     }
 }

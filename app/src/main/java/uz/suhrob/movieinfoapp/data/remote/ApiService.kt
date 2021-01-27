@@ -1,9 +1,7 @@
 package uz.suhrob.movieinfoapp.data.remote
 
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 import uz.suhrob.movieinfoapp.data.remote.model.MovieDto
 import uz.suhrob.movieinfoapp.data.remote.response.*
 
@@ -42,7 +40,6 @@ interface ApiService {
         @Query("page") page: Int
     ): Response<MovieListResponse>
 
-
     @GET("search/movie")
     suspend fun searchMovies(
         @Query("query") query: String,
@@ -53,4 +50,15 @@ interface ApiService {
     suspend fun getMovieCredits(
         @Path("movie_id") movieId: Int
     ): Response<CreditsResponse>
+
+    @GET("authentication/guest_session/new")
+    suspend fun createGuestSession(): Response<GuestSessionResponse>
+
+    @Headers("Content-Type: application/json;charset=utf-8")
+    @POST("movie/{movie_id}/rating")
+    suspend fun rateMovie(
+        @Path("movie_id") movieId: Int,
+        @Query("guest_session_id") guestSessionId: String,
+        @Body rate: RateBody
+    ): Response<RateResponse>
 }
