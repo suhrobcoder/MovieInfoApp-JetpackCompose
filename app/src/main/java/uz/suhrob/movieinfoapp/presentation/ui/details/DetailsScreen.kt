@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import uz.suhrob.movieinfoapp.R
 import uz.suhrob.movieinfoapp.domain.model.Review
 import uz.suhrob.movieinfoapp.domain.model.Video
@@ -37,11 +40,20 @@ import uz.suhrob.movieinfoapp.other.loadImage
 import uz.suhrob.movieinfoapp.presentation.components.*
 import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState
 
+@ExperimentalMaterialApi
 @ExperimentalCoroutinesApi
 @Composable
 fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
     val movieRes = viewModel.movie.collectAsState()
     val showDialog = viewModel.isShowingDialog.collectAsState()
+    val composeScope = rememberCoroutineScope()
+    val snackBarController = MovieSnackBarController(composeScope) //TODO
+    val scaffoldState = rememberScaffoldState()
+    composeScope.launch {
+        viewModel.snackBarFlow.collect {
+            snackBarController.showSnackBar(scaffoldState, it)
+        }
+    }
     when (movieRes.value) {
         is Resource.Success -> {
             val movie = movieRes.value.data!!
@@ -49,7 +61,10 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
                 viewModel.onTriggerEvent(DetailsEvent.LoadVideos)
             }
             viewModel.onTriggerEvent(DetailsEvent.LoadReviews)
-            Scaffold {
+            Scaffold(
+                scaffoldState = scaffoldState,
+                snackbarHost = { scaffoldState.snackbarHostState }
+            ) {
                 if (showDialog.value) {
                     val rating = viewModel.rating.collectAsState()
                     RatingDialog(
@@ -94,6 +109,11 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
                         }
                     }
                     DetailsAppBar { navController.popBackStack() }
+                    MovieSnackBar(
+                        scaffoldState = scaffoldState,
+                        onClickAction = {},
+                        modifier = Modifier.align(Alignment.BottomCenter).padding(all = 4.dp)
+                    )
                 }
             }
         }

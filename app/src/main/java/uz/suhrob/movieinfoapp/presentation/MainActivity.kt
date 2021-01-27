@@ -3,6 +3,7 @@ package uz.suhrob.movieinfoapp.presentation
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.viewinterop.viewModel
 import androidx.navigation.NavType
@@ -11,12 +12,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import uz.suhrob.movieinfoapp.data.local.MovieDatabase
+import uz.suhrob.movieinfoapp.data.pref.MovieInfoPref
 import uz.suhrob.movieinfoapp.data.remote.ApiService
 import uz.suhrob.movieinfoapp.data.remote.AuthInterceptor
 import uz.suhrob.movieinfoapp.data.repository.FavoritesRepository
@@ -34,12 +37,14 @@ import uz.suhrob.movieinfoapp.presentation.ui.home.HomeViewModel
 import uz.suhrob.movieinfoapp.presentation.ui.search.SearchScreen
 import uz.suhrob.movieinfoapp.presentation.ui.search.SearchViewModel
 
+@ExperimentalMaterialApi
 @ExperimentalSerializationApi
 @ExperimentalFoundationApi
 class MainActivity : AppCompatActivity() {
     private lateinit var repository: MovieRepository
     private lateinit var favoritesRepository: FavoritesRepository
 
+    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val httpClient = OkHttpClient.Builder()
@@ -55,7 +60,7 @@ class MainActivity : AppCompatActivity() {
             .client(httpClient.build())
             .build()
             .create(ApiService::class.java)
-        repository = MovieRepositoryImpl(service)
+        repository = MovieRepositoryImpl(service, MovieInfoPref(applicationContext))
         val movieDao = MovieDatabase.getInstance(applicationContext).getMovieDao()
         favoritesRepository = FavoritesRepositoryImpl(movieDao)
 

@@ -23,7 +23,6 @@ fun RatingBar(
     modifier: Modifier = Modifier,
     onChange: (Int) -> Unit
 ) {
-    Log.d("AppDebug", "$value 1")
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.padding(vertical = 16.dp)) {
         Row {
             for (i in 1..MAX_RATING) {

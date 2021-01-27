@@ -2,10 +2,8 @@ package uz.suhrob.movieinfoapp.presentation.ui.details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import uz.suhrob.movieinfoapp.data.repository.FavoritesRepository
 import uz.suhrob.movieinfoapp.data.repository.MovieRepository
@@ -45,6 +43,9 @@ class DetailsViewModel(
 
     private val _isShowingDialog = MutableStateFlow(false)
     val isShowingDialog: StateFlow<Boolean> get() = _isShowingDialog
+
+    private val snackBarChannel = Channel<String>()
+    val snackBarFlow = snackBarChannel.receiveAsFlow()
 
     init {
         favoritesRepository.isMovieFavorite(movieId).onEach {
@@ -107,8 +108,13 @@ class DetailsViewModel(
     }
 
     private suspend fun submitRating(rating: Int) {
-        repository.rateMovie(movieId, rating)
         closeDialog()
+        val result = repository.rateMovie(movieId, rating)
+        if (result is Resource.Error || (result is Resource.Success && result.data != true)) {
+            snackBarChannel.send("Movie rating error")
+        } else {
+            snackBarChannel.send("Movie rated successfully")
+        }
     }
 
     fun setRating(rating: Int) {
