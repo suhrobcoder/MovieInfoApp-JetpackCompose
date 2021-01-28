@@ -1,9 +1,8 @@
 package uz.suhrob.movieinfoapp.presentation.ui.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -13,8 +12,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
+import dev.chrisbanes.accompanist.insets.navigationBarsPadding
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import uz.suhrob.movieinfoapp.R
 import uz.suhrob.movieinfoapp.domain.model.Genre
@@ -44,7 +46,8 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
                 onSearchClick = { navController.navigate("search") })
         },
         drawerContent = { HomeDrawer(navController = navController) },
-        scaffoldState = scaffoldState
+        scaffoldState = scaffoldState,
+        modifier = Modifier.navigationBarsPadding()
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             CategoryRow(category.value) { category ->
@@ -73,21 +76,28 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
 
 @Composable
 fun HomeAppBar(onNavigationClick: () -> Unit, onSearchClick: () -> Unit) {
-    TopAppBar(
-        title = {
-            Text(text = "Movie Info App")
-        },
-        navigationIcon = {
-            IconButton(onClick = onNavigationClick) {
-                Icon(imageVector = Icons.Filled.Menu)
-            }
-        },
-        actions = {
-            IconButton(onClick = onSearchClick) {
-                Icon(imageVector = Icons.Filled.Search)
-            }
-        }
-    )
+    Column {
+        Spacer(
+            modifier = Modifier.fillMaxWidth().statusBarsHeight()
+                .background(color = MaterialTheme.colors.primary)
+        )
+        TopAppBar(
+            title = {
+                Text(text = "Movie Info App")
+            },
+            navigationIcon = {
+                IconButton(onClick = onNavigationClick) {
+                    Icon(imageVector = Icons.Filled.Menu)
+                }
+            },
+            actions = {
+                IconButton(onClick = onSearchClick) {
+                    Icon(imageVector = Icons.Filled.Search)
+                }
+            },
+            elevation = 0.dp
+        )
+    }
 }
 
 @Composable
