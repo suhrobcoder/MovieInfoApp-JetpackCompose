@@ -2,6 +2,7 @@ package uz.suhrob.movieinfoapp.presentation.ui.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -9,8 +10,12 @@ import uz.suhrob.movieinfoapp.data.repository.MovieRepository
 import uz.suhrob.movieinfoapp.domain.model.Movie
 import uz.suhrob.movieinfoapp.other.DEFAULT_PAGE
 import uz.suhrob.movieinfoapp.other.Resource
+import javax.inject.Inject
 
-class SearchViewModel(private val repository: MovieRepository) : ViewModel() {
+@HiltViewModel
+class SearchViewModel @Inject constructor(
+    private val repository: MovieRepository
+): ViewModel() {
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> get() = _query
 

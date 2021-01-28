@@ -1,35 +1,26 @@
 package uz.suhrob.movieinfoapp.presentation
 
-import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.platform.setContent
-import androidx.compose.ui.viewinterop.viewModel
 import androidx.core.view.WindowCompat
+import androidx.hilt.navigation.HiltViewModelFactory
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import uz.suhrob.movieinfoapp.data.local.MovieDatabase
-import uz.suhrob.movieinfoapp.data.pref.MovieInfoPref
-import uz.suhrob.movieinfoapp.data.remote.ApiService
-import uz.suhrob.movieinfoapp.data.remote.AuthInterceptor
-import uz.suhrob.movieinfoapp.data.repository.FavoritesRepository
-import uz.suhrob.movieinfoapp.data.repository.FavoritesRepositoryImpl
-import uz.suhrob.movieinfoapp.data.repository.MovieRepository
-import uz.suhrob.movieinfoapp.data.repository.MovieRepositoryImpl
-import uz.suhrob.movieinfoapp.other.BASE_URL
 import uz.suhrob.movieinfoapp.presentation.theme.MovieInfoAppTheme
 import uz.suhrob.movieinfoapp.presentation.ui.details.DetailsScreen
 import uz.suhrob.movieinfoapp.presentation.ui.details.DetailsViewModel
@@ -43,72 +34,48 @@ import uz.suhrob.movieinfoapp.presentation.ui.search.SearchViewModel
 @ExperimentalMaterialApi
 @ExperimentalSerializationApi
 @ExperimentalFoundationApi
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private lateinit var repository: MovieRepository
-    private lateinit var favoritesRepository: FavoritesRepository
 
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        window.statusBarColor = Color.TRANSPARENT
-        val httpClient = OkHttpClient.Builder()
-        httpClient.addInterceptor(AuthInterceptor())
-        val service = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(
-                Json {
-                    ignoreUnknownKeys = true
-                    isLenient = true
-                }.asConverterFactory(MediaType.get("application/json"))
-            )
-            .client(httpClient.build())
-            .build()
-            .create(ApiService::class.java)
-        repository = MovieRepositoryImpl(service, MovieInfoPref(applicationContext))
-        val movieDao = MovieDatabase.getInstance(applicationContext).getMovieDao()
-        favoritesRepository = FavoritesRepositoryImpl(movieDao)
-
         setContent {
             MovieInfoAppTheme {
-                ProvideWindowInsets {
-                    val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "home") {
-                        composable("home") {
-                            val viewModel = viewModel(
-                                modelClass = HomeViewModel::class.java,
-                                factory = ViewModelFactory(repository)
-                            )
-                            HomeScreen(viewModel = viewModel, navController = navController)
-                        }
-                        composable("search") {
-                            val viewModel = viewModel(
-                                modelClass = SearchViewModel::class.java,
-                                factory = ViewModelFactory(repository)
-                            )
-                            SearchScreen(viewModel = viewModel, navController = navController)
-                        }
-                        composable(
-                            "details/{id}",
-                            arguments = listOf(navArgument(name = "id") { type = NavType.IntType })
-                        ) {
-                            val id = it.arguments?.getInt("id") ?: 0
-                            val viewModel = viewModel(
-                                modelClass = DetailsViewModel::class.java,
-                                factory = ViewModelFactory(repository, favoritesRepository, id)
-                            )
-                            DetailsScreen(viewModel = viewModel, navController = navController)
-                        }
-                        composable("favorites") {
-                            val viewModel = viewModel(
-                                modelClass = FavoritesViewModel::class.java,
-                                factory = FavoritesViewModelFactory(favoritesRepository)
-                            )
-                            FavoritesScreen(viewModel = viewModel, navController = navController)
-                        }
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = "home") {
+                    composable("home") {
+                        val viewModel = it.hiltViewModel<HomeViewModel>()
+                        HomeScreen(viewModel = viewModel, navController = navController)
+                    }
+                    composable("search") {
+                        val viewModel = it.hiltViewModel<SearchViewModel>()
+                        SearchScreen(viewModel = viewModel, navController = navController)
+                    }
+                    composable(
+                        "details/{id}",
+                        arguments = listOf(navArgument(name = "id") { type = NavType.IntType })
+                    ) {
+                        val id = it.arguments?.getInt("id") ?: 0
+                        val viewModel = it.hiltViewModel<DetailsViewModel>()
+                        viewModel.movieId = id
+                        DetailsScreen(viewModel = viewModel, navController = navController)
+                    }
+                    composable("favorites") {
+                        val viewModel = it.hiltViewModel<FavoritesViewModel>()
+                        FavoritesScreen(viewModel = viewModel, navController = navController)
                     }
                 }
             }
         }
     }
+}
+
+@Composable
+internal inline fun <reified T: ViewModel> NavBackStackEntry.hiltViewModel(): T {
+    return ViewModelProvider(
+        this.viewModelStore,
+        HiltViewModelFactory(AmbientContext.current, this)
+    ).get(T::class.java)
 }

@@ -2,6 +2,7 @@ package uz.suhrob.movieinfoapp.presentation.ui.details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -17,12 +18,15 @@ import uz.suhrob.movieinfoapp.presentation.components.MAX_RATING
 import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState
 import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState.INITIAL
 import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState.LIKED
+import javax.inject.Inject
 
-class DetailsViewModel(
+@HiltViewModel
+class DetailsViewModel @Inject constructor(
     private val repository: MovieRepository,
-    private val favoritesRepository: FavoritesRepository,
-    private val movieId: Int
+    private val favoritesRepository: FavoritesRepository
 ) : ViewModel() {
+    var movieId: Int = 0
+
     private val _movie = MutableStateFlow<Resource<Movie>>(Resource.Loading())
     val movie: StateFlow<Resource<Movie>> get() = _movie
 
