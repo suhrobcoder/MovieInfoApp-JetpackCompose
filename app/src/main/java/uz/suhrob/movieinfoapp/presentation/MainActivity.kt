@@ -1,17 +1,20 @@
 package uz.suhrob.movieinfoapp.presentation
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.viewinterop.viewModel
+import androidx.core.view.WindowCompat
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -47,6 +50,8 @@ class MainActivity : AppCompatActivity() {
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.statusBarColor = Color.TRANSPARENT
         val httpClient = OkHttpClient.Builder()
         httpClient.addInterceptor(AuthInterceptor())
         val service = Retrofit.Builder()
@@ -66,39 +71,41 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             MovieInfoAppTheme {
-                val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = "home") {
-                    composable("home") {
-                        val viewModel = viewModel(
-                            modelClass = HomeViewModel::class.java,
-                            factory = ViewModelFactory(repository)
-                        )
-                        HomeScreen(viewModel = viewModel, navController = navController)
-                    }
-                    composable("search") {
-                        val viewModel = viewModel(
-                            modelClass = SearchViewModel::class.java,
-                            factory = ViewModelFactory(repository)
-                        )
-                        SearchScreen(viewModel = viewModel, navController = navController)
-                    }
-                    composable(
-                        "details/{id}",
-                        arguments = listOf(navArgument(name = "id") { type = NavType.IntType })
-                    ) {
-                        val id = it.arguments?.getInt("id") ?: 0
-                        val viewModel = viewModel(
-                            modelClass = DetailsViewModel::class.java,
-                            factory = ViewModelFactory(repository, favoritesRepository, id)
-                        )
-                        DetailsScreen(viewModel = viewModel, navController = navController)
-                    }
-                    composable("favorites") {
-                        val viewModel = viewModel(
-                            modelClass = FavoritesViewModel::class.java,
-                            factory = FavoritesViewModelFactory(favoritesRepository)
-                        )
-                        FavoritesScreen(viewModel = viewModel, navController = navController)
+                ProvideWindowInsets {
+                    val navController = rememberNavController()
+                    NavHost(navController = navController, startDestination = "home") {
+                        composable("home") {
+                            val viewModel = viewModel(
+                                modelClass = HomeViewModel::class.java,
+                                factory = ViewModelFactory(repository)
+                            )
+                            HomeScreen(viewModel = viewModel, navController = navController)
+                        }
+                        composable("search") {
+                            val viewModel = viewModel(
+                                modelClass = SearchViewModel::class.java,
+                                factory = ViewModelFactory(repository)
+                            )
+                            SearchScreen(viewModel = viewModel, navController = navController)
+                        }
+                        composable(
+                            "details/{id}",
+                            arguments = listOf(navArgument(name = "id") { type = NavType.IntType })
+                        ) {
+                            val id = it.arguments?.getInt("id") ?: 0
+                            val viewModel = viewModel(
+                                modelClass = DetailsViewModel::class.java,
+                                factory = ViewModelFactory(repository, favoritesRepository, id)
+                            )
+                            DetailsScreen(viewModel = viewModel, navController = navController)
+                        }
+                        composable("favorites") {
+                            val viewModel = viewModel(
+                                modelClass = FavoritesViewModel::class.java,
+                                factory = FavoritesViewModelFactory(favoritesRepository)
+                            )
+                            FavoritesScreen(viewModel = viewModel, navController = navController)
+                        }
                     }
                 }
             }

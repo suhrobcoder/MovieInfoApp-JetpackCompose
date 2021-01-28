@@ -27,6 +27,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import dev.chrisbanes.accompanist.insets.navigationBarsPadding
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
+import dev.chrisbanes.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -63,7 +66,8 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
             viewModel.onTriggerEvent(DetailsEvent.LoadReviews)
             Scaffold(
                 scaffoldState = scaffoldState,
-                snackbarHost = { scaffoldState.snackbarHostState }
+                snackbarHost = { scaffoldState.snackbarHostState },
+                modifier = Modifier.navigationBarsPadding()
             ) {
                 if (showDialog.value) {
                     val rating = viewModel.rating.collectAsState()
@@ -234,7 +238,7 @@ fun MovieOverview(overview: String) {
 
 @Composable
 fun DetailsAppBar(onNavigationClick: () -> Unit) {
-    TopAppBar(backgroundColor = Color.Transparent, elevation = 0.dp) {
+    TopAppBar(backgroundColor = Color.Transparent, elevation = 0.dp, modifier = Modifier.statusBarsPadding()) {
         Icon(
             imageVector = Icons.Filled.ArrowBack,
             modifier = Modifier

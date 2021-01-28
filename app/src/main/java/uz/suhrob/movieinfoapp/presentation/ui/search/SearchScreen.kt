@@ -1,13 +1,12 @@
 package uz.suhrob.movieinfoapp.presentation.ui.search
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -19,6 +18,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
+import dev.chrisbanes.accompanist.insets.navigationBarsPadding
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import uz.suhrob.movieinfoapp.other.Resource
 import uz.suhrob.movieinfoapp.presentation.components.Error
@@ -34,7 +35,8 @@ fun SearchScreen(viewModel: SearchViewModel, navController: NavController) {
     Scaffold(
         topBar = {
             SearchAppBar(query.value, viewModel, navController)
-        }
+        },
+        modifier = Modifier.navigationBarsPadding()
     ) {
         when (movies.value) {
             is Resource.Success -> {
@@ -62,21 +64,27 @@ fun SearchScreen(viewModel: SearchViewModel, navController: NavController) {
 
 @Composable
 fun SearchAppBar(query: String, viewModel: SearchViewModel, navController: NavController) {
-    TopAppBar {
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Icon(
-                imageVector = Icons.Filled.ArrowBack,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .clip(RoundedCornerShape(percent = 50))
-                    .clickable(onClick = { navController.popBackStack() })
-                    .padding(8.dp)
-            )
-            SearchField(
-                value = query,
-                onValueChange = { viewModel.onQueryChange(it) },
-                onSearch = { viewModel.onTriggerEvent(SearchEvent.Search) }
-            )
+    Column {
+        Spacer(
+            modifier = Modifier.fillMaxWidth().statusBarsHeight()
+                .background(color = MaterialTheme.colors.primary)
+        )
+        TopAppBar(elevation = 0.dp) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .clip(RoundedCornerShape(percent = 50))
+                        .clickable(onClick = { navController.popBackStack() })
+                        .padding(8.dp)
+                )
+                SearchField(
+                    value = query,
+                    onValueChange = { viewModel.onQueryChange(it) },
+                    onSearch = { viewModel.onTriggerEvent(SearchEvent.Search) }
+                )
+            }
         }
     }
 }
