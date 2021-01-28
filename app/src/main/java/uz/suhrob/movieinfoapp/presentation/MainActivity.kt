@@ -3,13 +3,20 @@ package uz.suhrob.movieinfoapp.presentation
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.viewinterop.viewModel
+import androidx.hilt.navigation.HiltViewModelFactory
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.serialization.ExperimentalSerializationApi
 import uz.suhrob.movieinfoapp.presentation.theme.MovieInfoAppTheme
 import uz.suhrob.movieinfoapp.presentation.ui.details.DetailsScreen
@@ -23,6 +30,7 @@ import uz.suhrob.movieinfoapp.presentation.ui.search.SearchViewModel
 
 @ExperimentalSerializationApi
 @ExperimentalFoundationApi
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,11 +40,11 @@ class MainActivity : AppCompatActivity() {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = "home") {
                     composable("home") {
-                        val viewModel = viewModel(modelClass = HomeViewModel::class.java)
+                        val viewModel = it.hiltViewModel<HomeViewModel>()
                         HomeScreen(viewModel = viewModel, navController = navController)
                     }
                     composable("search") {
-                        val viewModel = viewModel(modelClass = SearchViewModel::class.java)
+                        val viewModel = it.hiltViewModel<SearchViewModel>()
                         SearchScreen(viewModel = viewModel, navController = navController)
                     }
                     composable(
@@ -44,16 +52,24 @@ class MainActivity : AppCompatActivity() {
                         arguments = listOf(navArgument(name = "id") { type = NavType.IntType })
                     ) {
                         val id = it.arguments?.getInt("id") ?: 0
-                        val viewModel = viewModel(modelClass = DetailsViewModel::class.java)
+                        val viewModel = it.hiltViewModel<DetailsViewModel>()
                         viewModel.movieId = id
                         DetailsScreen(viewModel = viewModel, navController = navController)
                     }
                     composable("favorites") {
-                        val viewModel = viewModel(modelClass = FavoritesViewModel::class.java)
+                        val viewModel = it.hiltViewModel<FavoritesViewModel>()
                         FavoritesScreen(viewModel = viewModel, navController = navController)
                     }
                 }
             }
         }
     }
+}
+
+@Composable
+internal inline fun <reified T: ViewModel> NavBackStackEntry.hiltViewModel(): T {
+    return ViewModelProvider(
+        this.viewModelStore,
+        HiltViewModelFactory(AmbientContext.current, this)
+    ).get(T::class.java)
 }
