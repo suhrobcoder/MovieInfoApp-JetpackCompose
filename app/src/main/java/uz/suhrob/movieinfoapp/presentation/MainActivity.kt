@@ -1,5 +1,6 @@
 package uz.suhrob.movieinfoapp.presentation
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -41,30 +42,33 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.statusBarColor = Color.TRANSPARENT
         setContent {
             MovieInfoAppTheme {
-                val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = "home") {
-                    composable("home") {
-                        val viewModel = it.hiltViewModel<HomeViewModel>()
-                        HomeScreen(viewModel = viewModel, navController = navController)
-                    }
-                    composable("search") {
-                        val viewModel = it.hiltViewModel<SearchViewModel>()
-                        SearchScreen(viewModel = viewModel, navController = navController)
-                    }
-                    composable(
-                        "details/{id}",
-                        arguments = listOf(navArgument(name = "id") { type = NavType.IntType })
-                    ) {
-                        val id = it.arguments?.getInt("id") ?: 0
-                        val viewModel = it.hiltViewModel<DetailsViewModel>()
-                        viewModel.movieId = id
-                        DetailsScreen(viewModel = viewModel, navController = navController)
-                    }
-                    composable("favorites") {
-                        val viewModel = it.hiltViewModel<FavoritesViewModel>()
-                        FavoritesScreen(viewModel = viewModel, navController = navController)
+                ProvideWindowInsets {
+                    val navController = rememberNavController()
+                    NavHost(navController = navController, startDestination = "home") {
+                        composable("home") {
+                            val viewModel = it.hiltViewModel<HomeViewModel>()
+                            HomeScreen(viewModel = viewModel, navController = navController)
+                        }
+                        composable("search") {
+                            val viewModel = it.hiltViewModel<SearchViewModel>()
+                            SearchScreen(viewModel = viewModel, navController = navController)
+                        }
+                        composable(
+                            "details/{id}",
+                            arguments = listOf(navArgument(name = "id") { type = NavType.IntType })
+                        ) {
+                            val id = it.arguments?.getInt("id") ?: 0
+                            val viewModel = it.hiltViewModel<DetailsViewModel>()
+                            viewModel.movieId = id
+                            DetailsScreen(viewModel = viewModel, navController = navController)
+                        }
+                        composable("favorites") {
+                            val viewModel = it.hiltViewModel<FavoritesViewModel>()
+                            FavoritesScreen(viewModel = viewModel, navController = navController)
+                        }
                     }
                 }
             }
@@ -73,7 +77,7 @@ class MainActivity : AppCompatActivity() {
 }
 
 @Composable
-internal inline fun <reified T: ViewModel> NavBackStackEntry.hiltViewModel(): T {
+internal inline fun <reified T : ViewModel> NavBackStackEntry.hiltViewModel(): T {
     return ViewModelProvider(
         this.viewModelStore,
         HiltViewModelFactory(AmbientContext.current, this)

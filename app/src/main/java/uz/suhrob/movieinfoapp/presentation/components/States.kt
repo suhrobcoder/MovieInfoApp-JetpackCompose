@@ -24,9 +24,9 @@ fun Loading(
 }
 
 @Composable
-fun Error(onRetry: () -> Unit) {
+fun Error(modifier: Modifier = Modifier, onRetry: () -> Unit) {
     Box(
-        modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+        modifier = modifier.fillMaxWidth().padding(top = 16.dp),
         contentAlignment = Alignment.Center
     ) {
         Button(onClick = onRetry) {

@@ -9,18 +9,24 @@ import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import uz.suhrob.movieinfoapp.data.remote.ApiService
+import uz.suhrob.movieinfoapp.data.remote.AuthInterceptor
 import uz.suhrob.movieinfoapp.other.BASE_URL
 
 @InstallIn(ActivityRetainedComponent::class)
 @Module
 object NetworkModule {
+    @ActivityRetainedScoped
+    @Provides
+    fun provideOkHttpClient(): OkHttpClient =
+        OkHttpClient.Builder().addInterceptor(AuthInterceptor()).build()
 
     @ActivityRetainedScoped
     @Provides
     @ExperimentalSerializationApi
-    fun provideRetrofit(): Retrofit = Retrofit.Builder()
+    fun provideRetrofit(client: OkHttpClient): Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(
             Json {
@@ -28,6 +34,7 @@ object NetworkModule {
                 isLenient = true
             }.asConverterFactory(MediaType.get("application/json"))
         )
+        .client(client)
         .build()
 
     @ActivityRetainedScoped

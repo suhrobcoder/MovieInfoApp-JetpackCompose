@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
-import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -122,10 +121,12 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
             }
         }
         is Resource.Loading -> {
-            Loading()
+            Loading(modifier = Modifier.statusBarsPadding())
         }
         is Resource.Error -> {
-            Error(onRetry = { viewModel.onTriggerEvent(DetailsEvent.LoadMovie) })
+            Error(
+                modifier = Modifier.statusBarsPadding(),
+                onRetry = { viewModel.onTriggerEvent(DetailsEvent.LoadMovie) })
             Log.d("AppDebug", "Details: ${movieRes.value.message}")
         }
     }
@@ -238,7 +239,11 @@ fun MovieOverview(overview: String) {
 
 @Composable
 fun DetailsAppBar(onNavigationClick: () -> Unit) {
-    TopAppBar(backgroundColor = Color.Transparent, elevation = 0.dp, modifier = Modifier.statusBarsPadding()) {
+    TopAppBar(
+        backgroundColor = Color.Transparent,
+        elevation = 0.dp,
+        modifier = Modifier.statusBarsPadding()
+    ) {
         Icon(
             imageVector = Icons.Filled.ArrowBack,
             modifier = Modifier

@@ -26,6 +26,10 @@ class DetailsViewModel @Inject constructor(
     private val favoritesRepository: FavoritesRepository
 ) : ViewModel() {
     var movieId: Int = 0
+        set(value) {
+            field = value
+            load()
+        }
 
     private val _movie = MutableStateFlow<Resource<Movie>>(Resource.Loading())
     val movie: StateFlow<Resource<Movie>> get() = _movie
@@ -51,7 +55,7 @@ class DetailsViewModel @Inject constructor(
     private val snackBarChannel = Channel<String>()
     val snackBarFlow = snackBarChannel.receiveAsFlow()
 
-    init {
+    fun load() {
         favoritesRepository.isMovieFavorite(movieId).onEach {
             _likeState.value = if (it) LIKED else INITIAL
         }.launchIn(viewModelScope)
