@@ -58,7 +58,7 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
                 selectedGenre = selectedGenre.value,
                 error = error.value
             ) { genre ->
-                viewModel.setSelectedGenre(genre)
+                // TODO(fix later) viewModel.setSelectedGenre(genre)
             }
             HomeBody(
                 navController = navController,

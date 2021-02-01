@@ -106,7 +106,7 @@ class MovieRepositoryImpl(
 
     override suspend fun rateMovie(movieId: Int, value: Int): Resource<Boolean> {
         val sessionId = try {
-            prefs.guestSessionId.first()
+            prefs.guestSessionId.first() ?: throw IllegalStateException("Session id is null")
         } catch (e: Exception) {
             createSessionId()?.also { id ->
                 prefs.setGuestSessionId(id)
