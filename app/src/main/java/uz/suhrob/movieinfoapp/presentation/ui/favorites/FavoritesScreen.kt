@@ -49,7 +49,7 @@ fun FavoritesAppBar(navController: NavController) {
             title = { Text(text = "Favorites") },
             navigationIcon = {
                 IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(imageVector = Icons.Filled.ArrowBack)
+                    Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = null)
                 }
             },
             elevation = 0.dp

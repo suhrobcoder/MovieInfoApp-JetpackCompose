@@ -1,10 +1,11 @@
 package uz.suhrob.movieinfoapp.presentation.components
 
-import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -26,8 +27,8 @@ fun CastList(
             modifier = Modifier.padding(start = 16.dp, bottom = 4.dp),
             style = MaterialTheme.typography.h5
         )
-        ScrollableRow {
-            list.forEachIndexed { index, cast ->
+        LazyRow {
+            itemsIndexed(items = list) { index, cast ->
                 CastItem(
                     profilePath = getImageUrl(cast.profilePath ?: ""),
                     name = cast.name,

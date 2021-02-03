@@ -29,7 +29,7 @@ fun DrawerItem(
             .padding(vertical = 16.dp, horizontal = 32.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(imageVector = icon)
+        Icon(imageVector = icon, contentDescription = title)
         Text(
             text = title,
             style = MaterialTheme.typography.h6,
@@ -50,7 +50,8 @@ fun DrawerHeader() {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Image(
                 bitmap = imageResource(id = R.drawable.ic_launcher),
-                modifier = Modifier.preferredSize(96.dp)
+                modifier = Modifier.preferredSize(96.dp),
+                contentDescription = "App icon"
             )
             Text(
                 text = stringResource(id = R.string.app_name),

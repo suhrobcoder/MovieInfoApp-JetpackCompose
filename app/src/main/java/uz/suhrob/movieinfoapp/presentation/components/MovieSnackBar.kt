@@ -8,7 +8,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-@ExperimentalMaterialApi
 @Composable
 fun MovieSnackBar(
     scaffoldState: ScaffoldState,
@@ -46,7 +45,6 @@ class MovieSnackBarController(
 
     fun getScope() = scope
 
-    @ExperimentalMaterialApi
     fun showSnackBar(
         scaffoldState: ScaffoldState,
         message: String,
