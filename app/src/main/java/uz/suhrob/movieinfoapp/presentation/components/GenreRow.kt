@@ -1,5 +1,6 @@
 package uz.suhrob.movieinfoapp.presentation.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -57,6 +58,7 @@ fun GenreItem(genre: Genre, modifier: Modifier, selected: Boolean, onClick: () -
                 color = Color.Black.copy(alpha = 0.1F),
                 shape = RoundedCornerShape(percent = 50)
             )
+            .background(if (selected) Color.Black.copy(alpha = 0.1F) else Color.Transparent)
             .padding(horizontal = 20.dp, vertical = 4.dp),
         contentAlignment = Alignment.Center
     ) {

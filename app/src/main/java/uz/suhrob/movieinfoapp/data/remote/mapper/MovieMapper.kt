@@ -1,6 +1,7 @@
 package uz.suhrob.movieinfoapp.data.remote.mapper
 
 import uz.suhrob.movieinfoapp.data.remote.model.MovieDto
+import uz.suhrob.movieinfoapp.domain.model.Genre
 import uz.suhrob.movieinfoapp.domain.model.Movie
 import uz.suhrob.movieinfoapp.domain.util.DomainMapper
 
@@ -12,7 +13,7 @@ object MovieMapper : DomainMapper<MovieDto, Movie>() {
             overview = model.overview ?: "",
             backdropPath = model.backdrop_path ?: "",
             posterPath = model.poster_path ?: "",
-            genres = GenreMapper.mapToList(model.genres),
+            genres = if (model.genres.isNotEmpty()) GenreMapper.mapToList(model.genres) else model.genreIds.map { Genre(it, "") },
             releaseDate = model.release_date,
             runtime = model.runtime,
             video = model.video ?: false,

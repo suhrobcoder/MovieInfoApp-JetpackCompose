@@ -9,6 +9,7 @@ data class MovieDto(
     @SerialName("backdrop_path") val backdrop_path: String? = null,
     @SerialName("budget") val budget: Int? = null,
     @SerialName("genres") val genres: List<GenreDto> = listOf(),
+    @SerialName("genre_ids") val genreIds: List<Int> = listOf(),
     @SerialName("homepage") val homepage: String? = null,
     @SerialName("id") val id: Int = 0,
     @SerialName("imdb_id") val imdb_id: String? = null,

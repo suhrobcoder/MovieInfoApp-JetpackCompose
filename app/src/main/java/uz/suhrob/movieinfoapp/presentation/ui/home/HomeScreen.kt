@@ -58,7 +58,7 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
                 selectedGenre = selectedGenre.value,
                 error = error.value
             ) { genre ->
-                // TODO(fix later) viewModel.setSelectedGenre(genre)
+                viewModel.setSelectedGenre(genre)
             }
             HomeBody(
                 navController = navController,
@@ -126,8 +126,8 @@ fun HomeBody(
         MovieGrid(
             movies = movies.filter {
                 selectedGenre == defaultGenre
-                        || it.genres.map { genre -> genre.name }
-                    .contains(selectedGenre.name)
+                        || it.genres.map { genre -> genre.id }
+                    .contains(selectedGenre.id)
             },
             onChangeScrollPosition = { index ->
                 onChangeScrollPosition(index)
