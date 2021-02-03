@@ -40,7 +40,8 @@ fun MovieSearchItem(
                 modifier = Modifier
                     .preferredSize(size = 64.dp)
                     .padding(end = 16.dp),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                contentDescription = "${movie.title} poster"
             )
         }
         Text(text = movie.title, style = MaterialTheme.typography.h5)

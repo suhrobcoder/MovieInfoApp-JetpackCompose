@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -62,12 +63,13 @@ fun MovieItem(title: String, imageUrl: String, rating: Double, onClick: () -> Un
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(32.dp))
                     .clickable(onClick = onClick),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                contentDescription = "$title movie poster"
             )
         }
         Text(text = title, maxLines = 1, style = MaterialTheme.typography.h6)
         Row {
-            Icon(imageVector = Icons.Filled.Star, tint = Color.Yellow)
+            Icon(imageVector = Icons.Filled.Star, tint = Color.Yellow, contentDescription = "Star icon")
             Text(text = rating.toString(), style = MaterialTheme.typography.subtitle1)
         }
     }
@@ -80,7 +82,7 @@ fun MovieShimmerGrid() {
         cells = GridCells.Adaptive(minSize = 150.dp),
         modifier = Modifier.padding(8.dp)
     ) {
-        items(listOf(1, 2, 3, 4, 5, 6)) {
+        items(count = 4) {
             Column(modifier = Modifier.padding(8.dp)) {
                 ShimmerView(
                     modifier = Modifier.fillMaxWidth().aspectRatio(2f / 3)

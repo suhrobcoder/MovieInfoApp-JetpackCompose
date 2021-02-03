@@ -23,7 +23,12 @@ fun allCategories() = listOf(Category.POPULAR, Category.TOP_RATED, Category.UPCO
 @Composable
 fun CategoryRow(selectedCategory: Category, onCategorySelected: (Category) -> Unit) {
     val categories = allCategories()
-    ScrollableRow(modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)) {
+    Row(
+        modifier = Modifier
+            .horizontalScroll(rememberScrollState())
+            .fillMaxWidth()
+            .padding(vertical = 16.dp)
+    ) {
         categories.forEach { category ->
             CategoryItem(
                 category = category,
@@ -39,10 +44,7 @@ fun CategoryRow(selectedCategory: Category, onCategorySelected: (Category) -> Un
 @Composable
 fun CategoryItem(category: Category, modifier: Modifier, selected: Boolean, onClick: () -> Unit) {
     val interactionState = InteractionState()
-    if (interactionState.contains(Interaction.Pressed)) {
-        interactionState.removeInteraction(Interaction.Pressed)
-    }
-    Column(modifier = modifier.clickable(onClick = onClick, interactionState = interactionState)) {
+    Column(modifier = modifier.clickable(onClick = onClick, interactionState = interactionState, indication = null)) {
         Text(
             text = category.value,
             modifier = Modifier.padding(bottom = 8.dp),

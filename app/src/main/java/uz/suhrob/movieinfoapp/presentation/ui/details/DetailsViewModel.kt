@@ -15,9 +15,9 @@ import uz.suhrob.movieinfoapp.domain.model.Video
 import uz.suhrob.movieinfoapp.other.DEFAULT_PAGE
 import uz.suhrob.movieinfoapp.other.Resource
 import uz.suhrob.movieinfoapp.presentation.components.MAX_RATING
-import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState
-import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState.INITIAL
-import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState.LIKED
+import uz.suhrob.movieinfoapp.presentation.components.LikeState
+import uz.suhrob.movieinfoapp.presentation.components.LikeState.INITIAL
+import uz.suhrob.movieinfoapp.presentation.components.LikeState.LIKED
 import javax.inject.Inject
 
 @HiltViewModel

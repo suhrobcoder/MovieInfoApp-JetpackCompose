@@ -1,12 +1,10 @@
 package uz.suhrob.movieinfoapp.presentation.components
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -41,6 +39,7 @@ fun StarImageButton(
 ) {
     Image(
         bitmap = imageResource(id = if (isFilled) R.drawable.ic_star_filled else R.drawable.ic_star_outlined),
-        modifier = modifier.clickable(onClick = onClick).padding(all = 4.dp)
+        modifier = modifier.clickable(onClick = onClick).padding(all = 4.dp),
+        contentDescription = "Star button"
     )
 }

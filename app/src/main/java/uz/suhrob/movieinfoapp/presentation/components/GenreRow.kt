@@ -1,9 +1,10 @@
 package uz.suhrob.movieinfoapp.presentation.components
 
-import androidx.compose.foundation.ScrollableRow
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -27,8 +28,8 @@ fun GenreRow(
         if (genres.isEmpty()) {
             GenreShimmer()
         } else {
-            ScrollableRow(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
-                genres.forEachIndexed { index, genre ->
+            LazyRow(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+                itemsIndexed(items = genres) { index, genre ->
                     GenreItem(
                         genre = genre,
                         Modifier.padding(

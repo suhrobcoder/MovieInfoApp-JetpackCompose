@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.platform.setContent
@@ -32,7 +31,6 @@ import uz.suhrob.movieinfoapp.presentation.ui.home.HomeViewModel
 import uz.suhrob.movieinfoapp.presentation.ui.search.SearchScreen
 import uz.suhrob.movieinfoapp.presentation.ui.search.SearchViewModel
 
-@ExperimentalMaterialApi
 @ExperimentalSerializationApi
 @ExperimentalFoundationApi
 @AndroidEntryPoint

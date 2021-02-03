@@ -1,10 +1,7 @@
 package uz.suhrob.movieinfoapp.presentation.ui.details
 
 import android.util.Log
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -40,16 +37,15 @@ import uz.suhrob.movieinfoapp.other.formatTime
 import uz.suhrob.movieinfoapp.other.getImageUrl
 import uz.suhrob.movieinfoapp.other.loadImage
 import uz.suhrob.movieinfoapp.presentation.components.*
-import uz.suhrob.movieinfoapp.presentation.components.animations.LikeState
+import uz.suhrob.movieinfoapp.presentation.components.LikeState
 
-@ExperimentalMaterialApi
 @ExperimentalCoroutinesApi
 @Composable
 fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
     val movieRes = viewModel.movie.collectAsState()
     val showDialog = viewModel.isShowingDialog.collectAsState()
     val composeScope = rememberCoroutineScope()
-    val snackBarController = MovieSnackBarController(composeScope) //TODO
+    val snackBarController = MovieSnackBarController(composeScope)
     val scaffoldState = rememberScaffoldState()
     composeScope.launch {
         viewModel.snackBarFlow.collect {
@@ -77,7 +73,7 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
                         onClose = { viewModel.onTriggerEvent(DetailsEvent.CloseDialog) })
                 }
                 Box(modifier = Modifier.fillMaxSize()) {
-                    ScrollableColumn(modifier = Modifier.fillMaxSize()) {
+                    Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
                         val likeState = viewModel.likeState.collectAsState()
                         Box(contentAlignment = Alignment.BottomCenter) {
                             BackdropImage(backdropPath = movie.backdropPath)
@@ -144,7 +140,8 @@ fun BackdropImage(backdropPath: String) {
             modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp).clip(
                 RoundedCornerShape(bottomLeft = 32.dp)
             ),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
+            contentDescription = "Backdrop image"
         )
     }
 }
@@ -171,7 +168,11 @@ fun RatingBar(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Icon(imageVector = Icons.Filled.Star, tint = Color.Yellow)
+                Icon(
+                    imageVector = Icons.Filled.Star,
+                    tint = Color.Yellow,
+                    contentDescription = null
+                )
                 Text(
                     text = AnnotatedString(
                         text = "${voteAverage}/10", spanStyles = listOf(
@@ -191,7 +192,7 @@ fun RatingBar(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Icon(imageVector = Icons.Outlined.Star)
+                Icon(imageVector = Icons.Outlined.Star, contentDescription = null)
                 Text(text = "Rate This")
             }
             Box(
@@ -252,7 +253,8 @@ fun DetailsAppBar(onNavigationClick: () -> Unit) {
                 .background(MaterialTheme.colors.primary)
                 .clickable(onClick = onNavigationClick)
                 .padding(12.dp),
-            tint = MaterialTheme.colors.onPrimary
+            tint = MaterialTheme.colors.onPrimary,
+            contentDescription = null
         )
     }
 }

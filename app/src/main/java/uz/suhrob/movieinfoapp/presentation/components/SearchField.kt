@@ -29,7 +29,11 @@ fun SearchField(
         value = value,
         onValueChange = onValueChange,
         leadingIcon = {
-            Icon(imageVector = Icons.Filled.Search, tint = MaterialTheme.colors.onPrimary)
+            Icon(
+                imageVector = Icons.Filled.Search,
+                tint = MaterialTheme.colors.onPrimary,
+                contentDescription = "Search icon"
+            )
         },
         trailingIcon = {
             if (value.isNotEmpty()) {
@@ -41,7 +45,8 @@ fun SearchField(
                             focusRequester.requestFocus()
                             onValueChange("")
                         }
-                    )
+                    ),
+                    contentDescription = "Clear icon"
                 )
             }
         },

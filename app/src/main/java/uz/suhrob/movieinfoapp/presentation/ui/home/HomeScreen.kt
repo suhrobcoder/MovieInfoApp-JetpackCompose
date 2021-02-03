@@ -87,12 +87,12 @@ fun HomeAppBar(onNavigationClick: () -> Unit, onSearchClick: () -> Unit) {
             },
             navigationIcon = {
                 IconButton(onClick = onNavigationClick) {
-                    Icon(imageVector = Icons.Filled.Menu)
+                    Icon(imageVector = Icons.Filled.Menu, contentDescription = null)
                 }
             },
             actions = {
                 IconButton(onClick = onSearchClick) {
-                    Icon(imageVector = Icons.Filled.Search)
+                    Icon(imageVector = Icons.Filled.Search, contentDescription = null)
                 }
             },
             elevation = 0.dp
