@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.preferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.createDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityRetainedScoped
@@ -28,6 +28,6 @@ class MovieInfoPref @Inject constructor(@ApplicationContext context: Context) {
     }
 
     companion object {
-        private val KEY_GUEST_SESSION_ID = preferencesKey<String>("guest_session_id_key")
+        private val KEY_GUEST_SESSION_ID = stringPreferencesKey("guest_session_id_key")
     }
 }
