@@ -33,7 +33,6 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
     val category = viewModel.category.collectAsState()
     val genres = viewModel.genres.collectAsState()
     val selectedGenre = viewModel.selectedGenre.collectAsState()
-    val currentPage = viewModel.currentPage.collectAsState()
 
     val error = viewModel.error.collectAsState()
     val loading = viewModel.loading.collectAsState()
@@ -66,7 +65,6 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
                 selectedGenre = selectedGenre.value,
                 onChangeScrollPosition = { viewModel.onChangeScrollPosition(it) },
                 triggerEvent = { viewModel.onTriggerEvent(it) },
-                currentPage = currentPage.value,
                 loading = loading.value,
                 error = error.value
             )
@@ -118,7 +116,6 @@ fun HomeBody(
     selectedGenre: Genre,
     onChangeScrollPosition: (Int) -> Unit,
     triggerEvent: (HomeEvent) -> Unit,
-    currentPage: Int,
     loading: Boolean,
     error: Boolean,
 ) {
@@ -131,9 +128,9 @@ fun HomeBody(
             },
             onChangeScrollPosition = { index ->
                 onChangeScrollPosition(index)
-                if ((index + 1) >= (currentPage * PAGE_SIZE) && !loading) {
-                    triggerEvent(HomeEvent.NextPage)
-                }
+            },
+            onLastItemCreated = {
+                triggerEvent(HomeEvent.NextPage)
             }
         ) { movie ->
             navController.navigate("details/${movie.id}")

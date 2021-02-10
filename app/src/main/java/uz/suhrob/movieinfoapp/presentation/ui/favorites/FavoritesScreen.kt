@@ -33,7 +33,8 @@ fun FavoritesScreen(viewModel: FavoritesViewModel, navController: NavController)
             onChangeScrollPosition = { },
             onMovieClicked = { movie ->
                 navController.navigate("details/${movie.id}")
-            }
+            },
+            onLastItemCreated = {}
         )
     }
 }

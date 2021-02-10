@@ -1,6 +1,5 @@
 package uz.suhrob.movieinfoapp.presentation.ui.details
 
-import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
+import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import dev.chrisbanes.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -37,7 +37,6 @@ import uz.suhrob.movieinfoapp.other.formatTime
 import uz.suhrob.movieinfoapp.other.getImageUrl
 import uz.suhrob.movieinfoapp.other.loadImage
 import uz.suhrob.movieinfoapp.presentation.components.*
-import uz.suhrob.movieinfoapp.presentation.components.LikeState
 
 @ExperimentalCoroutinesApi
 @Composable
@@ -47,23 +46,25 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
     val composeScope = rememberCoroutineScope()
     val snackBarController = MovieSnackBarController(composeScope)
     val scaffoldState = rememberScaffoldState()
+    val scrollState = rememberScrollState()
     composeScope.launch {
         viewModel.snackBarFlow.collect {
             snackBarController.showSnackBar(scaffoldState, it)
         }
     }
-    when (movieRes.value) {
-        is Resource.Success -> {
-            val movie = movieRes.value.data!!
-            if (movie.video) {
-                viewModel.onTriggerEvent(DetailsEvent.LoadVideos)
-            }
-            viewModel.onTriggerEvent(DetailsEvent.LoadReviews)
-            Scaffold(
-                scaffoldState = scaffoldState,
-                snackbarHost = { scaffoldState.snackbarHostState },
-                modifier = Modifier.navigationBarsPadding()
-            ) {
+    Scaffold(
+        scaffoldState = scaffoldState,
+        snackbarHost = { scaffoldState.snackbarHostState },
+        modifier = Modifier.navigationBarsPadding()
+    ) {
+        when (movieRes.value) {
+            is Resource.Success -> {
+                val movie = movieRes.value.data!!
+                if (movie.video) {
+                    viewModel.onTriggerEvent(DetailsEvent.LoadVideos)
+                }
+                viewModel.onTriggerEvent(DetailsEvent.LoadReviews)
+
                 if (showDialog.value) {
                     val rating = viewModel.rating.collectAsState()
                     RatingDialog(
@@ -73,7 +74,9 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
                         onClose = { viewModel.onTriggerEvent(DetailsEvent.CloseDialog) })
                 }
                 Box(modifier = Modifier.fillMaxSize()) {
-                    Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+                    Column(
+                        modifier = Modifier.fillMaxSize().verticalScroll(scrollState)
+                    ) {
                         val likeState = viewModel.likeState.collectAsState()
                         Box(contentAlignment = Alignment.BottomCenter) {
                             BackdropImage(backdropPath = movie.backdropPath)
@@ -107,23 +110,30 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
                             ReviewsColumn(reviews = reviews.value)
                         }
                     }
-                    DetailsAppBar { navController.popBackStack() }
+                    DetailsAppBar(ratio = scrollState.value / 500) { navController.popBackStack() }
                     MovieSnackBar(
                         scaffoldState = scaffoldState,
                         onClickAction = {},
                         modifier = Modifier.align(Alignment.BottomCenter).padding(all = 4.dp)
                     )
                 }
+
             }
-        }
-        is Resource.Loading -> {
-            Loading(modifier = Modifier.statusBarsPadding())
-        }
-        is Resource.Error -> {
-            Error(
-                modifier = Modifier.statusBarsPadding(),
-                onRetry = { viewModel.onTriggerEvent(DetailsEvent.LoadMovie) })
-            Log.d("AppDebug", "Details: ${movieRes.value.message}")
+            is Resource.Loading -> {
+                Column {
+                    DetailsAppBar(ratio = 1f, onNavigationClick = { navController.popBackStack() })
+                    Loading()
+                }
+            }
+            is Resource.Error -> {
+                Column {
+                    DetailsAppBar(ratio = 1f, onNavigationClick = { navController.popBackStack() })
+                    Error(
+                        modifier = Modifier.statusBarsPadding(),
+                        onRetry = { viewModel.onTriggerEvent(DetailsEvent.LoadMovie) }
+                    )
+                }
+            }
         }
     }
 }
@@ -239,23 +249,26 @@ fun MovieOverview(overview: String) {
 }
 
 @Composable
-fun DetailsAppBar(onNavigationClick: () -> Unit) {
-    TopAppBar(
-        backgroundColor = Color.Transparent,
-        elevation = 0.dp,
-        modifier = Modifier.statusBarsPadding()
-    ) {
-        Icon(
-            imageVector = Icons.Filled.ArrowBack,
+fun DetailsAppBar(ratio: Float, onNavigationClick: () -> Unit) {
+    Column(modifier = Modifier.background(color = MaterialTheme.colors.primary.copy(alpha = ratio.coerceAtMost(1f)))) {
+        Spacer(modifier = Modifier.statusBarsHeight())
+        TopAppBar(
+            backgroundColor = Color.Transparent,
+            elevation = 0.dp,
             modifier = Modifier
-                .padding(4.dp)
-                .clip(RoundedCornerShape(percent = 50))
-                .background(MaterialTheme.colors.primary)
-                .clickable(onClick = onNavigationClick)
-                .padding(12.dp),
-            tint = MaterialTheme.colors.onPrimary,
-            contentDescription = null
-        )
+        ) {
+            Icon(
+                imageVector = Icons.Filled.ArrowBack,
+                modifier = Modifier
+                    .padding(4.dp)
+                    .clip(RoundedCornerShape(percent = 50))
+                    .background(MaterialTheme.colors.primary)
+                    .clickable(onClick = onNavigationClick)
+                    .padding(12.dp),
+                tint = MaterialTheme.colors.onPrimary,
+                contentDescription = null
+            )
+        }
     }
 }
 

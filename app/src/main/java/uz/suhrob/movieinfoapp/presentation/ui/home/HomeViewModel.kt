@@ -13,7 +13,6 @@ import uz.suhrob.movieinfoapp.domain.model.Genre
 import uz.suhrob.movieinfoapp.domain.model.Movie
 import uz.suhrob.movieinfoapp.domain.model.defaultGenre
 import uz.suhrob.movieinfoapp.other.DEFAULT_PAGE
-import uz.suhrob.movieinfoapp.other.PAGE_SIZE
 import uz.suhrob.movieinfoapp.other.Resource
 import uz.suhrob.movieinfoapp.presentation.components.Category
 import javax.inject.Inject
@@ -43,7 +42,7 @@ class HomeViewModel @Inject constructor(
     private var loadMoviesJob: Job? = null
 
     private val _currentPage = MutableStateFlow(DEFAULT_PAGE)
-    val currentPage: StateFlow<Int> get() = _currentPage
+    private val currentPage: StateFlow<Int> get() = _currentPage
 
     var movieListScrollPosition = 0
 
@@ -85,7 +84,11 @@ class HomeViewModel @Inject constructor(
 
     private fun nextPage() {
         viewModelScope.launch {
-            if (movieListScrollPosition + 1 >= currentPage.value * PAGE_SIZE) {
+//            if (movieListScrollPosition + 1 >= currentPage.value * PAGE_SIZE) {
+//                incrementPage()
+//                loadMovies()
+//            }
+            if (!loading.value) {
                 incrementPage()
                 loadMovies()
             }

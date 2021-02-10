@@ -31,6 +31,7 @@ import uz.suhrob.movieinfoapp.other.loadImage
 fun MovieGrid(
     movies: List<Movie>,
     onChangeScrollPosition: (Int) -> Unit,
+    onLastItemCreated: () -> Unit,
     onMovieClicked: (Movie) -> Unit
 ) {
     LazyVerticalGrid(
@@ -44,6 +45,9 @@ fun MovieGrid(
                 rating = movie.voteAverage,
                 onClick = { onMovieClicked(movie) }
             )
+            if (index + 1 == movies.size) {
+                onLastItemCreated()
+            }
             onChangeScrollPosition(index)
         }
     }
