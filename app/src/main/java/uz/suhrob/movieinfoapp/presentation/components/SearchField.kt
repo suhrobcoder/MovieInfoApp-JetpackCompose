@@ -2,13 +2,12 @@ package uz.suhrob.movieinfoapp.presentation.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -53,15 +52,15 @@ fun SearchField(
         placeholder = {
             Text(text = "Search", color = MaterialTheme.colors.onPrimary.copy(alpha = 0.7f))
         },
-        modifier = modifier.fillMaxWidth().focusRequester(focusRequester),
-        backgroundColor = Color.Transparent,
+        modifier = modifier
+            .fillMaxWidth()
+            .focusRequester(focusRequester),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-        onImeActionPerformed = { action, _ ->
-            if (action == ImeAction.Search) {
-                onSearch()
-            }
-        },
+        keyboardActions = KeyboardActions(onSearch = { onSearch() }),
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color.Transparent,
+            cursorColor = MaterialTheme.colors.onPrimary,
+        ),
         singleLine = true,
-        activeColor = MaterialTheme.colors.onPrimary,
     )
 }

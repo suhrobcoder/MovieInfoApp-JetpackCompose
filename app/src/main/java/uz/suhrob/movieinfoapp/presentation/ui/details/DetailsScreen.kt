@@ -1,5 +1,6 @@
 package uz.suhrob.movieinfoapp.presentation.ui.details
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,6 +15,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -21,6 +23,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
@@ -75,7 +78,9 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
                 }
                 Box(modifier = Modifier.fillMaxSize()) {
                     Column(
-                        modifier = Modifier.fillMaxSize().verticalScroll(scrollState)
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(scrollState)
                     ) {
                         val likeState = viewModel.likeState.collectAsState()
                         Box(contentAlignment = Alignment.BottomCenter) {
@@ -110,11 +115,13 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
                             ReviewsColumn(reviews = reviews.value)
                         }
                     }
-                    DetailsAppBar(ratio = scrollState.value / 500) { navController.popBackStack() }
+                    DetailsAppBar(ratio = 1f * scrollState.value / 500) { navController.popBackStack() }
                     MovieSnackBar(
                         scaffoldState = scaffoldState,
                         onClickAction = {},
-                        modifier = Modifier.align(Alignment.BottomCenter).padding(all = 4.dp)
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(all = 4.dp)
                     )
                 }
 
@@ -147,9 +154,12 @@ fun BackdropImage(backdropPath: String) {
     image.value?.let { img ->
         Image(
             bitmap = img.asImageBitmap(),
-            modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp).clip(
-                RoundedCornerShape(bottomLeft = 32.dp)
-            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 32.dp)
+                .clip(
+                    RoundedCornerShape(bottomStart = 32.dp)
+                ),
             contentScale = ContentScale.Crop,
             contentDescription = "Backdrop image"
         )
@@ -169,12 +179,14 @@ fun RatingBar(
             .fillMaxWidth()
             .padding(start = 32.dp)
             .height(72.dp),
-        shape = RoundedCornerShape(topLeftPercent = 50, bottomLeftPercent = 50),
+        shape = RoundedCornerShape(topStartPercent = 50, bottomStartPercent = 50),
         elevation = 8.dp
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Column(
-                modifier = Modifier.weight(1f, fill = true).fillMaxHeight(),
+                modifier = Modifier
+                    .weight(1f, fill = true)
+                    .fillMaxHeight(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -197,7 +209,9 @@ fun RatingBar(
                 )
             }
             Column(
-                modifier = Modifier.weight(1f, fill = true).fillMaxHeight()
+                modifier = Modifier
+                    .weight(1f, fill = true)
+                    .fillMaxHeight()
                     .clickable(onClick = showDialog),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
@@ -206,7 +220,9 @@ fun RatingBar(
                 Text(text = "Rate This")
             }
             Box(
-                modifier = Modifier.weight(1f, fill = true).fillMaxHeight(),
+                modifier = Modifier
+                    .weight(1f, fill = true)
+                    .fillMaxHeight(),
                 contentAlignment = Alignment.Center
             ) {
                 AnimatedLikeButton(state = likeState, onClick = onLikeClick)
@@ -229,7 +245,7 @@ fun DetailsHeader(title: String, movieReleaseYear: String, runtime: Int?) {
         )
         Row {
             Text(text = movieReleaseYear)
-            Spacer(modifier = Modifier.preferredWidth(16.dp))
+            Spacer(modifier = Modifier.width(16.dp))
             runtime?.let { Text(text = formatTime(it)) }
         }
     }
@@ -250,24 +266,30 @@ fun MovieOverview(overview: String) {
 
 @Composable
 fun DetailsAppBar(ratio: Float, onNavigationClick: () -> Unit) {
-    Column(modifier = Modifier.background(color = MaterialTheme.colors.primary.copy(alpha = ratio.coerceAtMost(1f)))) {
-        Spacer(modifier = Modifier.statusBarsHeight())
+    Column {
         TopAppBar(
             backgroundColor = Color.Transparent,
             elevation = 0.dp,
-            modifier = Modifier
+            modifier = Modifier.statusBarsHeight(56.dp)
         ) {
-            Icon(
-                imageVector = Icons.Filled.ArrowBack,
-                modifier = Modifier
-                    .padding(4.dp)
-                    .clip(RoundedCornerShape(percent = 50))
-                    .background(MaterialTheme.colors.primary)
-                    .clickable(onClick = onNavigationClick)
-                    .padding(12.dp),
-                tint = MaterialTheme.colors.onPrimary,
-                contentDescription = null
-            )
+            BoxWithConstraints {
+                val primaryColor = MaterialTheme.colors.primary
+                Canvas(modifier = Modifier.height(maxHeight)) {
+                    drawCircle(color = primaryColor, lerp(0.dp, maxWidth, ratio).toPx(), Offset(28.dp.toPx(), (maxHeight-28.dp).toPx()))
+                }
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .padding(4.dp)
+                        .clip(RoundedCornerShape(percent = 50))
+                        .background(MaterialTheme.colors.primary)
+                        .clickable(onClick = onNavigationClick)
+                        .padding(12.dp),
+                    tint = MaterialTheme.colors.onPrimary,
+                    contentDescription = null
+                )
+            }
         }
     }
 }

@@ -18,19 +18,19 @@ fun MovieSnackBar(
         hostState = scaffoldState.snackbarHostState,
         snackbar = { data ->
             Snackbar(
-                text = {
-                    Text(
-                        text = data.message,
-                        style = MaterialTheme.typography.body2,
-                        color = Color.White
-                    )
-                },
                 action = {
                     data.actionLabel?.let { label ->
                         TextButton(onClick = onClickAction) {
                             Text(text = label)
                         }
                     }
+                },
+                content = {
+                    Text(
+                        text = data.message,
+                        style = MaterialTheme.typography.body2,
+                        color = Color.White
+                    )
                 }
             )
         },

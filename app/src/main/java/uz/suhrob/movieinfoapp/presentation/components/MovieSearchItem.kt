@@ -24,8 +24,9 @@ fun MovieSearchItem(
     onClick: () -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth()
-            .preferredHeight(64.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(64.dp)
             .clickable(onClick = onClick)
             .padding(vertical = 2.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -38,7 +39,7 @@ fun MovieSearchItem(
             Image(
                 bitmap = it.asImageBitmap(),
                 modifier = Modifier
-                    .preferredSize(size = 64.dp)
+                    .size(size = 64.dp)
                     .padding(end = 16.dp),
                 contentScale = ContentScale.Crop,
                 contentDescription = "${movie.title} poster"
@@ -51,13 +52,20 @@ fun MovieSearchItem(
 @Composable
 fun SearchItemShimmer() {
     Row(
-        modifier = Modifier.fillMaxWidth()
-            .preferredHeight(64.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(64.dp)
             .padding(vertical = 2.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        ShimmerView(modifier = Modifier.preferredHeight(height = 64.dp).aspectRatio(2f/3))
-        ShimmerView(modifier = Modifier.padding(start = 16.dp).preferredHeight(18.dp).fillMaxWidth(
-            Random.nextInt(3, 6) / 10f))
+        ShimmerView(modifier = Modifier
+            .height(height = 64.dp)
+            .aspectRatio(2f / 3))
+        ShimmerView(
+            modifier = Modifier
+                .padding(start = 16.dp)
+                .height(18.dp)
+                .fillMaxWidth(Random.nextInt(3, 6) / 10f)
+        )
     }
 }

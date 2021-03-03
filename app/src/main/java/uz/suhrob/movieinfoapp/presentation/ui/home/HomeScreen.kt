@@ -9,8 +9,10 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -18,11 +20,11 @@ import androidx.navigation.compose.navigate
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
 import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import uz.suhrob.movieinfoapp.R
 import uz.suhrob.movieinfoapp.domain.model.Genre
 import uz.suhrob.movieinfoapp.domain.model.Movie
 import uz.suhrob.movieinfoapp.domain.model.defaultGenre
-import uz.suhrob.movieinfoapp.other.PAGE_SIZE
 import uz.suhrob.movieinfoapp.presentation.components.*
 
 @ExperimentalCoroutinesApi
@@ -37,11 +39,13 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
     val error = viewModel.error.collectAsState()
     val loading = viewModel.loading.collectAsState()
 
+    val composeScope = rememberCoroutineScope()
+
     val scaffoldState = rememberScaffoldState()
     Scaffold(
         topBar = {
             HomeAppBar(
-                onNavigationClick = { scaffoldState.drawerState.open() },
+                onNavigationClick = { composeScope.launch { scaffoldState.drawerState.open() } },
                 onSearchClick = { navController.navigate("search") })
         },
         drawerContent = { HomeDrawer(navController = navController) },
@@ -76,7 +80,9 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
 fun HomeAppBar(onNavigationClick: () -> Unit, onSearchClick: () -> Unit) {
     Column {
         Spacer(
-            modifier = Modifier.fillMaxWidth().statusBarsHeight()
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsHeight()
                 .background(color = MaterialTheme.colors.primary)
         )
         TopAppBar(
@@ -103,7 +109,7 @@ fun HomeDrawer(navController: NavController) {
     DrawerHeader()
     Divider()
     DrawerItem(icon = Icons.Filled.Search, title = "Search") { navController.navigate("search") }
-    DrawerItem(icon = vectorResource(id = R.drawable.ic_heart), title = "Favorites") {
+    DrawerItem(icon = ImageVector.vectorResource(id = R.drawable.ic_heart), title = "Favorites") {
         navController.navigate("favorites")
     }
 }

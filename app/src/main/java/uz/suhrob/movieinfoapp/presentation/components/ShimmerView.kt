@@ -9,17 +9,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.AmbientDensity
+import androidx.compose.ui.platform.LocalDensity
 
 @Composable
 fun ShimmerView(
     modifier: Modifier
 ) {
     BoxWithConstraints(modifier = modifier) {
-        val widthPx = with(AmbientDensity.current) {
+        val widthPx = with(LocalDensity.current) {
             maxWidth.toPx()
         }
-        val heightPx = with(AmbientDensity.current) {
+        val heightPx = with(LocalDensity.current) {
             maxHeight.toPx()
         }
         val colors = listOf(

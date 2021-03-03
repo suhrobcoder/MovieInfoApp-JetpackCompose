@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import uz.suhrob.movieinfoapp.R
 
@@ -38,7 +39,7 @@ fun StarImageButton(
     onClick: () -> Unit
 ) {
     Image(
-        bitmap = imageResource(id = if (isFilled) R.drawable.ic_star_filled else R.drawable.ic_star_outlined),
+        painter = painterResource(id = if (isFilled) R.drawable.ic_star_filled else R.drawable.ic_star_outlined),
         modifier = modifier.clickable(onClick = onClick).padding(all = 4.dp),
         contentDescription = "Star button"
     )

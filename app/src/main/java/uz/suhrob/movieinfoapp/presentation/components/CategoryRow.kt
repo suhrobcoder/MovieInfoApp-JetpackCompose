@@ -1,7 +1,11 @@
 package uz.suhrob.movieinfoapp.presentation.components
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -43,8 +47,13 @@ fun CategoryRow(selectedCategory: Category, onCategorySelected: (Category) -> Un
 
 @Composable
 fun CategoryItem(category: Category, modifier: Modifier, selected: Boolean, onClick: () -> Unit) {
-    val interactionState = InteractionState()
-    Column(modifier = modifier.clickable(onClick = onClick, interactionState = interactionState, indication = null)) {
+    Column(
+        modifier = modifier.clickable(
+            onClick = onClick,
+            interactionSource = MutableInteractionSource(),
+            indication = null
+        )
+    ) {
         Text(
             text = category.value,
             modifier = Modifier.padding(bottom = 8.dp),

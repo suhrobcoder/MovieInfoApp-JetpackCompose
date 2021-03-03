@@ -2,11 +2,11 @@ package uz.suhrob.movieinfoapp.presentation
 
 import android.graphics.Color
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.AmbientContext
-import androidx.compose.ui.platform.setContent
+import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.HiltViewModelFactory
 import androidx.lifecycle.ViewModel
@@ -78,6 +78,6 @@ class MainActivity : AppCompatActivity() {
 internal inline fun <reified T : ViewModel> NavBackStackEntry.hiltViewModel(): T {
     return ViewModelProvider(
         this.viewModelStore,
-        HiltViewModelFactory(AmbientContext.current, this)
+        HiltViewModelFactory(LocalContext.current, this)
     ).get(T::class.java)
 }

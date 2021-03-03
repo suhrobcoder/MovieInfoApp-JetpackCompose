@@ -2,8 +2,8 @@ package uz.suhrob.movieinfoapp.presentation.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.preferredSize
-import androidx.compose.foundation.layout.preferredWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme
@@ -51,12 +51,12 @@ fun CastItem(
     character: String
 ) {
     Column(
-        modifier = modifier.preferredWidth(width = 84.dp),
+        modifier = modifier.width(width = 84.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AvatarImage(
             path = profilePath,
-            modifier = Modifier.padding(vertical = 12.dp).preferredSize(64.dp)
+            modifier = Modifier.padding(vertical = 12.dp).size(64.dp)
         )
         Text(
             text = name,

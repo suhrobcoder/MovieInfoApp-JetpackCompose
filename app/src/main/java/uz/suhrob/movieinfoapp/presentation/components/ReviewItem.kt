@@ -21,7 +21,7 @@ fun ReviewItem(
     Card(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
         Column(modifier = Modifier.padding(8.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                AvatarImage(path = avatarUrl, modifier = Modifier.preferredSize(48.dp))
+                AvatarImage(path = avatarUrl, modifier = Modifier.size(48.dp))
                 Text(text = authorName, style = MaterialTheme.typography.h6)
                 Spacer(modifier = Modifier.weight(1f))
                 IconButton(onClick = { textCollapsed.value = !textCollapsed.value }) {
@@ -33,9 +33,13 @@ fun ReviewItem(
             }
             Divider()
             Text(
-                text = if (textCollapsed.value) content else content.substring(0..(if (content.length > 100) 100 else content.length - 1)),
+                text = if (textCollapsed.value) content else getFirstSentence(content),
                 style = MaterialTheme.typography.body1
             )
         }
     }
+}
+
+fun getFirstSentence(string: String): String {
+    return string.split(".")[0] + "."
 }
