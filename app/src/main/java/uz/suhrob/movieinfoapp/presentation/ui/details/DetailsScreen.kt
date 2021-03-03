@@ -1,6 +1,8 @@
 package uz.suhrob.movieinfoapp.presentation.ui.details
 
-import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,11 +21,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import dev.chrisbanes.accompanist.insets.navigationBarsPadding
@@ -41,6 +43,7 @@ import uz.suhrob.movieinfoapp.other.getImageUrl
 import uz.suhrob.movieinfoapp.other.loadImage
 import uz.suhrob.movieinfoapp.presentation.components.*
 
+@ExperimentalAnimationApi
 @ExperimentalCoroutinesApi
 @Composable
 fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
@@ -115,7 +118,7 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
                             ReviewsColumn(reviews = reviews.value)
                         }
                     }
-                    DetailsAppBar(ratio = 1f * scrollState.value / 500) { navController.popBackStack() }
+                    DetailsAppBar(transparent = scrollState.value < 300, title = movie.title) { navController.popBackStack() }
                     MovieSnackBar(
                         scaffoldState = scaffoldState,
                         onClickAction = {},
@@ -128,13 +131,19 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
             }
             is Resource.Loading -> {
                 Column {
-                    DetailsAppBar(ratio = 1f, onNavigationClick = { navController.popBackStack() })
+                    DetailsAppBar(
+                        transparent = false,
+                        title = "",
+                        onNavigationClick = { navController.popBackStack() })
                     Loading()
                 }
             }
             is Resource.Error -> {
                 Column {
-                    DetailsAppBar(ratio = 1f, onNavigationClick = { navController.popBackStack() })
+                    DetailsAppBar(
+                        transparent = false,
+                        title = "",
+                        onNavigationClick = { navController.popBackStack() })
                     Error(
                         modifier = Modifier.statusBarsPadding(),
                         onRetry = { viewModel.onTriggerEvent(DetailsEvent.LoadMovie) }
@@ -264,23 +273,26 @@ fun MovieOverview(overview: String) {
     }
 }
 
+@ExperimentalAnimationApi
 @Composable
-fun DetailsAppBar(ratio: Float, onNavigationClick: () -> Unit) {
-    Column {
-        TopAppBar(
-            backgroundColor = Color.Transparent,
-            elevation = 0.dp,
-            modifier = Modifier.statusBarsHeight(56.dp)
-        ) {
-            BoxWithConstraints {
-                val primaryColor = MaterialTheme.colors.primary
-                Canvas(modifier = Modifier.height(maxHeight)) {
-                    drawCircle(color = primaryColor, lerp(0.dp, maxWidth, ratio).toPx(), Offset(28.dp.toPx(), (maxHeight-28.dp).toPx()))
-                }
+fun DetailsAppBar(transparent: Boolean = true, title: String, onNavigationClick: () -> Unit) {
+    TopAppBar(
+        backgroundColor = Color.Transparent,
+        elevation = 0.dp,
+        modifier = Modifier.statusBarsHeight(56.dp)
+    ) {
+        BoxWithConstraints {
+            val primaryColor = MaterialTheme.colors.primary
+            val radius = animateFloatAsState(
+                targetValue = if (transparent) 0f else with(LocalDensity.current) { maxWidth.toPx() }
+            )
+            Canvas(modifier = Modifier.height(maxHeight)) {
+                drawCircle(color = primaryColor, radius.value, Offset(28.dp.toPx(), (maxHeight-28.dp).toPx()))
+            }
+            Row(modifier = Modifier.statusBarsPadding(), verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     modifier = Modifier
-                        .statusBarsPadding()
                         .padding(4.dp)
                         .clip(RoundedCornerShape(percent = 50))
                         .background(MaterialTheme.colors.primary)
@@ -289,6 +301,9 @@ fun DetailsAppBar(ratio: Float, onNavigationClick: () -> Unit) {
                     tint = MaterialTheme.colors.onPrimary,
                     contentDescription = null
                 )
+                AnimatedVisibility(visible = !transparent) {
+                    Text(text = title, style = MaterialTheme.typography.h6.copy(color = MaterialTheme.colors.onPrimary))
+                }
             }
         }
     }
