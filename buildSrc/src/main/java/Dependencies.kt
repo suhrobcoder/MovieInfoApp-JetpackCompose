@@ -81,6 +81,6 @@ object Dependencies {
         const val espressoCore = "androidx.test.espresso:espresso-core:${Versions.espressoVersion}"
         const val dexmakerMockito = "com.linkedin.dexmaker:dexmaker-mockito:${Versions.dexmakerMockitoVersion}"
         const val hiltAndroidTesting = "com.google.dagger:hilt-android-testing:${Versions.hiltTestingVersion}"
-        const val hiltAndroidCompiler = "com.google.dagger:hilt-android-compiler:${Versions.hiltTestingVersion}"
+        const val hiltAndroidCompiler = "com.google.dagger:hilt-compiler:${Versions.hiltTestingVersion}"
     }
 }

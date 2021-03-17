@@ -16,7 +16,7 @@ object Versions {
     const val serializationConverterVersion = "0.8.0"
     const val datastoreVersion = "1.0.0-alpha06"
     const val accompanistVersion = "0.6.0"
-    const val junitVersion = "4.13.1"
+    const val junitVersion = "4.12"
     const val junitExtVersion = "1.1.2"
     const val testCoreVersion = "1.3.0"
     const val archCoreTestingVersion = "2.1.0"
@@ -25,7 +25,7 @@ object Versions {
     const val coroutinesTestVersion = "1.2.1"
     const val googleTruthVersion = "1.0.1"
     const val mockitoCoreVersion = "2.21.0"
-    const val dexmakerMockitoVersion = "2.21.1"
+    const val dexmakerMockitoVersion = "2.28.1"
     const val hiltTestingVersion = "2.33-beta"
     const val espressoVersion = "3.3.0"
 }

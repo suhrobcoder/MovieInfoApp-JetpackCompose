@@ -92,7 +92,6 @@ dependencies {
     testImplementation(Dependencies.Test.mockitoCore)
 
     androidTestImplementation(Dependencies.Test.Junit.junit)
-    //TODO dexmaker
     androidTestImplementation(Dependencies.Test.coroutinesTest)
     androidTestImplementation(Dependencies.Test.archCoreTesting)
     androidTestImplementation(Dependencies.Test.googleTruth)
