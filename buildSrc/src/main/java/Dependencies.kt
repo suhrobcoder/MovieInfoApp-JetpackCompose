@@ -13,10 +13,6 @@ object Dependencies {
         object Datastore {
             const val preferences = "androidx.datastore:datastore-preferences:${Versions.datastoreVersion}"
         }
-        object Test {
-            const val junitExt = "androidx.test.ext:junit:${Versions.junitExtVersion}"
-            const val espressoCore = "androidx.test.espresso:espresso-core:${Versions.espressoVersion}"
-        }
         object Activity {
             const val activityCompose = "androidx.activity:activity-compose:${Versions.activityComposeVersion}"
         }
@@ -59,9 +55,7 @@ object Dependencies {
         const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofitVersion}"
         const val serializationConverter = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${Versions.serializationConverterVersion}"
     }
-    object Junit {
-        const val junit = "junit:junit:${Versions.junitVersion}"
-    }
+
     object Plugins {
         const val application = "com.android.application"
         const val kotlinAndroid = "kotlin-android"
@@ -71,4 +65,22 @@ object Dependencies {
     }
 
     const val accompanistInsets = "dev.chrisbanes.accompanist:accompanist-insets:${Versions.accompanistVersion}"
+
+    object Test {
+        object Junit {
+            const val junit = "junit:junit:${Versions.junitVersion}"
+            const val junitExt = "androidx.test.ext:junit:${Versions.junitExtVersion}"
+        }
+        const val androidTestCore = "androidx.test:core:${Versions.testCoreVersion}"
+        const val archCoreTesting = "androidx.arch.core:core-testing:${Versions.archCoreTestingVersion}"
+        const val hamcrestVersion = "org.hamcrest:hamcrest-all:${Versions.hamcrestVersion}"
+        const val roboelectric = "org.robolectric:robolectric:${Versions.roboelectricVersion}"
+        const val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutinesTestVersion}"
+        const val googleTruth = "com.google.truth:truth:${Versions.googleTruthVersion}"
+        const val mockitoCore = "org.mockito:mockito-core:${Versions.mockitoCoreVersion}"
+        const val espressoCore = "androidx.test.espresso:espresso-core:${Versions.espressoVersion}"
+        const val dexmakerMockito = "com.linkedin.dexmaker:dexmaker-mockito:${Versions.dexmakerMockitoVersion}"
+        const val hiltAndroidTesting = "com.google.dagger:hilt-android-testing:${Versions.hiltTestingVersion}"
+        const val hiltAndroidCompiler = "com.google.dagger:hilt-android-compiler:${Versions.hiltTestingVersion}"
+    }
 }

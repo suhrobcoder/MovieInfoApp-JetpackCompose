@@ -82,7 +82,24 @@ dependencies {
 
     implementation(Dependencies.accompanistInsets)
 
-    testImplementation(Dependencies.Junit.junit)
-    androidTestImplementation(Dependencies.AndroidX.Test.junitExt)
-    androidTestImplementation(Dependencies.AndroidX.Test.espressoCore)
+    testImplementation(Dependencies.Test.Junit.junit)
+    testImplementation(Dependencies.Test.androidTestCore)
+    testImplementation(Dependencies.Test.hamcrestVersion)
+    testImplementation(Dependencies.Test.archCoreTesting)
+    testImplementation(Dependencies.Test.roboelectric)
+    testImplementation(Dependencies.Test.coroutinesTest)
+    testImplementation(Dependencies.Test.googleTruth)
+    testImplementation(Dependencies.Test.mockitoCore)
+
+    androidTestImplementation(Dependencies.Test.Junit.junit)
+    //TODO dexmaker
+    androidTestImplementation(Dependencies.Test.coroutinesTest)
+    androidTestImplementation(Dependencies.Test.archCoreTesting)
+    androidTestImplementation(Dependencies.Test.googleTruth)
+    androidTestImplementation(Dependencies.Test.Junit.junitExt)
+    androidTestImplementation(Dependencies.Test.espressoCore)
+    androidTestImplementation(Dependencies.Test.mockitoCore)
+    androidTestImplementation(Dependencies.Test.dexmakerMockito)
+    androidTestImplementation(Dependencies.Test.hiltAndroidTesting)
+    kaptAndroidTest(Dependencies.Test.hiltAndroidCompiler)
 }
