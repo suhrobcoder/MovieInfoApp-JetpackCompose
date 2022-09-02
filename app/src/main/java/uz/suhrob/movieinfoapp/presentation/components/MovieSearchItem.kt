@@ -1,21 +1,20 @@
 package uz.suhrob.movieinfoapp.presentation.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import uz.suhrob.movieinfoapp.R
 import uz.suhrob.movieinfoapp.domain.model.Movie
 import uz.suhrob.movieinfoapp.other.getImageUrl
-import uz.suhrob.movieinfoapp.other.loadImage
 import kotlin.random.Random
 
 @Composable
@@ -31,20 +30,17 @@ fun MovieSearchItem(
             .padding(vertical = 2.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val image by loadImage(
-            url = getImageUrl(movie.posterPath),
-            defaultImage = R.drawable.poster_placeholder
-        )
-        image?.let {
-            Image(
-                bitmap = it.asImageBitmap(),
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(getImageUrl(movie.posterPath))
+                    .placeholder(R.drawable.poster_placeholder)
+                    .build(),
                 modifier = Modifier
                     .size(size = 64.dp)
                     .padding(end = 16.dp),
                 contentScale = ContentScale.Crop,
                 contentDescription = "${movie.title} poster"
             )
-        }
         Text(text = movie.title, style = MaterialTheme.typography.h5)
     }
 }

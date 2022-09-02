@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -19,8 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -28,19 +29,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import dev.chrisbanes.accompanist.insets.navigationBarsPadding
-import dev.chrisbanes.accompanist.insets.statusBarsHeight
-import dev.chrisbanes.accompanist.insets.statusBarsPadding
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import uz.suhrob.movieinfoapp.R
 import uz.suhrob.movieinfoapp.domain.model.Review
 import uz.suhrob.movieinfoapp.domain.model.Video
 import uz.suhrob.movieinfoapp.other.Resource
 import uz.suhrob.movieinfoapp.other.formatTime
 import uz.suhrob.movieinfoapp.other.getImageUrl
-import uz.suhrob.movieinfoapp.other.loadImage
 import uz.suhrob.movieinfoapp.presentation.components.*
 
 @ExperimentalAnimationApi
@@ -53,7 +50,7 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
     val snackBarController = MovieSnackBarController(composeScope)
     val scaffoldState = rememberScaffoldState()
     val scrollState = rememberScrollState()
-    composeScope.launch {
+    LaunchedEffect(key1 = viewModel.movieId) {
         viewModel.snackBarFlow.collect {
             snackBarController.showSnackBar(scaffoldState, it)
         }
@@ -62,7 +59,7 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
         scaffoldState = scaffoldState,
         snackbarHost = { scaffoldState.snackbarHostState },
         modifier = Modifier.navigationBarsPadding()
-    ) {
+    ) { paddingValues ->
         when (movieRes.value) {
             is Resource.Success -> {
                 val movie = movieRes.value.data!!
@@ -79,7 +76,9 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
                         onSubmit = { viewModel.onTriggerEvent(DetailsEvent.SubmitRating(rating.value)) },
                         onClose = { viewModel.onTriggerEvent(DetailsEvent.CloseDialog) })
                 }
-                Box(modifier = Modifier.fillMaxSize()) {
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)) {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -130,7 +129,9 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
 
             }
             is Resource.Loading -> {
-                Column {
+                Column(
+                    modifier = Modifier.padding(paddingValues),
+                ) {
                     DetailsAppBar(
                         transparent = false,
                         title = "",
@@ -139,7 +140,9 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
                 }
             }
             is Resource.Error -> {
-                Column {
+                Column(
+                    modifier = Modifier.padding(paddingValues),
+                ) {
                     DetailsAppBar(
                         transparent = false,
                         title = "",
@@ -156,23 +159,21 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
 
 @Composable
 fun BackdropImage(backdropPath: String) {
-    val image = loadImage(
-        url = getImageUrl(backdropPath),
-        defaultImage = R.drawable.backdrop_placeholder
+    AsyncImage(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(getImageUrl(backdropPath))
+            .placeholder(R.drawable.backdrop_placeholder)
+            .build(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 32.dp)
+            .aspectRatio(16f / 9)
+            .clip(
+                RoundedCornerShape(bottomStart = 32.dp)
+            ),
+        contentScale = ContentScale.Crop,
+        contentDescription = "Backdrop image"
     )
-    image.value?.let { img ->
-        Image(
-            bitmap = img.asImageBitmap(),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 32.dp)
-                .clip(
-                    RoundedCornerShape(bottomStart = 32.dp)
-                ),
-            contentScale = ContentScale.Crop,
-            contentDescription = "Backdrop image"
-        )
-    }
 }
 
 @Composable
@@ -279,7 +280,6 @@ fun DetailsAppBar(transparent: Boolean = true, title: String, onNavigationClick:
     TopAppBar(
         backgroundColor = Color.Transparent,
         elevation = 0.dp,
-        modifier = Modifier.statusBarsHeight(56.dp)
     ) {
         BoxWithConstraints {
             val primaryColor = MaterialTheme.colors.primary

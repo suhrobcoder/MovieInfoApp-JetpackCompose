@@ -16,9 +16,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.navigate
-import dev.chrisbanes.accompanist.insets.navigationBarsPadding
-import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import uz.suhrob.movieinfoapp.R
@@ -51,8 +48,8 @@ fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
         drawerContent = { HomeDrawer(navController = navController) },
         scaffoldState = scaffoldState,
         modifier = Modifier.navigationBarsPadding()
-    ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+    ) { paddingValues ->
+        Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
             CategoryRow(category.value) { category ->
                 viewModel.onTriggerEvent(HomeEvent.ChangeCategory(category))
             }
@@ -82,7 +79,7 @@ fun HomeAppBar(onNavigationClick: () -> Unit, onSearchClick: () -> Unit) {
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
-                .statusBarsHeight()
+                .statusBarsPadding()
                 .background(color = MaterialTheme.colors.primary)
         )
         TopAppBar(
@@ -137,10 +134,11 @@ fun HomeBody(
             },
             onLastItemCreated = {
                 triggerEvent(HomeEvent.NextPage)
-            }
-        ) { movie ->
+            },
+            onMovieClicked = { movie ->
             navController.navigate("details/${movie.id}")
-        }
+            }
+        )
         if (loading) {
             if (movies.isEmpty()) {
                 MovieShimmerGrid()

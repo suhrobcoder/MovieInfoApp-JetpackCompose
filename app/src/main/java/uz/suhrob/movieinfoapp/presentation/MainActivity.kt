@@ -10,16 +10,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.HiltViewModelFactory
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
-import dev.chrisbanes.accompanist.insets.ProvideWindowInsets
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.serialization.ExperimentalSerializationApi
 import uz.suhrob.movieinfoapp.presentation.theme.MovieInfoAppTheme
@@ -45,41 +45,31 @@ class MainActivity : AppCompatActivity() {
         window.statusBarColor = Color.TRANSPARENT
         setContent {
             MovieInfoAppTheme {
-                ProvideWindowInsets {
-                    val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "home") {
-                        composable("home") {
-                            val viewModel = it.hiltViewModel<HomeViewModel>()
-                            HomeScreen(viewModel = viewModel, navController = navController)
-                        }
-                        composable("search") {
-                            val viewModel = it.hiltViewModel<SearchViewModel>()
-                            SearchScreen(viewModel = viewModel, navController = navController)
-                        }
-                        composable(
-                            "details/{id}",
-                            arguments = listOf(navArgument(name = "id") { type = NavType.IntType })
-                        ) {
-                            val id = it.arguments?.getInt("id") ?: 0
-                            val viewModel = it.hiltViewModel<DetailsViewModel>()
-                            viewModel.movieId = id
-                            DetailsScreen(viewModel = viewModel, navController = navController)
-                        }
-                        composable("favorites") {
-                            val viewModel = it.hiltViewModel<FavoritesViewModel>()
-                            FavoritesScreen(viewModel = viewModel, navController = navController)
-                        }
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = "home") {
+                    composable("home") {
+                        val viewModel = hiltViewModel<HomeViewModel>()
+                        HomeScreen(viewModel = viewModel, navController = navController)
+                    }
+                    composable("search") {
+                        val viewModel = hiltViewModel<SearchViewModel>()
+                        SearchScreen(viewModel = viewModel, navController = navController)
+                    }
+                    composable(
+                        "details/{id}",
+                        arguments = listOf(navArgument(name = "id") { type = NavType.IntType })
+                    ) {
+                        val id = it.arguments?.getInt("id") ?: 0
+                        val viewModel = hiltViewModel<DetailsViewModel>()
+                        viewModel.movieId = id
+                        DetailsScreen(viewModel = viewModel, navController = navController)
+                    }
+                    composable("favorites") {
+                        val viewModel = hiltViewModel<FavoritesViewModel>()
+                        FavoritesScreen(viewModel = viewModel, navController = navController)
                     }
                 }
             }
         }
     }
-}
-
-@Composable
-internal inline fun <reified T : ViewModel> NavBackStackEntry.hiltViewModel(): T {
-    return ViewModelProvider(
-        this.viewModelStore,
-        HiltViewModelFactory(LocalContext.current, this)
-    ).get(T::class.java)
 }

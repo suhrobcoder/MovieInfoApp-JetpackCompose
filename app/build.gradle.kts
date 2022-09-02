@@ -7,12 +7,12 @@ plugins {
 }
 
 android {
-    compileSdkVersion(Sdk.compileSdkVersion)
+    compileSdk = Sdk.compileSdkVersion
 
     defaultConfig {
         applicationId = Sdk.applicationId
-        minSdkVersion(Sdk.minSdkVersion)
-        targetSdkVersion(Sdk.minSdkVersion)
+        minSdk = Sdk.minSdkVersion
+        targetSdk = Sdk.minSdkVersion
         versionCode = Sdk.versionCode
         versionName = Sdk.versionName
 
@@ -31,14 +31,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
-        useIR = true
     }
     buildFeatures {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.composeVersion
-        kotlinCompilerVersion = Versions.kotlinVersion
+        kotlinCompilerExtensionVersion = Versions.composeCompilerVersion
     }
 }
 
@@ -50,7 +48,7 @@ dependencies {
     implementation(Dependencies.Material.material)
 
     //Compose
-    implementation(Dependencies.Compose.uiTooling)
+    implementation(Dependencies.Compose.uiToolingPreview)
     implementation(Dependencies.Compose.material)
     implementation(Dependencies.Compose.ui)
 
@@ -58,19 +56,16 @@ dependencies {
 
     implementation(Dependencies.Lifecycle.viewmodelKtx)
     implementation(Dependencies.Lifecycle.commonJava8)
-    implementation(Dependencies.Lifecycle.extensions)
 
     implementation(Dependencies.DaggerHilt.hiltAndroid)
     kapt(Dependencies.DaggerHilt.androidCompiler)
-    implementation(Dependencies.DaggerHilt.lifecycleViewmodel)
     kapt(Dependencies.DaggerHilt.hiltCompiler)
     implementation(Dependencies.DaggerHilt.hiltNavigation)
 
-    implementation(Dependencies.Glide.glide)
-    kapt(Dependencies.Glide.glideCompiler)
+    implementation(Dependencies.Coil.coilCompose)
 
     implementation(Dependencies.Room.roomRuntime)
-    implementation(Dependencies.Room.roomCompiler)
+    kapt(Dependencies.Room.roomCompiler)
     implementation(Dependencies.Room.roomKtx)
 
     implementation(Dependencies.Retrofit.retrofit)
@@ -80,13 +75,9 @@ dependencies {
 
     implementation(Dependencies.AndroidX.Datastore.preferences)
 
-    implementation(Dependencies.accompanistInsets)
-
     testImplementation(Dependencies.Test.Junit.junit)
     testImplementation(Dependencies.Test.androidTestCore)
-    testImplementation(Dependencies.Test.hamcrestVersion)
     testImplementation(Dependencies.Test.archCoreTesting)
-    testImplementation(Dependencies.Test.roboelectric)
     testImplementation(Dependencies.Test.coroutinesTest)
     testImplementation(Dependencies.Test.googleTruth)
     testImplementation(Dependencies.Test.mockitoCore)
@@ -96,9 +87,11 @@ dependencies {
     androidTestImplementation(Dependencies.Test.archCoreTesting)
     androidTestImplementation(Dependencies.Test.googleTruth)
     androidTestImplementation(Dependencies.Test.Junit.junitExt)
-    androidTestImplementation(Dependencies.Test.espressoCore)
     androidTestImplementation(Dependencies.Test.mockitoCore)
     androidTestImplementation(Dependencies.Test.dexmakerMockito)
     androidTestImplementation(Dependencies.Test.hiltAndroidTesting)
     kaptAndroidTest(Dependencies.Test.hiltAndroidCompiler)
+
+    debugImplementation(Dependencies.Compose.uiTooling)
+    debugImplementation(Dependencies.Compose.uiTestManifest)
 }

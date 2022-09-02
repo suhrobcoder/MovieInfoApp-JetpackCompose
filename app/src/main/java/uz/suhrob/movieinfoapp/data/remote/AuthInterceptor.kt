@@ -7,7 +7,7 @@ import uz.suhrob.movieinfoapp.other.API_KEY
 class AuthInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val original = chain.request()
-        val originalUrl = original.url()
+        val originalUrl = original.url
         val url = originalUrl.newBuilder()
             .addQueryParameter("api_key", API_KEY)
             .build()

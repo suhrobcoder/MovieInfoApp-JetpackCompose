@@ -9,11 +9,17 @@ import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import uz.suhrob.movieinfoapp.data.remote.ApiService
 import uz.suhrob.movieinfoapp.data.remote.AuthInterceptor
 import uz.suhrob.movieinfoapp.other.BASE_URL
+
+private val json = Json {
+    ignoreUnknownKeys = true
+    isLenient = true
+}
 
 @InstallIn(ActivityRetainedComponent::class)
 @Module
@@ -29,10 +35,7 @@ object NetworkModule {
     fun provideRetrofit(client: OkHttpClient): Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(
-            Json {
-                ignoreUnknownKeys = true
-                isLenient = true
-            }.asConverterFactory(MediaType.get("application/json"))
+            json.asConverterFactory("application/json".toMediaType())
         )
         .client(client)
         .build()

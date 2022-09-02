@@ -5,24 +5,25 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.createDataStore
+import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "movie_info_pref")
+
 @ActivityRetainedScoped
-class MovieInfoPref @Inject constructor(@ApplicationContext context: Context) {
-    private val dataStore: DataStore<Preferences> = context.createDataStore(
-        name = "${context.packageName}.movie_info_pref"
-    )
+class MovieInfoPref @Inject constructor(
+    @ApplicationContext private val context: Context,
+) {
 
     val guestSessionId: Flow<String?>
-        get() = dataStore.data.map { prefs -> prefs[KEY_GUEST_SESSION_ID] }
+        get() = context.dataStore.data.map { prefs -> prefs[KEY_GUEST_SESSION_ID] }
 
     suspend fun setGuestSessionId(id: String) {
-        dataStore.edit { prefs ->
+        context.dataStore.edit { prefs ->
             prefs[KEY_GUEST_SESSION_ID] = id
         }
     }

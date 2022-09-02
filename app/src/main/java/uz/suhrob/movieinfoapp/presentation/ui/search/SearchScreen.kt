@@ -18,9 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.navigate
-import dev.chrisbanes.accompanist.insets.navigationBarsPadding
-import dev.chrisbanes.accompanist.insets.statusBarsHeight
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import uz.suhrob.movieinfoapp.other.Resource
 import uz.suhrob.movieinfoapp.presentation.components.Error
@@ -38,10 +35,10 @@ fun SearchScreen(viewModel: SearchViewModel, navController: NavController) {
             SearchAppBar(query.value, viewModel, navController)
         },
         modifier = Modifier.navigationBarsPadding()
-    ) {
+    ) { paddingValues ->
         when (movies.value) {
             is Resource.Success -> {
-                LazyColumn(modifier = Modifier.padding(top = 8.dp)) {
+                LazyColumn(modifier = Modifier.padding(paddingValues).padding(top = 8.dp)) {
                     items(movies.value.data ?: listOf()) { movie ->
                         MovieSearchItem(movie = movie) {
                             navController.navigate("details/${movie.id}")
@@ -67,7 +64,7 @@ fun SearchScreen(viewModel: SearchViewModel, navController: NavController) {
 fun SearchAppBar(query: String, viewModel: SearchViewModel, navController: NavController) {
     Column {
         Spacer(
-            modifier = Modifier.fillMaxWidth().statusBarsHeight()
+            modifier = Modifier.fillMaxWidth().statusBarsPadding()
                 .background(color = MaterialTheme.colors.primary)
         )
         TopAppBar(elevation = 0.dp) {
