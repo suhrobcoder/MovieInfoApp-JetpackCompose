@@ -1,21 +1,14 @@
 package uz.suhrob.movieinfoapp.presentation.ui.search
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,6 +18,7 @@ import uz.suhrob.movieinfoapp.presentation.components.MovieSearchItem
 import uz.suhrob.movieinfoapp.presentation.components.SearchField
 import uz.suhrob.movieinfoapp.presentation.components.SearchItemShimmer
 
+@OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalCoroutinesApi
 @Composable
 fun SearchScreen(viewModel: SearchViewModel, navController: NavController) {
@@ -34,11 +28,14 @@ fun SearchScreen(viewModel: SearchViewModel, navController: NavController) {
         topBar = {
             SearchAppBar(query.value, viewModel, navController)
         },
-        modifier = Modifier.navigationBarsPadding()
     ) { paddingValues ->
         when (movies.value) {
             is Resource.Success -> {
-                LazyColumn(modifier = Modifier.padding(paddingValues).padding(top = 8.dp)) {
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .padding(top = 8.dp)
+                ) {
                     items(movies.value.data ?: listOf()) { movie ->
                         MovieSearchItem(movie = movie) {
                             navController.navigate("details/${movie.id}")
@@ -60,30 +57,26 @@ fun SearchScreen(viewModel: SearchViewModel, navController: NavController) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchAppBar(query: String, viewModel: SearchViewModel, navController: NavController) {
     Column {
-        Spacer(
-            modifier = Modifier.fillMaxWidth().statusBarsPadding()
-                .background(color = MaterialTheme.colors.primary)
-        )
-        TopAppBar(elevation = 0.dp) {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .clip(RoundedCornerShape(percent = 50))
-                        .clickable(onClick = { navController.popBackStack() })
-                        .padding(8.dp),
-                    contentDescription = null
-                )
+        SmallTopAppBar(
+            navigationIcon = {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = null
+                    )
+                }
+            },
+            title = {
                 SearchField(
                     value = query,
                     onValueChange = { viewModel.onQueryChange(it) },
                     onSearch = { viewModel.onTriggerEvent(SearchEvent.Search) }
                 )
             }
-        }
+        )
     }
 }

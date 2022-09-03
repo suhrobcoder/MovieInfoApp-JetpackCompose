@@ -1,10 +1,12 @@
 package uz.suhrob.movieinfoapp.presentation.ui.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -44,8 +46,6 @@ class HomeViewModel @Inject constructor(
     private val _currentPage = MutableStateFlow(DEFAULT_PAGE)
     private val currentPage: StateFlow<Int> get() = _currentPage
 
-    var movieListScrollPosition = 0
-
     init {
         onTriggerEvent(HomeEvent.LoadGenres)
         onTriggerEvent(HomeEvent.LoadMovies)
@@ -84,10 +84,6 @@ class HomeViewModel @Inject constructor(
 
     private fun nextPage() {
         viewModelScope.launch {
-//            if (movieListScrollPosition + 1 >= currentPage.value * PAGE_SIZE) {
-//                incrementPage()
-//                loadMovies()
-//            }
             if (!loading.value) {
                 incrementPage()
                 loadMovies()
@@ -103,10 +99,6 @@ class HomeViewModel @Inject constructor(
 
     private fun incrementPage() {
         _currentPage.value += 1
-    }
-
-    fun onChangeScrollPosition(position: Int) {
-        movieListScrollPosition = position
     }
 
     private suspend fun loadMovies() {

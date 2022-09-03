@@ -1,28 +1,22 @@
 package uz.suhrob.movieinfoapp.presentation.ui.details
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -40,25 +34,24 @@ import uz.suhrob.movieinfoapp.other.formatTime
 import uz.suhrob.movieinfoapp.other.getImageUrl
 import uz.suhrob.movieinfoapp.presentation.components.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalAnimationApi
 @ExperimentalCoroutinesApi
 @Composable
 fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
     val movieRes = viewModel.movie.collectAsState()
     val showDialog = viewModel.isShowingDialog.collectAsState()
-    val composeScope = rememberCoroutineScope()
-    val snackBarController = MovieSnackBarController(composeScope)
-    val scaffoldState = rememberScaffoldState()
     val scrollState = rememberScrollState()
+    val snackBarHostState = SnackbarHostState()
     LaunchedEffect(key1 = viewModel.movieId) {
         viewModel.snackBarFlow.collect {
-            snackBarController.showSnackBar(scaffoldState, it)
+            snackBarHostState.showSnackbar(it)
         }
     }
     Scaffold(
-        scaffoldState = scaffoldState,
-        snackbarHost = { scaffoldState.snackbarHostState },
-        modifier = Modifier.navigationBarsPadding()
+        snackbarHost = {
+                       SnackbarHost(hostState = snackBarHostState)
+        },
     ) { paddingValues ->
         when (movieRes.value) {
             is Resource.Success -> {
@@ -118,13 +111,6 @@ fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
                         }
                     }
                     DetailsAppBar(transparent = scrollState.value < 300, title = movie.title) { navController.popBackStack() }
-                    MovieSnackBar(
-                        scaffoldState = scaffoldState,
-                        onClickAction = {},
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(all = 4.dp)
-                    )
                 }
 
             }
@@ -190,7 +176,7 @@ fun RatingBar(
             .padding(start = 32.dp)
             .height(72.dp),
         shape = RoundedCornerShape(topStartPercent = 50, bottomStartPercent = 50),
-        elevation = 8.dp
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Column(
@@ -215,7 +201,7 @@ fun RatingBar(
                 )
                 Text(
                     text = "$voteCount",
-                    style = MaterialTheme.typography.caption
+                    style = MaterialTheme.typography.bodySmall,
                 )
             }
             Column(
@@ -248,7 +234,7 @@ fun DetailsHeader(title: String, movieReleaseYear: String, runtime: Int?) {
     ) {
         Text(
             text = title,
-            style = MaterialTheme.typography.h5.copy(
+            style = MaterialTheme.typography.titleLarge.copy(
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Medium
             )
@@ -264,11 +250,11 @@ fun DetailsHeader(title: String, movieReleaseYear: String, runtime: Int?) {
 @Composable
 fun MovieOverview(overview: String) {
     Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = "Overview", style = MaterialTheme.typography.h5)
+        Text(text = "Overview", style = MaterialTheme.typography.titleLarge)
         Text(
             text = overview,
-            style = MaterialTheme.typography.body1.copy(
-                color = MaterialTheme.colors.onSurface.copy(alpha = 0.6F)
+            style = MaterialTheme.typography.bodyLarge.copy(
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6F)
             )
         )
     }
@@ -277,36 +263,36 @@ fun MovieOverview(overview: String) {
 @ExperimentalAnimationApi
 @Composable
 fun DetailsAppBar(transparent: Boolean = true, title: String, onNavigationClick: () -> Unit) {
-    TopAppBar(
-        backgroundColor = Color.Transparent,
-        elevation = 0.dp,
-    ) {
-        BoxWithConstraints {
-            val primaryColor = MaterialTheme.colors.primary
-            val radius = animateFloatAsState(
-                targetValue = if (transparent) 0f else with(LocalDensity.current) { maxWidth.toPx() }
-            )
-            Canvas(modifier = Modifier.height(maxHeight)) {
-                drawCircle(color = primaryColor, radius.value, Offset(28.dp.toPx(), (maxHeight-28.dp).toPx()))
-            }
-            Row(modifier = Modifier.statusBarsPadding(), verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .clip(RoundedCornerShape(percent = 50))
-                        .background(MaterialTheme.colors.primary)
-                        .clickable(onClick = onNavigationClick)
-                        .padding(12.dp),
-                    tint = MaterialTheme.colors.onPrimary,
-                    contentDescription = null
-                )
-                AnimatedVisibility(visible = !transparent) {
-                    Text(text = title, style = MaterialTheme.typography.h6.copy(color = MaterialTheme.colors.onPrimary))
-                }
-            }
-        }
-    }
+//    TopAppBar(
+//        backgroundColor = Color.Transparent,
+//        elevation = 0.dp,
+//    ) {
+//        BoxWithConstraints {
+//            val primaryColor = MaterialTheme.colorScheme.primary
+//            val radius = animateFloatAsState(
+//                targetValue = if (transparent) 0f else with(LocalDensity.current) { maxWidth.toPx() }
+//            )
+//            Canvas(modifier = Modifier.height(maxHeight)) {
+//                drawCircle(color = primaryColor, radius.value, Offset(28.dp.toPx(), (maxHeight-28.dp).toPx()))
+//            }
+//            Row(modifier = Modifier.statusBarsPadding(), verticalAlignment = Alignment.CenterVertically) {
+//                Icon(
+//                    imageVector = Icons.Filled.ArrowBack,
+//                    modifier = Modifier
+//                        .padding(4.dp)
+//                        .clip(RoundedCornerShape(percent = 50))
+//                        .background(MaterialTheme.colorScheme.primary)
+//                        .clickable(onClick = onNavigationClick)
+//                        .padding(12.dp),
+//                    tint = MaterialTheme.colorScheme.onPrimary,
+//                    contentDescription = null
+//                )
+//                AnimatedVisibility(visible = !transparent) {
+//                    Text(text = title, style = MaterialTheme.typography.titleLarge.copy(color = MaterialTheme.colorScheme.onPrimary))
+//                }
+//            }
+//        }
+//    }
 }
 
 @Composable
@@ -317,7 +303,7 @@ fun VideosColumn(videos: List<Video>, onClick: () -> Unit) {
             vertical = 16.dp
         )
     ) {
-        Text(text = "Reviews", style = MaterialTheme.typography.h5)
+        Text(text = "Reviews", style = MaterialTheme.typography.titleLarge)
         Column {
             videos.forEach { video ->
                 VideoItem(name = video.name, onClick = onClick)
@@ -334,7 +320,7 @@ fun ReviewsColumn(reviews: List<Review>) {
             vertical = 16.dp
         )
     ) {
-        Text(text = "Reviews", style = MaterialTheme.typography.h5)
+        Text(text = "Reviews", style = MaterialTheme.typography.titleLarge)
         reviews.forEach { review ->
             ReviewItem(
                 authorName = review.authorName,

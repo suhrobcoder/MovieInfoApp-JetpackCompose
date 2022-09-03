@@ -12,7 +12,7 @@ android {
     defaultConfig {
         applicationId = Sdk.applicationId
         minSdk = Sdk.minSdkVersion
-        targetSdk = Sdk.minSdkVersion
+        targetSdk = Sdk.targetSdkVersion
         versionCode = Sdk.versionCode
         versionName = Sdk.versionName
 
@@ -45,14 +45,15 @@ dependencies {
     implementation(Dependencies.Kotlin.kotlinStdLib)
     implementation(Dependencies.AndroidX.coreKtx)
     implementation(Dependencies.AndroidX.AppCompat.appCompat)
-    implementation(Dependencies.Material.material)
 
     //Compose
     implementation(Dependencies.Compose.uiToolingPreview)
-    implementation(Dependencies.Compose.material)
+    implementation(Dependencies.Compose.material3)
     implementation(Dependencies.Compose.ui)
 
     implementation(Dependencies.Compose.navCompose)
+
+    implementation(Dependencies.Compose.composeShimmer)
 
     implementation(Dependencies.Lifecycle.viewmodelKtx)
     implementation(Dependencies.Lifecycle.commonJava8)

@@ -7,8 +7,8 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,17 +58,17 @@ fun CategoryItem(category: Category, modifier: Modifier, selected: Boolean, onCl
             text = category.value,
             modifier = Modifier.padding(bottom = 8.dp),
             color = if (selected)
-                MaterialTheme.colors.onSurface
+                MaterialTheme.colorScheme.onSurface
             else
-                MaterialTheme.colors.onSurface.copy(alpha = 0.4F),
-            style = MaterialTheme.typography.h5.copy(fontWeight = FontWeight(600))
+                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4F),
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight(600))
         )
         Box(
             modifier = Modifier
                 .height(6.dp)
                 .width(42.dp)
                 .clip(RoundedCornerShape(percent = 50))
-                .background(color = if (selected) MaterialTheme.colors.primaryVariant else Color.Transparent)
+                .background(color = if (selected) MaterialTheme.colorScheme.secondary else Color.Transparent)
         )
     }
 }

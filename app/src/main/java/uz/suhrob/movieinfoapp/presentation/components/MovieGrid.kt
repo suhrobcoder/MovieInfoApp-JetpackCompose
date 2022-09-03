@@ -1,17 +1,18 @@
 package uz.suhrob.movieinfoapp.presentation.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,6 +22,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.valentinilk.shimmer.ShimmerBounds
+import com.valentinilk.shimmer.rememberShimmer
+import com.valentinilk.shimmer.shimmer
 import uz.suhrob.movieinfoapp.R
 import uz.suhrob.movieinfoapp.domain.model.Movie
 import uz.suhrob.movieinfoapp.other.getImageUrl
@@ -69,39 +73,44 @@ fun MovieItem(title: String, imageUrl: String, rating: Double, onClick: () -> Un
             contentScale = ContentScale.Crop,
             contentDescription = "$title movie poster"
         )
-        Text(text = title, maxLines = 1, style = MaterialTheme.typography.h6)
+        Text(text = title, maxLines = 1, style = MaterialTheme.typography.titleLarge)
         Row {
-            Icon(imageVector = Icons.Filled.Star, tint = Color.Yellow, contentDescription = "Star icon")
-            Text(text = rating.toString(), style = MaterialTheme.typography.subtitle1)
+            Icon(
+                imageVector = Icons.Filled.Star,
+                tint = Color.Yellow,
+                contentDescription = "Star icon"
+            )
+            Text(text = rating.toString(), style = MaterialTheme.typography.titleMedium)
         }
     }
 }
 
-@ExperimentalFoundationApi
 @Composable
-fun MovieShimmerGrid() {
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 150.dp),
-        modifier = Modifier.padding(8.dp)
-    ) {
-        items(count = 4) {
-            Column(modifier = Modifier.padding(8.dp)) {
-                ShimmerView(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(2f / 3)
-                        .clip(RoundedCornerShape(32.dp))
-                )
-                ShimmerView(
-                    modifier = Modifier
-                        .padding(vertical = 4.dp)
-                        .height(24.dp)
-                        .fillMaxWidth(0.9f)
-                )
-                ShimmerView(modifier = Modifier
-                    .height(24.dp)
-                    .fillMaxWidth(0.4f))
-            }
-        }
+fun MovieItemShimmer() {
+    val shimmer = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
+    Column(modifier = Modifier.padding(8.dp)) {
+        Box(
+            modifier = Modifier
+                .shimmer(shimmer)
+                .fillMaxWidth()
+                .aspectRatio(2f / 3)
+                .clip(RoundedCornerShape(32.dp))
+                .background(Color.Gray)
+        )
+        Box(
+            modifier = Modifier
+                .shimmer(shimmer)
+                .padding(vertical = 4.dp)
+                .height(24.dp)
+                .fillMaxWidth(0.9f)
+                .background(Color.Gray)
+        )
+        Box(
+            modifier = Modifier
+                .shimmer(shimmer)
+                .height(24.dp)
+                .fillMaxWidth(0.4f)
+                .background(Color.Gray)
+        )
     }
 }

@@ -3,9 +3,9 @@ package uz.suhrob.movieinfoapp.presentation.ui.details
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,7 +24,7 @@ fun RatingDialog(
         Column(
             modifier = Modifier
                 .clip(RoundedCornerShape(size = 16.dp))
-                .background(color = MaterialTheme.colors.surface)
+                .background(color = MaterialTheme.colorScheme.surface)
                 .padding(all = 8.dp)
         ) {
             RatingBar(value = rating, onChange = { onChange(it) })

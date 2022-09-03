@@ -19,18 +19,16 @@ object Dependencies {
     }
     object Compose {
         const val ui = "androidx.compose.ui:ui:${Versions.composeVersion}"
-        const val material = "androidx.compose.material:material:${Versions.composeVersion}"
+        const val material3 = "androidx.compose.material3:material3:${Versions.composeMaterial3Version}"
         const val uiToolingPreview = "androidx.compose.ui:ui-tooling-preview:${Versions.composeVersion}"
         const val navCompose = "androidx.navigation:navigation-compose:${Versions.navComposeVersion}"
+        const val composeShimmer = "com.valentinilk.shimmer:compose-shimmer:${Versions.composeShimmerVersion}"
         const val uiTooling = "androidx.compose.ui:ui-tooling:${Versions.composeVersion}"
         const val uiTestManifest = "androidx.compose.ui:ui-test-manifest:${Versions.composeVersion}"
     }
     object Lifecycle {
         const val viewmodelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.lifecycleVersion}"
         const val commonJava8 = "androidx.lifecycle:lifecycle-common-java8:${Versions.lifecycleVersion}"
-    }
-    object Material {
-        const val material = "com.google.android.material:material:${Versions.materialVersion}"
     }
     object Gradle {
         const val gradlePlugin = "com.android.tools.build:gradle:${Versions.gradlePluginVersion}"

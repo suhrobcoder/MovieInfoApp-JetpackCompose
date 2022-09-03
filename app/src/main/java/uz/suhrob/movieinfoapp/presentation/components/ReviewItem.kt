@@ -1,10 +1,10 @@
 package uz.suhrob.movieinfoapp.presentation.components
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
@@ -22,7 +22,7 @@ fun ReviewItem(
         Column(modifier = Modifier.padding(8.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 AvatarImage(path = avatarUrl, modifier = Modifier.size(48.dp))
-                Text(text = authorName, style = MaterialTheme.typography.h6)
+                Text(text = authorName, style = MaterialTheme.typography.titleLarge)
                 Spacer(modifier = Modifier.weight(1f))
                 IconButton(onClick = { textCollapsed.value = !textCollapsed.value }) {
                     Icon(
@@ -34,7 +34,7 @@ fun ReviewItem(
             Divider()
             Text(
                 text = if (textCollapsed.value) content else getFirstSentence(content),
-                style = MaterialTheme.typography.body1
+                style = MaterialTheme.typography.bodyLarge
             )
         }
     }

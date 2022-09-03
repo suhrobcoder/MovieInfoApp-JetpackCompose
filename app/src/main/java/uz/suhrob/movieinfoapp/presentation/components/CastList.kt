@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,7 +25,7 @@ fun CastList(
         Text(
             text = "Cast",
             modifier = Modifier.padding(start = 16.dp, bottom = 4.dp),
-            style = MaterialTheme.typography.h5
+            style = MaterialTheme.typography.titleLarge
         )
         LazyRow {
             itemsIndexed(items = list) { index, cast ->
@@ -60,14 +60,14 @@ fun CastItem(
         )
         Text(
             text = name,
-            style = MaterialTheme.typography.subtitle1,
+            style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center,
             maxLines = 2
         )
         Text(
             text = character,
-            style = MaterialTheme.typography.subtitle2.copy(
-                color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f)
+            style = MaterialTheme.typography.titleSmall.copy(
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
             ),
             textAlign = TextAlign.Center,
             maxLines = 2

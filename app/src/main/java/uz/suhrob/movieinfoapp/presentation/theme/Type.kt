@@ -1,6 +1,6 @@
 package uz.suhrob.movieinfoapp.presentation.theme
 
-import androidx.compose.material.Typography
+import androidx.compose.material3.Typography
 import androidx.compose.ui.text.font.*
 import uz.suhrob.movieinfoapp.R
 
@@ -11,6 +11,4 @@ private val SFProFont = FontFamily(
     Font(R.font.sf_pro_bold, FontWeight.Bold),
 )
 
-val SFProTypography = Typography(
-    defaultFontFamily = SFProFont
-)
+val SFProTypography = Typography()

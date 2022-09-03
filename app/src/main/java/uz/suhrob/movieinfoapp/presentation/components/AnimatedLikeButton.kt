@@ -32,7 +32,8 @@ fun AnimatedLikeButton(state: LikeState, onClick: () -> Unit) {
                 48.dp at 400
             }
         },
-        targetValueByState = { 48.dp }
+        targetValueByState = { 48.dp },
+        label = "like",
     )
     Box(modifier = Modifier, contentAlignment = Alignment.Center) {
         Image(
