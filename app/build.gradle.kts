@@ -3,7 +3,6 @@ plugins {
     id(Dependencies.Plugins.kotlinAndroid)
     id(Dependencies.Plugins.kotlinKapt)
     id(Dependencies.Plugins.kotlinxSerialization)
-    id(Dependencies.Plugins.daggerHilt)
 }
 
 android {
@@ -45,23 +44,22 @@ dependencies {
     implementation(Dependencies.Kotlin.kotlinStdLib)
     implementation(Dependencies.AndroidX.coreKtx)
     implementation(Dependencies.AndroidX.AppCompat.appCompat)
+    implementation(Dependencies.AndroidX.Activity.activityCompose)
 
     //Compose
     implementation(Dependencies.Compose.uiToolingPreview)
     implementation(Dependencies.Compose.material3)
     implementation(Dependencies.Compose.ui)
 
-    implementation(Dependencies.Compose.navCompose)
-
     implementation(Dependencies.Compose.composeShimmer)
 
-    implementation(Dependencies.Lifecycle.viewmodelKtx)
-    implementation(Dependencies.Lifecycle.commonJava8)
+    implementation(Dependencies.Voyager.navigator)
+    implementation(Dependencies.Voyager.tabNavigator)
+    implementation(Dependencies.Voyager.transitions)
+    implementation(Dependencies.Voyager.voyagerKoin)
 
-    implementation(Dependencies.DaggerHilt.hiltAndroid)
-    kapt(Dependencies.DaggerHilt.androidCompiler)
-    kapt(Dependencies.DaggerHilt.hiltCompiler)
-    implementation(Dependencies.DaggerHilt.hiltNavigation)
+    implementation(Dependencies.Koin.core)
+    implementation(Dependencies.Koin.android)
 
     implementation(Dependencies.Coil.coilCompose)
 
@@ -90,8 +88,8 @@ dependencies {
     androidTestImplementation(Dependencies.Test.Junit.junitExt)
     androidTestImplementation(Dependencies.Test.mockitoCore)
     androidTestImplementation(Dependencies.Test.dexmakerMockito)
-    androidTestImplementation(Dependencies.Test.hiltAndroidTesting)
-    kaptAndroidTest(Dependencies.Test.hiltAndroidCompiler)
+    androidTestImplementation(Dependencies.Koin.test)
+    androidTestImplementation(Dependencies.Koin.junit4)
 
     debugImplementation(Dependencies.Compose.uiTooling)
     debugImplementation(Dependencies.Compose.uiTestManifest)

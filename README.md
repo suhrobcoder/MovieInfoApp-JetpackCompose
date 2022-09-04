@@ -3,13 +3,13 @@ Android app for displaying movies using the themoviedb api
 
 
 ## Libraries used in this project
-* Jetpack Compose (Navigation Compose)
+* Jetpack Compose
 * Coroutines (Flows)
 * Retrofit
 * Room
-* ViewModel
+* Voyager
 * Dagger-Hilt
-* Glide
+* Coil
 
 
 ## Screenshots

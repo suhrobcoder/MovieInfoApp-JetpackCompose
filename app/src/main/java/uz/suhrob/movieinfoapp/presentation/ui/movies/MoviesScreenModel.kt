@@ -1,12 +1,9 @@
-package uz.suhrob.movieinfoapp.presentation.ui.home
+package uz.suhrob.movieinfoapp.presentation.ui.movies
 
-import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
+import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.coroutineScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -17,12 +14,10 @@ import uz.suhrob.movieinfoapp.domain.model.defaultGenre
 import uz.suhrob.movieinfoapp.other.DEFAULT_PAGE
 import uz.suhrob.movieinfoapp.other.Resource
 import uz.suhrob.movieinfoapp.presentation.components.Category
-import javax.inject.Inject
 
-@HiltViewModel
-class HomeViewModel @Inject constructor(
+class MoviesScreenModel constructor(
     private val repository: MovieRepository
-) : ViewModel() {
+) : ScreenModel {
     private val _category = MutableStateFlow(Category.POPULAR)
     val category: StateFlow<Category> get() = _category
 
@@ -47,17 +42,17 @@ class HomeViewModel @Inject constructor(
     private val currentPage: StateFlow<Int> get() = _currentPage
 
     init {
-        onTriggerEvent(HomeEvent.LoadGenres)
-        onTriggerEvent(HomeEvent.LoadMovies)
+        onTriggerEvent(MoviesEvent.LoadGenres)
+        onTriggerEvent(MoviesEvent.LoadMovies)
     }
 
-    fun onTriggerEvent(event: HomeEvent) {
-        viewModelScope.launch {
+    fun onTriggerEvent(event: MoviesEvent) {
+        coroutineScope.launch {
             when (event) {
-                is HomeEvent.ChangeCategory -> changeCategory(event.category)
-                is HomeEvent.LoadGenres -> loadGenres()
-                is HomeEvent.LoadMovies -> loadMovies()
-                is HomeEvent.NextPage -> nextPage()
+                is MoviesEvent.ChangeCategory -> changeCategory(event.category)
+                is MoviesEvent.LoadGenres -> loadGenres()
+                is MoviesEvent.LoadMovies -> loadMovies()
+                is MoviesEvent.NextPage -> nextPage()
             }
         }
     }
@@ -83,7 +78,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun nextPage() {
-        viewModelScope.launch {
+        coroutineScope.launch {
             if (!loading.value) {
                 incrementPage()
                 loadMovies()
@@ -103,7 +98,7 @@ class HomeViewModel @Inject constructor(
 
     private suspend fun loadMovies() {
         loadMoviesJob?.cancel()
-        loadMoviesJob = CoroutineScope(viewModelScope.coroutineContext).launch {
+        loadMoviesJob = CoroutineScope(coroutineScope.coroutineContext).launch {
             _loading.value = true
             _error.value = false
             val result = when (category.value) {

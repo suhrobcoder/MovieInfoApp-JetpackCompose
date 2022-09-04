@@ -9,7 +9,6 @@ buildscript {
         classpath(Dependencies.Gradle.gradlePlugin)
         classpath(Dependencies.Kotlin.kotlinGradlePlugin)
         classpath(Dependencies.Kotlin.kotlinSerialization)
-        classpath(Dependencies.DaggerHilt.hiltPlugin)
     }
 }
 

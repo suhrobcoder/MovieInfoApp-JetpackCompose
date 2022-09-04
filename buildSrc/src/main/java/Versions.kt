@@ -1,7 +1,6 @@
 object Versions {
     const val kotlinVersion = "1.7.10"
-    const val hiltAndroidVersion = "2.43.2"
-    const val hiltVersion = "1.0.0"
+    const val koinVersion = "3.2.0"
     const val gradlePluginVersion = "7.2.2"
     const val coreKtxVersion = "1.8.0"
     const val appCompatVersion = "1.2.0"
@@ -9,9 +8,8 @@ object Versions {
     const val composeMaterial3Version = "1.0.0-beta01"
     const val composeCompilerVersion = "1.3.0"
     const val composeShimmerVersion = "1.0.3"
-    const val navComposeVersion = "2.5.1"
     const val activityComposeVersion = "1.5.1"
-    const val lifecycleVersion = "2.5.1"
+    const val voyagerVersion = "1.0.0-rc02"
     const val coilVersion = "2.2.0"
     const val roomVersion = "2.4.3"
     const val retrofitVersion = "2.9.0"
@@ -25,5 +23,4 @@ object Versions {
     const val googleTruthVersion = "1.1.3"
     const val mockitoCoreVersion = "4.7.0"
     const val dexmakerMockitoVersion = "2.28.3"
-    const val hiltTestingVersion = "2.43.2"
 }

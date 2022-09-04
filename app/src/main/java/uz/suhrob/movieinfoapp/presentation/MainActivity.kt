@@ -4,31 +4,14 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.core.view.WindowCompat
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import dagger.hilt.android.AndroidEntryPoint
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.SlideTransition
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.serialization.ExperimentalSerializationApi
 import uz.suhrob.movieinfoapp.presentation.theme.MovieInfoAppTheme
-import uz.suhrob.movieinfoapp.presentation.ui.details.DetailsScreen
-import uz.suhrob.movieinfoapp.presentation.ui.details.DetailsViewModel
-import uz.suhrob.movieinfoapp.presentation.ui.favorites.FavoritesScreen
-import uz.suhrob.movieinfoapp.presentation.ui.favorites.FavoritesViewModel
 import uz.suhrob.movieinfoapp.presentation.ui.home.HomeScreen
-import uz.suhrob.movieinfoapp.presentation.ui.home.HomeViewModel
-import uz.suhrob.movieinfoapp.presentation.ui.search.SearchScreen
-import uz.suhrob.movieinfoapp.presentation.ui.search.SearchViewModel
 
 @ExperimentalAnimationApi
-@ExperimentalSerializationApi
-@ExperimentalFoundationApi
-@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     @ExperimentalCoroutinesApi
@@ -37,29 +20,8 @@ class MainActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             MovieInfoAppTheme {
-                val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = "home") {
-                    composable("home") {
-                        val viewModel = hiltViewModel<HomeViewModel>()
-                        HomeScreen(viewModel = viewModel, navController = navController)
-                    }
-                    composable("search") {
-                        val viewModel = hiltViewModel<SearchViewModel>()
-                        SearchScreen(viewModel = viewModel, navController = navController)
-                    }
-                    composable(
-                        "details/{id}",
-                        arguments = listOf(navArgument(name = "id") { type = NavType.IntType })
-                    ) {
-                        val id = it.arguments?.getInt("id") ?: 0
-                        val viewModel = hiltViewModel<DetailsViewModel>()
-                        viewModel.movieId = id
-                        DetailsScreen(viewModel = viewModel, navController = navController)
-                    }
-                    composable("favorites") {
-                        val viewModel = hiltViewModel<FavoritesViewModel>()
-                        FavoritesScreen(viewModel = viewModel, navController = navController)
-                    }
+                Navigator(HomeScreen) { navigator ->
+                    SlideTransition(navigator)
                 }
             }
         }

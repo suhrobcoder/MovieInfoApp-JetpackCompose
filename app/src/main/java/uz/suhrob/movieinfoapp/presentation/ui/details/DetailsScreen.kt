@@ -22,7 +22,10 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,109 +37,115 @@ import uz.suhrob.movieinfoapp.other.formatTime
 import uz.suhrob.movieinfoapp.other.getImageUrl
 import uz.suhrob.movieinfoapp.presentation.components.*
 
-@OptIn(ExperimentalMaterial3Api::class)
-@ExperimentalAnimationApi
-@ExperimentalCoroutinesApi
-@Composable
-fun DetailsScreen(viewModel: DetailsViewModel, navController: NavController) {
-    val movieRes = viewModel.movie.collectAsState()
-    val showDialog = viewModel.isShowingDialog.collectAsState()
-    val scrollState = rememberScrollState()
-    val snackBarHostState = SnackbarHostState()
-    LaunchedEffect(key1 = viewModel.movieId) {
-        viewModel.snackBarFlow.collect {
-            snackBarHostState.showSnackbar(it)
+class DetailsScreen(private val movieId: Int) : Screen {
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @ExperimentalAnimationApi
+    @ExperimentalCoroutinesApi
+    @Composable
+    override fun Content() {
+        val navigator = LocalNavigator.currentOrThrow
+        val screenModel = getScreenModel<DetailsScreenModel>()
+        screenModel.movieId = movieId
+        val movieRes = screenModel.movie.collectAsState()
+        val showDialog = screenModel.isShowingDialog.collectAsState()
+        val scrollState = rememberScrollState()
+        val snackBarHostState = SnackbarHostState()
+        LaunchedEffect(key1 = screenModel.movieId) {
+            screenModel.snackBarFlow.collect {
+                snackBarHostState.showSnackbar(it)
+            }
         }
-    }
-    Scaffold(
-        snackbarHost = {
-                       SnackbarHost(hostState = snackBarHostState)
-        },
-    ) { paddingValues ->
-        when (movieRes.value) {
-            is Resource.Success -> {
-                val movie = movieRes.value.data!!
-                if (movie.video) {
-                    viewModel.onTriggerEvent(DetailsEvent.LoadVideos)
-                }
-                viewModel.onTriggerEvent(DetailsEvent.LoadReviews)
-
-                if (showDialog.value) {
-                    val rating = viewModel.rating.collectAsState()
-                    RatingDialog(
-                        rating = rating.value,
-                        onChange = { viewModel.setRating(it) },
-                        onSubmit = { viewModel.onTriggerEvent(DetailsEvent.SubmitRating(rating.value)) },
-                        onClose = { viewModel.onTriggerEvent(DetailsEvent.CloseDialog) })
-                }
-                Box(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(scrollState)
-                    ) {
-                        val likeState = viewModel.likeState.collectAsState()
-                        Box(contentAlignment = Alignment.BottomCenter) {
-                            BackdropImage(backdropPath = movie.backdropPath)
-                            RatingBar(
-                                voteCount = movie.voteCount,
-                                voteAverage = movie.voteAverage,
-                                likeState = likeState.value,
-                                showDialog = { viewModel.onTriggerEvent(DetailsEvent.ShowDialog) },
-                                onLikeClick = {
-                                    viewModel.onTriggerEvent(DetailsEvent.LikeClick)
-                                }
-                            )
-                        }
-                        DetailsHeader(
-                            title = movie.title,
-                            movieReleaseYear = movie.getMovieReleaseYear(),
-                            runtime = movie.runtime
-                        )
-                        GenreRow(genres = movie.genres)
-                        MovieOverview(overview = movie.overview)
-                        val cast = viewModel.cast.collectAsState()
-                        if (cast.value.isNotEmpty()) {
-                            CastList(list = cast.value)
-                        }
-                        val videos = viewModel.videos.collectAsState()
-                        if (videos.value.isNotEmpty()) {
-                            VideosColumn(videos = videos.value) {}
-                        }
-                        val reviews = viewModel.reviews.collectAsState()
-                        if (reviews.value.isNotEmpty()) {
-                            ReviewsColumn(reviews = reviews.value)
-                        }
+        Scaffold(
+            snackbarHost = {
+                SnackbarHost(hostState = snackBarHostState)
+            },
+        ) { paddingValues ->
+            when (movieRes.value) {
+                is Resource.Success -> {
+                    val movie = movieRes.value.data!!
+                    if (movie.video) {
+                        screenModel.onTriggerEvent(DetailsEvent.LoadVideos)
                     }
-                    DetailsAppBar(transparent = scrollState.value < 300, title = movie.title) { navController.popBackStack() }
-                }
+                    screenModel.onTriggerEvent(DetailsEvent.LoadReviews)
 
-            }
-            is Resource.Loading -> {
-                Column(
-                    modifier = Modifier.padding(paddingValues),
-                ) {
-                    DetailsAppBar(
-                        transparent = false,
-                        title = "",
-                        onNavigationClick = { navController.popBackStack() })
-                    Loading()
+                    if (showDialog.value) {
+                        val rating = screenModel.rating.collectAsState()
+                        RatingDialog(
+                            rating = rating.value,
+                            onChange = { screenModel.setRating(it) },
+                            onSubmit = { screenModel.onTriggerEvent(DetailsEvent.SubmitRating(rating.value)) },
+                            onClose = { screenModel.onTriggerEvent(DetailsEvent.CloseDialog) })
+                    }
+                    Box(modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(scrollState)
+                        ) {
+                            val likeState = screenModel.likeState.collectAsState()
+                            Box(contentAlignment = Alignment.BottomCenter) {
+                                BackdropImage(backdropPath = movie.backdropPath)
+                                RatingBar(
+                                    voteCount = movie.voteCount,
+                                    voteAverage = movie.voteAverage,
+                                    likeState = likeState.value,
+                                    showDialog = { screenModel.onTriggerEvent(DetailsEvent.ShowDialog) },
+                                    onLikeClick = {
+                                        screenModel.onTriggerEvent(DetailsEvent.LikeClick)
+                                    }
+                                )
+                            }
+                            DetailsHeader(
+                                title = movie.title,
+                                movieReleaseYear = movie.getMovieReleaseYear(),
+                                runtime = movie.runtime
+                            )
+                            GenreRow(genres = movie.genres)
+                            MovieOverview(overview = movie.overview)
+                            val cast = screenModel.cast.collectAsState()
+                            if (cast.value.isNotEmpty()) {
+                                CastList(list = cast.value)
+                            }
+                            val videos = screenModel.videos.collectAsState()
+                            if (videos.value.isNotEmpty()) {
+                                VideosColumn(videos = videos.value) {}
+                            }
+                            val reviews = screenModel.reviews.collectAsState()
+                            if (reviews.value.isNotEmpty()) {
+                                ReviewsColumn(reviews = reviews.value)
+                            }
+                        }
+                        DetailsAppBar(transparent = scrollState.value < 300, title = movie.title) { navigator.pop() }
+                    }
+
                 }
-            }
-            is Resource.Error -> {
-                Column(
-                    modifier = Modifier.padding(paddingValues),
-                ) {
-                    DetailsAppBar(
-                        transparent = false,
-                        title = "",
-                        onNavigationClick = { navController.popBackStack() })
-                    Error(
-                        modifier = Modifier.statusBarsPadding(),
-                        onRetry = { viewModel.onTriggerEvent(DetailsEvent.LoadMovie) }
-                    )
+                is Resource.Loading -> {
+                    Column(
+                        modifier = Modifier.padding(paddingValues),
+                    ) {
+                        DetailsAppBar(
+                            transparent = false,
+                            title = "",
+                            onNavigationClick = { navigator.pop() })
+                        Loading()
+                    }
+                }
+                is Resource.Error -> {
+                    Column(
+                        modifier = Modifier.padding(paddingValues),
+                    ) {
+                        DetailsAppBar(
+                            transparent = false,
+                            title = "",
+                            onNavigationClick = { navigator.pop() })
+                        Error(
+                            modifier = Modifier.statusBarsPadding(),
+                            onRetry = { screenModel.onTriggerEvent(DetailsEvent.LoadMovie) }
+                        )
+                    }
                 }
             }
         }

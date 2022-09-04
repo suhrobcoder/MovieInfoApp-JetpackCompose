@@ -1,31 +1,21 @@
 package uz.suhrob.movieinfoapp.di
 
-import android.content.Context
 import androidx.room.Room
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityRetainedComponent
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.scopes.ActivityRetainedScoped
+import org.koin.dsl.module
 import uz.suhrob.movieinfoapp.data.local.DATABASE_NAME
 import uz.suhrob.movieinfoapp.data.local.MovieDatabase
-import uz.suhrob.movieinfoapp.data.local.dao.MovieDao
+import uz.suhrob.movieinfoapp.data.pref.MovieInfoPref
 
-@InstallIn(ActivityRetainedComponent::class)
-@Module
-object DatabaseModule {
-    @ActivityRetainedScoped
-    @Provides
-    fun provideDatabase(
-        @ApplicationContext context: Context
-    ): MovieDatabase = Room.databaseBuilder(
-        context.applicationContext,
-        MovieDatabase::class.java,
-        DATABASE_NAME
-    ).build()
-
-    @ActivityRetainedScoped
-    @Provides
-    fun provideMovieDao(database: MovieDatabase): MovieDao = database.getMovieDao()
+val databaseModule = module {
+    single {
+        Room.databaseBuilder(
+            get(),
+            MovieDatabase::class.java,
+            DATABASE_NAME
+        ).build()
+    }
+    single { MovieInfoPref(get()) }
+    factory {
+        get<MovieDatabase>().getMovieDao()
+    }
 }

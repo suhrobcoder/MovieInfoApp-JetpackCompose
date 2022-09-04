@@ -1,8 +1,7 @@
 package uz.suhrob.movieinfoapp.presentation.ui.details
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
+import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.coroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -18,13 +17,11 @@ import uz.suhrob.movieinfoapp.presentation.components.MAX_RATING
 import uz.suhrob.movieinfoapp.presentation.components.LikeState
 import uz.suhrob.movieinfoapp.presentation.components.LikeState.INITIAL
 import uz.suhrob.movieinfoapp.presentation.components.LikeState.LIKED
-import javax.inject.Inject
 
-@HiltViewModel
-class DetailsViewModel @Inject constructor(
+class DetailsScreenModel constructor(
     private val repository: MovieRepository,
     private val favoritesRepository: FavoritesRepository
-) : ViewModel() {
+) : ScreenModel {
     var movieId: Int = 0
         set(value) {
             field = value
@@ -55,17 +52,17 @@ class DetailsViewModel @Inject constructor(
     private val snackBarChannel = Channel<String>()
     val snackBarFlow = snackBarChannel.receiveAsFlow()
 
-    fun load() {
+    private fun load() {
         favoritesRepository.isMovieFavorite(movieId).onEach {
             _likeState.value = if (it) LIKED else INITIAL
-        }.launchIn(viewModelScope)
+        }.launchIn(coroutineScope)
         onTriggerEvent(DetailsEvent.LoadMovie)
         onTriggerEvent(DetailsEvent.LoadReviews)
         onTriggerEvent(DetailsEvent.LoadCast)
     }
 
     fun onTriggerEvent(event: DetailsEvent) {
-        viewModelScope.launch {
+        coroutineScope.launch {
             when (event) {
                 is DetailsEvent.LoadMovie -> loadMovie()
                 is DetailsEvent.LoadVideos -> loadVideos()
@@ -103,7 +100,7 @@ class DetailsViewModel @Inject constructor(
         result.data?.let { _reviews.value = it }
     }
 
-    fun getMovie() = viewModelScope.launch {
+    private fun getMovie() = coroutineScope.launch {
         _movie.emit(Resource.Success(favoritesRepository.getMovie(movieId)))
     }
 

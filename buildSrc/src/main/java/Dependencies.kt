@@ -21,24 +21,24 @@ object Dependencies {
         const val ui = "androidx.compose.ui:ui:${Versions.composeVersion}"
         const val material3 = "androidx.compose.material3:material3:${Versions.composeMaterial3Version}"
         const val uiToolingPreview = "androidx.compose.ui:ui-tooling-preview:${Versions.composeVersion}"
-        const val navCompose = "androidx.navigation:navigation-compose:${Versions.navComposeVersion}"
         const val composeShimmer = "com.valentinilk.shimmer:compose-shimmer:${Versions.composeShimmerVersion}"
         const val uiTooling = "androidx.compose.ui:ui-tooling:${Versions.composeVersion}"
         const val uiTestManifest = "androidx.compose.ui:ui-test-manifest:${Versions.composeVersion}"
     }
-    object Lifecycle {
-        const val viewmodelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.lifecycleVersion}"
-        const val commonJava8 = "androidx.lifecycle:lifecycle-common-java8:${Versions.lifecycleVersion}"
+    object Voyager {
+        const val navigator = "cafe.adriel.voyager:voyager-navigator:${Versions.voyagerVersion}"
+        const val tabNavigator = "cafe.adriel.voyager:voyager-tab-navigator:${Versions.voyagerVersion}"
+        const val transitions = "cafe.adriel.voyager:voyager-transitions:${Versions.voyagerVersion}"
+        const val voyagerKoin = "cafe.adriel.voyager:voyager-koin:${Versions.voyagerVersion}"
     }
     object Gradle {
         const val gradlePlugin = "com.android.tools.build:gradle:${Versions.gradlePluginVersion}"
     }
-    object DaggerHilt {
-        const val hiltPlugin = "com.google.dagger:hilt-android-gradle-plugin:${Versions.hiltAndroidVersion}"
-        const val hiltAndroid = "com.google.dagger:hilt-android:${Versions.hiltAndroidVersion}"
-        const val androidCompiler = "com.google.dagger:hilt-android-compiler:${Versions.hiltAndroidVersion}"
-        const val hiltCompiler = "androidx.hilt:hilt-compiler:${Versions.hiltVersion}"
-        const val hiltNavigation = "androidx.hilt:hilt-navigation-compose:${Versions.hiltVersion}"
+    object Koin {
+        const val core = "io.insert-koin:koin-core:${Versions.koinVersion}"
+        const val android = "io.insert-koin:koin-android:${Versions.koinVersion}"
+        const val test = "io.insert-koin:koin-test:${Versions.koinVersion}"
+        const val junit4 = "io.insert-koin:koin-test-junit4:${Versions.koinVersion}"
     }
     object Coil {
         const val coilCompose = "io.coil-kt:coil-compose:${Versions.coilVersion}"
@@ -58,7 +58,6 @@ object Dependencies {
         const val kotlinAndroid = "kotlin-android"
         const val kotlinKapt = "kotlin-kapt"
         const val kotlinxSerialization = "kotlinx-serialization"
-        const val daggerHilt = "dagger.hilt.android.plugin"
     }
 
     object Test {
@@ -72,7 +71,5 @@ object Dependencies {
         const val googleTruth = "com.google.truth:truth:${Versions.googleTruthVersion}"
         const val mockitoCore = "org.mockito:mockito-core:${Versions.mockitoCoreVersion}"
         const val dexmakerMockito = "com.linkedin.dexmaker:dexmaker-mockito:${Versions.dexmakerMockitoVersion}"
-        const val hiltAndroidTesting = "com.google.dagger:hilt-android-testing:${Versions.hiltTestingVersion}"
-        const val hiltAndroidCompiler = "com.google.dagger:hilt-compiler:${Versions.hiltTestingVersion}"
     }
 }
