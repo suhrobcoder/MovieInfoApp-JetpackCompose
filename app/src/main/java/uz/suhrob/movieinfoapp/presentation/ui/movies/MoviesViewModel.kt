@@ -1,6 +1,5 @@
-package uz.suhrob.movieinfoapp.presentation.ui.home
+package uz.suhrob.movieinfoapp.presentation.ui.movies
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +19,7 @@ import uz.suhrob.movieinfoapp.presentation.components.Category
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
+class MoviesViewModel @Inject constructor(
     private val repository: MovieRepository
 ) : ViewModel() {
     private val _category = MutableStateFlow(Category.POPULAR)
@@ -47,17 +46,17 @@ class HomeViewModel @Inject constructor(
     private val currentPage: StateFlow<Int> get() = _currentPage
 
     init {
-        onTriggerEvent(HomeEvent.LoadGenres)
-        onTriggerEvent(HomeEvent.LoadMovies)
+        onTriggerEvent(MoviesEvent.LoadGenres)
+        onTriggerEvent(MoviesEvent.LoadMovies)
     }
 
-    fun onTriggerEvent(event: HomeEvent) {
+    fun onTriggerEvent(event: MoviesEvent) {
         viewModelScope.launch {
             when (event) {
-                is HomeEvent.ChangeCategory -> changeCategory(event.category)
-                is HomeEvent.LoadGenres -> loadGenres()
-                is HomeEvent.LoadMovies -> loadMovies()
-                is HomeEvent.NextPage -> nextPage()
+                is MoviesEvent.ChangeCategory -> changeCategory(event.category)
+                is MoviesEvent.LoadGenres -> loadGenres()
+                is MoviesEvent.LoadMovies -> loadMovies()
+                is MoviesEvent.NextPage -> nextPage()
             }
         }
     }

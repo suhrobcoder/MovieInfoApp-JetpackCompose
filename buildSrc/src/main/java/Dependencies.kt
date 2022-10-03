@@ -52,6 +52,9 @@ object Dependencies {
         const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofitVersion}"
         const val serializationConverter = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${Versions.serializationConverterVersion}"
     }
+    object Accompanist {
+        const val navigationAnimation = "com.google.accompanist:accompanist-navigation-animation:${Versions.accompanistVersion}"
+    }
 
     object Plugins {
         const val application = "com.android.application"

@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.valentinilk.shimmer.Shimmer
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
@@ -86,8 +87,7 @@ fun MovieItem(title: String, imageUrl: String, rating: Double, onClick: () -> Un
 }
 
 @Composable
-fun MovieItemShimmer() {
-    val shimmer = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
+fun MovieItemShimmer(shimmer: Shimmer) {
     Column(modifier = Modifier.padding(8.dp)) {
         Box(
             modifier = Modifier

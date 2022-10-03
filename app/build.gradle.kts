@@ -76,6 +76,8 @@ dependencies {
 
     implementation(Dependencies.AndroidX.Datastore.preferences)
 
+    implementation(Dependencies.Accompanist.navigationAnimation)
+
     testImplementation(Dependencies.Test.Junit.junit)
     testImplementation(Dependencies.Test.androidTestCore)
     testImplementation(Dependencies.Test.archCoreTesting)

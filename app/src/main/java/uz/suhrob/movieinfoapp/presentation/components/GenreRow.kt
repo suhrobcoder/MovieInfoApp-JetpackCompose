@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.valentinilk.shimmer.Shimmer
 import com.valentinilk.shimmer.shimmer
 import uz.suhrob.movieinfoapp.domain.model.Genre
 
@@ -29,11 +30,12 @@ fun GenreRow(
     genres: List<Genre>,
     selectedGenre: Genre = Genre(-1, ""),
     error: Boolean = false,
+    shimmer: Shimmer? = null,
     onGenreSelected: (Genre) -> Unit = {}
 ) {
     if (!error) {
         if (genres.isEmpty()) {
-            GenreShimmer()
+            GenreShimmer(shimmer)
         } else {
             LazyRow(
                 modifier = Modifier
@@ -83,7 +85,7 @@ fun GenreItem(genre: Genre, modifier: Modifier, selected: Boolean, onClick: () -
 }
 
 @Composable
-fun GenreShimmer() {
+fun GenreShimmer(shimmer: Shimmer?) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -92,7 +94,7 @@ fun GenreShimmer() {
         repeat(3) {
             Box(
                 modifier = Modifier
-                    .shimmer()
+                    .shimmer(shimmer)
                     .size(width = 128.dp, height = 36.dp)
                     .padding(horizontal = 8.dp)
                     .clip(RoundedCornerShape(percent = 50))

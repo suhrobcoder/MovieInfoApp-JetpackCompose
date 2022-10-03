@@ -1,120 +1,135 @@
 package uz.suhrob.movieinfoapp.presentation.ui.home
 
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import uz.suhrob.movieinfoapp.R
-import uz.suhrob.movieinfoapp.other.getImageUrl
-import uz.suhrob.movieinfoapp.presentation.components.*
+import uz.suhrob.movieinfoapp.domain.model.Movie
+import uz.suhrob.movieinfoapp.presentation.ui.favorites.FavoritesScreen
+import uz.suhrob.movieinfoapp.presentation.ui.movies.MoviesScreen
+import uz.suhrob.movieinfoapp.presentation.ui.search.SearchScreen
 
-@OptIn(ExperimentalMaterial3Api::class)
-@ExperimentalCoroutinesApi
-@ExperimentalFoundationApi
+@OptIn(
+    ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class, ExperimentalCoroutinesApi::class
+)
 @Composable
-fun HomeScreen(viewModel: HomeViewModel, navController: NavController) {
-    val movies by viewModel.movies.collectAsState()
-    val category by viewModel.category.collectAsState()
-    val genres by viewModel.genres.collectAsState()
-    val selectedGenre by viewModel.selectedGenre.collectAsState()
-
-    val error by viewModel.error.collectAsState()
-    val loading by viewModel.loading.collectAsState()
-
-    val configuration = LocalConfiguration.current
-    val lazyListState = rememberLazyListState()
-
-    val endOfListReached by remember {
-        derivedStateOf {
-            lazyListState.isScrolledToEnd()
+fun HomeScreen(
+    navigateToDetails: (Movie) -> Unit,
+) {
+    val navController = rememberAnimatedNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    val currentScreen = remember(currentDestination) {
+        items.find { screen ->
+            currentDestination?.hierarchy?.any { it.route == screen.route } == true
         }
     }
 
-    LaunchedEffect(endOfListReached) {
-        viewModel.onTriggerEvent(HomeEvent.NextPage)
-    }
-
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
         topBar = {
             MediumTopAppBar(
                 title = {
-                    Text(text = stringResource(id = R.string.app_name))
-                },
-                actions = {
-                    IconButton(onClick = { navController.navigate("search") }) {
-                        Icon(imageVector = Icons.Rounded.Search, contentDescription = "Search")
-                    }
+                    Text(text = currentScreen?.title ?: stringResource(id = R.string.app_name))
                 },
                 scrollBehavior = scrollBehavior,
             )
         },
+        bottomBar = {
+            NavigationBar {
+                items.forEach { screen ->
+                    NavigationBarItem(
+                        icon = {
+                            Icon(
+                                imageVector = screen.icon,
+                                contentDescription = screen.title
+                            )
+                        },
+                        label = { Text(text = screen.title) },
+                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                        onClick = {
+                            navController.navigate(screen.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        },
+                    )
+                }
+            }
+        },
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(paddingValues),
-            state = lazyListState,
+        AnimatedNavHost(
+            navController = navController,
+            startDestination = Screen.Movies.route,
+            modifier = Modifier.padding(paddingValues)
         ) {
-            item {
-                CategoryRow(category) { category ->
-                    viewModel.onTriggerEvent(HomeEvent.ChangeCategory(category))
-                }
-            }
-            item {
-                GenreRow(
-                    genres = genres,
-                    selectedGenre = selectedGenre,
-                    error = error,
-                ) { genre ->
-                    viewModel.setSelectedGenre(genre)
-                }
-            }
-            gridItems(
-                data = movies,
-                columnCount = configuration.screenWidthDp / 150,
-            ) { movie ->
-                MovieItem(
-                    title = movie.title,
-                    imageUrl = getImageUrl(movie.posterPath),
-                    rating = movie.voteAverage,
-                    onClick = { navController.navigate("details/${movie.id}") }
+            composable(
+                Screen.Movies.route,
+                enterTransition = { fadeIn() },
+                exitTransition = { fadeOut() }
+            ) {
+                MoviesScreen(
+                    viewModel = hiltViewModel(),
+                    navigateToDetails = navigateToDetails,
                 )
             }
-            if (loading && movies.isNotEmpty()) {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 16.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        CircularProgressIndicator()
-                    }
-                }
+            composable(
+                Screen.Search.route,
+                enterTransition = { fadeIn() },
+                exitTransition = { fadeOut() }
+            ) {
+                SearchScreen(
+                    viewModel = hiltViewModel(),
+                    navigateToDetails = navigateToDetails,
+                )
             }
-            if (loading && movies.isEmpty()) {
-                gridItems(
-                    (1..4).toList(),
-                    columnCount = 2,
-                ) {
-                    MovieItemShimmer()
-                }
+            composable(
+                Screen.Favorites.route,
+                enterTransition = { fadeIn() },
+                exitTransition = { fadeOut() }
+            ) {
+                FavoritesScreen(
+                    viewModel = hiltViewModel(),
+                    navigateToDetails = navigateToDetails,
+                )
             }
         }
     }
+}
+
+val items = listOf(Screen.Movies, Screen.Search, Screen.Favorites)
+
+sealed class Screen(val route: String, val title: String, val icon: ImageVector) {
+    object Movies : Screen("movies", "Movies", Icons.Rounded.Home)
+    object Search : Screen("search", "Search", Icons.Rounded.Search)
+    object Favorites : Screen("favorites", "Favorites", Icons.Rounded.Favorite)
 }
