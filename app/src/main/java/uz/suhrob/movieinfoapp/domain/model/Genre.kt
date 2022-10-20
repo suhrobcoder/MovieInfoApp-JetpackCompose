@@ -7,6 +7,6 @@ import kotlinx.parcelize.Parcelize
 data class Genre(
     val id: Int,
     val name: String
-): Parcelable
+) : Parcelable
 
 val defaultGenre = Genre(-1, "All")

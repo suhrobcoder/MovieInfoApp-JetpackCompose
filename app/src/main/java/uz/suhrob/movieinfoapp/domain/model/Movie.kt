@@ -16,7 +16,7 @@ data class Movie(
     val video: Boolean,
     val voteCount: Int,
     val voteAverage: Double
-): Parcelable {
+) : Parcelable {
     fun getMovieReleaseYear(): String {
         return releaseDate?.let {
             it.split("-")[0]

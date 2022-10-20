@@ -38,7 +38,10 @@ fun SearchScreen(
         when (state.uiState) {
             UiState.success -> {
                 items(state.movies) { movie ->
-                    MovieSearchItem(movie = movie, onClick = { component.sendEvent(SearchEvent.MovieClick(movie)) })
+                    MovieSearchItem(
+                        movie = movie,
+                        onClick = { component.sendEvent(SearchEvent.MovieClick(movie)) },
+                    )
                 }
             }
             UiState.loading -> {

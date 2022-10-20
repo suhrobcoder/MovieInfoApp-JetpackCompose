@@ -23,8 +23,6 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.valentinilk.shimmer.Shimmer
-import com.valentinilk.shimmer.ShimmerBounds
-import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
 import uz.suhrob.movieinfoapp.R
 import uz.suhrob.movieinfoapp.domain.model.Movie

@@ -2,7 +2,6 @@ package uz.suhrob.movieinfoapp.data.local.mapper
 
 import uz.suhrob.movieinfoapp.data.local.entity.MovieEntity
 import uz.suhrob.movieinfoapp.data.local.entity.relations.MovieWithGenre
-import uz.suhrob.movieinfoapp.data.remote.mapper.GenreMapper
 import uz.suhrob.movieinfoapp.domain.model.Movie
 import uz.suhrob.movieinfoapp.domain.util.DomainMapper
 

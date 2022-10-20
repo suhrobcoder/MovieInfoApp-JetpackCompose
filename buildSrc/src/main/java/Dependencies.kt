@@ -50,6 +50,8 @@ object Dependencies {
         const val kotlinAndroid = "kotlin-android"
         const val kotlinKapt = "kotlin-kapt"
         const val kotlinxSerialization = "kotlinx-serialization"
+        const val kotlinParcelize = "kotlin-parcelize"
+        const val ktLint = "org.jlleitschuh.gradle.ktlint"
     }
 
     object Test {
@@ -63,7 +65,5 @@ object Dependencies {
         const val googleTruth = "com.google.truth:truth:${Versions.googleTruthVersion}"
         const val mockitoCore = "org.mockito:mockito-core:${Versions.mockitoCoreVersion}"
         const val dexmakerMockito = "com.linkedin.dexmaker:dexmaker-mockito:${Versions.dexmakerMockitoVersion}"
-        const val hiltAndroidTesting = "com.google.dagger:hilt-android-testing:${Versions.hiltTestingVersion}"
-        const val hiltAndroidCompiler = "com.google.dagger:hilt-compiler:${Versions.hiltTestingVersion}"
     }
 }

@@ -14,6 +14,7 @@ object Versions {
     const val retrofitVersion = "2.9.0"
     const val serializationConverterVersion = "0.8.0"
     const val datastoreVersion = "1.0.0"
+    const val ktlintVersion = "11.0.0"
     const val junitVersion = "4.13.2"
     const val junitExtVersion = "1.1.3"
     const val testCoreVersion = "1.4.0"
@@ -22,5 +23,4 @@ object Versions {
     const val googleTruthVersion = "1.1.3"
     const val mockitoCoreVersion = "4.7.0"
     const val dexmakerMockitoVersion = "2.28.3"
-    const val hiltTestingVersion = "2.43.2"
 }

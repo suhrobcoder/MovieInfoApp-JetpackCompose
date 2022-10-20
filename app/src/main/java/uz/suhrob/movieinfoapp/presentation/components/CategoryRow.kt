@@ -66,7 +66,10 @@ fun CategoryItem(category: Category, modifier: Modifier, selected: Boolean, onCl
                 .height(6.dp)
                 .width(42.dp)
                 .clip(RoundedCornerShape(percent = 50))
-                .background(color = if (selected) MaterialTheme.colorScheme.secondary else Color.Transparent)
+                .background(
+                    color = if (selected) MaterialTheme.colorScheme.secondary
+                    else Color.Transparent,
+                )
         )
     }
 }

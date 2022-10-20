@@ -18,8 +18,10 @@ data class MovieDto(
     @SerialName("overview") val overview: String? = null,
     @SerialName("popularity") val popularity: Double? = null,
     @SerialName("poster_path") val poster_path: String? = null,
-    @SerialName("production_companies") val production_companies: List<ProductionCompanies> = listOf(),
-    @SerialName("production_countries") val production_countries: List<ProductionCountries> = listOf(),
+    @SerialName("production_companies")
+    val production_companies: List<ProductionCompanies> = listOf(),
+    @SerialName("production_countries")
+    val production_countries: List<ProductionCountries> = listOf(),
     @SerialName("release_date") val release_date: String? = null,
     @SerialName("revenue") val revenue: Long? = null,
     @SerialName("runtime") val runtime: Int? = null,

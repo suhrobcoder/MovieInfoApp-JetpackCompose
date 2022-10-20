@@ -9,7 +9,14 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.http.*
 import uz.suhrob.movieinfoapp.data.remote.model.MovieDto
-import uz.suhrob.movieinfoapp.data.remote.response.*
+import uz.suhrob.movieinfoapp.data.remote.response.CreditsResponse
+import uz.suhrob.movieinfoapp.data.remote.response.GenreResponse
+import uz.suhrob.movieinfoapp.data.remote.response.GuestSessionResponse
+import uz.suhrob.movieinfoapp.data.remote.response.MovieListResponse
+import uz.suhrob.movieinfoapp.data.remote.response.MovieReviewResponse
+import uz.suhrob.movieinfoapp.data.remote.response.MovieVideoResponse
+import uz.suhrob.movieinfoapp.data.remote.response.RateBody
+import uz.suhrob.movieinfoapp.data.remote.response.RateResponse
 import uz.suhrob.movieinfoapp.other.BASE_URL
 
 interface ApiService {

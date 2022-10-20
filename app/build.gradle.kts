@@ -1,11 +1,10 @@
-import Dependencies.AndroidX.Activity.activityCompose
-
 plugins {
     id(Dependencies.Plugins.application)
     id(Dependencies.Plugins.kotlinAndroid)
     id(Dependencies.Plugins.kotlinKapt)
     id(Dependencies.Plugins.kotlinxSerialization)
-    id("kotlin-parcelize")
+    id(Dependencies.Plugins.kotlinParcelize)
+    id(Dependencies.Plugins.ktLint) version(Versions.ktlintVersion)
 }
 
 android {
@@ -24,7 +23,10 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -42,13 +44,24 @@ android {
     }
 }
 
+ktlint {
+    android.set(true)
+    ignoreFailures.set(false)
+    disabledRules.set(listOf("final-newline", "no-wildcard-imports"))
+    reporters {
+        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.PLAIN)
+        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE)
+        reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.SARIF)
+    }
+}
+
 dependencies {
 
     implementation(Dependencies.Kotlin.kotlinStdLib)
     implementation(Dependencies.AndroidX.coreKtx)
     implementation(Dependencies.AndroidX.AppCompat.appCompat)
 
-    //Compose
+    // Compose
     implementation(Dependencies.Compose.uiToolingPreview)
     implementation(Dependencies.Compose.material3)
     implementation(Dependencies.Compose.ui)

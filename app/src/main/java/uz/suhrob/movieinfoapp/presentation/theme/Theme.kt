@@ -36,7 +36,6 @@ private val LightColors = lightColorScheme(
     surfaceTint = md_theme_light_surfaceTint,
 )
 
-
 private val DarkColors = darkColorScheme(
     primary = md_theme_dark_primary,
     onPrimary = md_theme_dark_onPrimary,
@@ -68,7 +67,10 @@ private val DarkColors = darkColorScheme(
 )
 
 @Composable
-fun MovieInfoAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
+fun MovieInfoAppTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit,
+) {
     val useDynamicColors = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
     val colorScheme = when {
         useDynamicColors && darkTheme -> dynamicDarkColorScheme(LocalContext.current)

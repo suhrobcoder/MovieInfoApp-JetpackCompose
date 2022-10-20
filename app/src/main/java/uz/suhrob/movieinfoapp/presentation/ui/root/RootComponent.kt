@@ -60,7 +60,7 @@ class RootComponent(
                     ioScope = ioScope,
                     favoritesRepository = favoritesRepository,
                     movieRepository = movieRepository,
-                    navigateToDetails = {navigation.push(Config.Details(it))},
+                    navigateToDetails = { navigation.push(Config.Details(it)) },
                 )
             )
         }

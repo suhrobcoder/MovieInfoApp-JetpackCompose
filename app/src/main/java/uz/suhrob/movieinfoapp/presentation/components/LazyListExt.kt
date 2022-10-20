@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
-
 fun <T> LazyListScope.gridItems(
     data: List<T>,
     columnCount: Int,
@@ -38,4 +37,5 @@ fun <T> LazyListScope.gridItems(
     }
 }
 
-fun LazyListState.isScrolledToEnd() = layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 1
+fun LazyListState.isScrolledToEnd() =
+    layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 1

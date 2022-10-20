@@ -98,7 +98,8 @@ class MovieRepositoryImpl(
         return safeCall {
             Resource.Success(
                 CastDtoMapper.mapToList(
-                    service.getMovieCredits(movieId).body()!!.cast.filter { it.order < MAX_CAST_COUNT }
+                    service.getMovieCredits(movieId).body()!!.cast
+                        .filter { it.order < MAX_CAST_COUNT }
                 )
             )
         }
@@ -115,7 +116,8 @@ class MovieRepositoryImpl(
         return sessionId?.let { id ->
             safeCall {
                 Resource.Success(
-                    service.rateMovie(movieId, id, RateBody(value)).body()!!.statusMessage.contains("Success")
+                    service.rateMovie(movieId, id, RateBody(value)).body()!!.statusMessage
+                        .contains("Success"),
                 )
             }
         } ?: Resource.Error(message = "Error")

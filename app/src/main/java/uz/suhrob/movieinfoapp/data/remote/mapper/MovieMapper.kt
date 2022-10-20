@@ -13,7 +13,8 @@ object MovieMapper : DomainMapper<MovieDto, Movie>() {
             overview = model.overview ?: "",
             backdropPath = model.backdrop_path ?: "",
             posterPath = model.poster_path ?: "",
-            genres = if (model.genres.isNotEmpty()) GenreMapper.mapToList(model.genres) else model.genreIds.map { Genre(it, "") },
+            genres = if (model.genres.isNotEmpty()) GenreMapper.mapToList(model.genres)
+            else model.genreIds.map { Genre(it, "") },
             releaseDate = model.release_date,
             runtime = model.runtime,
             video = model.video ?: false,

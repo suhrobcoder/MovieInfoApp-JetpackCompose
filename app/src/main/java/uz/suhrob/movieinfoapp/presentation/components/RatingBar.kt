@@ -21,10 +21,17 @@ fun RatingBar(
     modifier: Modifier = Modifier,
     onChange: (Int) -> Unit
 ) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.padding(vertical = 16.dp)) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.padding(vertical = 16.dp),
+    ) {
         Row {
             for (i in 1..MAX_RATING) {
-                StarImageButton(isFilled = i <= value, onClick = { onChange(i) }, modifier = Modifier.weight(1f))
+                StarImageButton(
+                    isFilled = i <= value,
+                    onClick = { onChange(i) },
+                    modifier = Modifier.weight(1f),
+                )
             }
         }
         Text(text = "$value/$MAX_RATING")
@@ -38,7 +45,9 @@ fun StarImageButton(
     onClick: () -> Unit
 ) {
     Image(
-        painter = painterResource(id = if (isFilled) R.drawable.ic_star_filled else R.drawable.ic_star_outlined),
+        painter = painterResource(
+            id = if (isFilled) R.drawable.ic_star_filled else R.drawable.ic_star_outlined
+        ),
         modifier = modifier.clickable(onClick = onClick).padding(all = 4.dp),
         contentDescription = "Star button"
     )

@@ -23,14 +23,14 @@ interface Home {
     fun tabClick(tab: Tab)
 
     sealed class Child {
-        class MoviesChild(val component: Movies): Child()
-        class SearchChild(val component: Search): Child()
-        class FavoritesChild(val component: Favorites): Child()
+        class MoviesChild(val component: Movies) : Child()
+        class SearchChild(val component: Search) : Child()
+        class FavoritesChild(val component: Favorites) : Child()
     }
 }
 
-enum class Tab(val route: String, val title: String, val icon: ImageVector) {
-    Movies("movies", "Movies", Icons.Rounded.Home),
-    Search("search", "Search", Icons.Rounded.Search),
-    Favorites("favorites", "Favorites", Icons.Rounded.Favorite),
+enum class Tab(val title: String, val icon: ImageVector) {
+    Movies("Movies", Icons.Rounded.Home),
+    Search("Search", Icons.Rounded.Search),
+    Favorites("Favorites", Icons.Rounded.Favorite),
 }

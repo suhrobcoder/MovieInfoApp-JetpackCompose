@@ -18,7 +18,12 @@ fun ReviewItem(
     content: String
 ) {
     var textCollapsed by remember(content) { mutableStateOf(false) }
-    Card(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).animateContentSize()) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+            .animateContentSize()
+    ) {
         Column(modifier = Modifier.padding(8.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 AvatarImage(path = avatarUrl, modifier = Modifier.size(48.dp))
@@ -26,7 +31,8 @@ fun ReviewItem(
                 Spacer(modifier = Modifier.weight(1f))
                 IconButton(onClick = { textCollapsed = !textCollapsed }) {
                     Icon(
-                        imageVector = if (textCollapsed) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                        imageVector = if (textCollapsed) Icons.Filled.KeyboardArrowUp
+                        else Icons.Filled.KeyboardArrowDown,
                         contentDescription = null
                     )
                 }

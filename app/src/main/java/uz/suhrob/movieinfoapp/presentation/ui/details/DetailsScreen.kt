@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
+import kotlin.math.roundToInt
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import uz.suhrob.movieinfoapp.R
 import uz.suhrob.movieinfoapp.domain.model.Cast
@@ -39,8 +40,6 @@ import uz.suhrob.movieinfoapp.domain.model.Video
 import uz.suhrob.movieinfoapp.other.formatTime
 import uz.suhrob.movieinfoapp.other.getImageUrl
 import uz.suhrob.movieinfoapp.presentation.components.*
-import uz.suhrob.movieinfoapp.presentation.ui.details.DetailsEvent.*
-import kotlin.math.roundToInt
 
 private val headerHeight = 275.dp
 private val toolbarHeight = 56.dp
@@ -67,9 +66,10 @@ fun DetailsScreen(component: Details) {
         if (dialogState.show) {
             RatingDialog(
                 rating = dialogState.rating,
-                onChange = { component.sendEvent(SetRating(it)) },
-                onSubmit = { component.sendEvent(SubmitRating) },
-                onClose = { component.sendEvent(CloseDialog) })
+                onChange = { component.sendEvent(DetailsEvent.SetRating(it)) },
+                onSubmit = { component.sendEvent(DetailsEvent.SubmitRating) },
+                onClose = { component.sendEvent(DetailsEvent.CloseDialog) }
+            )
         }
         val headerHeightPx = with(LocalDensity.current) { headerHeight.toPx() }
         val toolbarHeightPx = with(LocalDensity.current) { toolbarHeight.toPx() }
@@ -88,16 +88,16 @@ fun DetailsScreen(component: Details) {
                 scrollState.value.toFloat(),
                 headerHeightPx,
                 showDialog = {
-                    component.sendEvent(ShowDialog)
+                    component.sendEvent(DetailsEvent.ShowDialog)
                 },
                 onLikeClick = {
-                    component.sendEvent(LikeClick)
+                    component.sendEvent(DetailsEvent.LikeClick)
                 },
             )
             Toolbar(
                 scrollState,
                 state.movie.title,
-                { component.sendEvent(NavigateBack) },
+                { component.sendEvent(DetailsEvent.NavigateBack) },
                 headerHeightPx,
                 toolbarHeightPx
             )
@@ -156,7 +156,8 @@ fun RatingBar(
                 )
                 Text(
                     text = AnnotatedString(
-                        text = "${(voteAverage * 10).roundToInt() / 10f}/10", spanStyles = listOf(
+                        text = "${(voteAverage * 10).roundToInt() / 10f}/10",
+                        spanStyles = listOf(
                             AnnotatedString.Range(SpanStyle(fontSize = 14.sp), 0, 4),
                             AnnotatedString.Range(SpanStyle(fontSize = 12.sp), 3, 6)
                         )

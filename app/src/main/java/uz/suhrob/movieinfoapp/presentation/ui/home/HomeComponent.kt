@@ -85,21 +85,23 @@ class HomeComponent(
     }
 
     override fun tabClick(tab: Tab) {
-        navigation.bringToFront(when(tab) {
-            Tab.Movies -> Config.Movies
-            Tab.Search -> Config.Search
-            Tab.Favorites -> Config.Favorites
-        })
+        navigation.bringToFront(
+            when (tab) {
+                Tab.Movies -> Config.Movies
+                Tab.Search -> Config.Search
+                Tab.Favorites -> Config.Favorites
+            }
+        )
     }
 
-    private sealed interface Config: Parcelable {
+    private sealed interface Config : Parcelable {
         @Parcelize
-        object Movies: Config
+        object Movies : Config
 
         @Parcelize
-        object Search: Config
+        object Search : Config
 
         @Parcelize
-        object Favorites: Config
+        object Favorites : Config
     }
 }

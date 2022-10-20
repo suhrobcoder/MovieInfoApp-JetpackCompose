@@ -85,7 +85,10 @@ class MoviesComponent(
                 is Resource.Error -> _state.reduce { it.copy(uiState = UiState.error) }
                 is Resource.Loading -> Unit
                 is Resource.Success -> _state.reduce {
-                    it.copy(uiState = UiState.error, movies = state.value.movies + result.data.orEmpty())
+                    it.copy(
+                        uiState = UiState.error,
+                        movies = state.value.movies + result.data.orEmpty(),
+                    )
                 }
             }
         }

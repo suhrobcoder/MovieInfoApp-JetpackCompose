@@ -10,7 +10,7 @@ interface Root {
     val childStack: Value<ChildStack<*, Child>>
 
     sealed interface Child {
-        class HomeChild(val component: Home): Child
-        class DetailsChild(val component: Details): Child
+        class HomeChild(val component: Home) : Child
+        class DetailsChild(val component: Details) : Child
     }
 }
