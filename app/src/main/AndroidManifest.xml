@@ -7,8 +7,7 @@
     <application
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.MovieInfoApp"
-        android:name=".presentation.MovieInfoApplication">
+        android:theme="@style/Theme.MovieInfoApp">
         <activity
             android:name=".presentation.MainActivity"
             android:theme="@style/Theme.MovieInfoApp"

@@ -1,9 +1,11 @@
+import Dependencies.AndroidX.Activity.activityCompose
+
 plugins {
     id(Dependencies.Plugins.application)
     id(Dependencies.Plugins.kotlinAndroid)
     id(Dependencies.Plugins.kotlinKapt)
     id(Dependencies.Plugins.kotlinxSerialization)
-    id(Dependencies.Plugins.daggerHilt)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -51,17 +53,12 @@ dependencies {
     implementation(Dependencies.Compose.material3)
     implementation(Dependencies.Compose.ui)
 
-    implementation(Dependencies.Compose.navCompose)
+    implementation(Dependencies.AndroidX.Activity.activityCompose)
+
+    implementation(Dependencies.Decompose.decompose)
+    implementation(Dependencies.Decompose.composeExt)
 
     implementation(Dependencies.Compose.composeShimmer)
-
-    implementation(Dependencies.Lifecycle.viewmodelKtx)
-    implementation(Dependencies.Lifecycle.commonJava8)
-
-    implementation(Dependencies.DaggerHilt.hiltAndroid)
-    kapt(Dependencies.DaggerHilt.androidCompiler)
-    kapt(Dependencies.DaggerHilt.hiltCompiler)
-    implementation(Dependencies.DaggerHilt.hiltNavigation)
 
     implementation(Dependencies.Coil.coilCompose)
 
@@ -75,8 +72,6 @@ dependencies {
     implementation(Dependencies.Kotlin.kotlinSerializationJson)
 
     implementation(Dependencies.AndroidX.Datastore.preferences)
-
-    implementation(Dependencies.Accompanist.navigationAnimation)
 
     testImplementation(Dependencies.Test.Junit.junit)
     testImplementation(Dependencies.Test.androidTestCore)
@@ -92,8 +87,6 @@ dependencies {
     androidTestImplementation(Dependencies.Test.Junit.junitExt)
     androidTestImplementation(Dependencies.Test.mockitoCore)
     androidTestImplementation(Dependencies.Test.dexmakerMockito)
-    androidTestImplementation(Dependencies.Test.hiltAndroidTesting)
-    kaptAndroidTest(Dependencies.Test.hiltAndroidCompiler)
 
     debugImplementation(Dependencies.Compose.uiTooling)
     debugImplementation(Dependencies.Compose.uiTestManifest)

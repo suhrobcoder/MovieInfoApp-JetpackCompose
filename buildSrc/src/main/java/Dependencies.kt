@@ -21,24 +21,16 @@ object Dependencies {
         const val ui = "androidx.compose.ui:ui:${Versions.composeVersion}"
         const val material3 = "androidx.compose.material3:material3:${Versions.composeMaterial3Version}"
         const val uiToolingPreview = "androidx.compose.ui:ui-tooling-preview:${Versions.composeVersion}"
-        const val navCompose = "androidx.navigation:navigation-compose:${Versions.navComposeVersion}"
         const val composeShimmer = "com.valentinilk.shimmer:compose-shimmer:${Versions.composeShimmerVersion}"
         const val uiTooling = "androidx.compose.ui:ui-tooling:${Versions.composeVersion}"
         const val uiTestManifest = "androidx.compose.ui:ui-test-manifest:${Versions.composeVersion}"
     }
-    object Lifecycle {
-        const val viewmodelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.lifecycleVersion}"
-        const val commonJava8 = "androidx.lifecycle:lifecycle-common-java8:${Versions.lifecycleVersion}"
+    object Decompose {
+        const val decompose = "com.arkivanov.decompose:decompose:${Versions.decomposeVersion}"
+        const val composeExt = "com.arkivanov.decompose:extensions-compose-jetpack:${Versions.decomposeVersion}"
     }
     object Gradle {
         const val gradlePlugin = "com.android.tools.build:gradle:${Versions.gradlePluginVersion}"
-    }
-    object DaggerHilt {
-        const val hiltPlugin = "com.google.dagger:hilt-android-gradle-plugin:${Versions.hiltAndroidVersion}"
-        const val hiltAndroid = "com.google.dagger:hilt-android:${Versions.hiltAndroidVersion}"
-        const val androidCompiler = "com.google.dagger:hilt-android-compiler:${Versions.hiltAndroidVersion}"
-        const val hiltCompiler = "androidx.hilt:hilt-compiler:${Versions.hiltVersion}"
-        const val hiltNavigation = "androidx.hilt:hilt-navigation-compose:${Versions.hiltVersion}"
     }
     object Coil {
         const val coilCompose = "io.coil-kt:coil-compose:${Versions.coilVersion}"
@@ -52,16 +44,12 @@ object Dependencies {
         const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofitVersion}"
         const val serializationConverter = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${Versions.serializationConverterVersion}"
     }
-    object Accompanist {
-        const val navigationAnimation = "com.google.accompanist:accompanist-navigation-animation:${Versions.accompanistVersion}"
-    }
 
     object Plugins {
         const val application = "com.android.application"
         const val kotlinAndroid = "kotlin-android"
         const val kotlinKapt = "kotlin-kapt"
         const val kotlinxSerialization = "kotlinx-serialization"
-        const val daggerHilt = "dagger.hilt.android.plugin"
     }
 
     object Test {

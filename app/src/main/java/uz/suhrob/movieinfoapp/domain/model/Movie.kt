@@ -1,5 +1,9 @@
 package uz.suhrob.movieinfoapp.domain.model
 
+import com.arkivanov.essenty.parcelable.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Movie(
     val id: Int,
     val title: String,
@@ -12,7 +16,7 @@ data class Movie(
     val video: Boolean,
     val voteCount: Int,
     val voteAverage: Double
-) {
+): Parcelable {
     fun getMovieReleaseYear(): String {
         return releaseDate?.let {
             it.split("-")[0]

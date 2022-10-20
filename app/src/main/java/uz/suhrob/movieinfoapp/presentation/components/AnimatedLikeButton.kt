@@ -15,15 +15,10 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.unit.dp
 import uz.suhrob.movieinfoapp.R
-import uz.suhrob.movieinfoapp.presentation.components.LikeState.INITIAL
-
-enum class LikeState {
-    INITIAL, LIKED
-}
 
 @Composable
-fun AnimatedLikeButton(state: LikeState, onClick: () -> Unit) {
-    val transition = updateTransition(targetState = state, label = "Like Transition")
+fun AnimatedLikeButton(liked: Boolean, onClick: () -> Unit) {
+    val transition = updateTransition(targetState = liked, label = "Like Transition")
     val heartSize = transition.animateDp(
         transitionSpec = {
             keyframes {
@@ -44,8 +39,8 @@ fun AnimatedLikeButton(state: LikeState, onClick: () -> Unit) {
                     indication = null
                 )
                 .size(heartSize.value),
-            bitmap = if (state == INITIAL) ImageBitmap.imageResource(id = R.drawable.heart)
-            else ImageBitmap.imageResource(id = R.drawable.heart_filled),
+            bitmap = if (liked) ImageBitmap.imageResource(id = R.drawable.heart_filled)
+            else ImageBitmap.imageResource(id = R.drawable.heart),
             contentDescription = "Like"
         )
     }

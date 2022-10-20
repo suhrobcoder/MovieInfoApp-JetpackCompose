@@ -22,11 +22,9 @@ enum class Category(val value: String) {
     UPCOMING("Upcoming")
 }
 
-fun allCategories() = listOf(Category.POPULAR, Category.TOP_RATED, Category.UPCOMING)
-
 @Composable
 fun CategoryRow(selectedCategory: Category, onCategorySelected: (Category) -> Unit) {
-    val categories = allCategories()
+    val categories = Category.values()
     Row(
         modifier = Modifier
             .horizontalScroll(rememberScrollState())

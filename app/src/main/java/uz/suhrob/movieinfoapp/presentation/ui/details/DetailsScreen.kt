@@ -29,13 +29,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import uz.suhrob.movieinfoapp.R
 import uz.suhrob.movieinfoapp.domain.model.Cast
 import uz.suhrob.movieinfoapp.domain.model.Movie
 import uz.suhrob.movieinfoapp.domain.model.Review
 import uz.suhrob.movieinfoapp.domain.model.Video
-import uz.suhrob.movieinfoapp.other.Resource
 import uz.suhrob.movieinfoapp.other.formatTime
 import uz.suhrob.movieinfoapp.other.getImageUrl
 import uz.suhrob.movieinfoapp.presentation.components.*
@@ -49,17 +49,13 @@ private val toolbarHeight = 56.dp
 @ExperimentalAnimationApi
 @ExperimentalCoroutinesApi
 @Composable
-fun DetailsScreen(viewModel: DetailsViewModel, navigateBack: () -> Unit) {
-    val movieRes by viewModel.movie.collectAsState()
-    val videos by viewModel.videos.collectAsState()
-    val reviews by viewModel.reviews.collectAsState()
-    val cast by viewModel.cast.collectAsState()
-    val showDialog by viewModel.isShowingDialog.collectAsState()
-    val likeState by viewModel.likeState.collectAsState()
+fun DetailsScreen(component: Details) {
+    val state by component.state.subscribeAsState()
+    val dialogState by component.dialogState.subscribeAsState()
     val scrollState = rememberScrollState()
     val snackBarHostState = SnackbarHostState()
-    LaunchedEffect(key1 = viewModel.movieId) {
-        viewModel.snackBarFlow.collect {
+    LaunchedEffect(key1 = state.movie.id) {
+        component.snackBarFlow.collect {
             snackBarHostState.showSnackbar(it)
         }
     }
@@ -68,72 +64,43 @@ fun DetailsScreen(viewModel: DetailsViewModel, navigateBack: () -> Unit) {
             SnackbarHost(hostState = snackBarHostState)
         },
     ) { paddingValues ->
-        when (movieRes) {
-            is Resource.Success -> {
-                val movie = movieRes.data!!
-                if (movie.video) {
-                    viewModel.onTriggerEvent(LoadVideos)
-                }
-                viewModel.onTriggerEvent(LoadReviews)
+        if (dialogState.show) {
+            RatingDialog(
+                rating = dialogState.rating,
+                onChange = { component.sendEvent(SetRating(it)) },
+                onSubmit = { component.sendEvent(SubmitRating) },
+                onClose = { component.sendEvent(CloseDialog) })
+        }
+        val headerHeightPx = with(LocalDensity.current) { headerHeight.toPx() }
+        val toolbarHeightPx = with(LocalDensity.current) { toolbarHeight.toPx() }
 
-                if (showDialog) {
-                    val rating = viewModel.rating.collectAsState()
-                    RatingDialog(
-                        rating = rating.value,
-                        onChange = { viewModel.setRating(it) },
-                        onSubmit = { viewModel.onTriggerEvent(SubmitRating(rating.value)) },
-                        onClose = { viewModel.onTriggerEvent(CloseDialog) })
-                }
-
-                val headerHeightPx = with(LocalDensity.current) { headerHeight.toPx() }
-                val toolbarHeightPx = with(LocalDensity.current) { toolbarHeight.toPx() }
-
-                Box(modifier = Modifier.fillMaxSize()) {
-                    DetailsBody(
-                        movie = movie,
-                        cast = cast,
-                        videos = videos,
-                        reviews = reviews,
-                        scroll = scrollState
-                    )
-                    DetailsHeader(
-                        movie,
-                        likeState,
-                        scrollState,
-                        headerHeightPx,
-                        showDialog = {
-                            viewModel.onTriggerEvent(ShowDialog)
-                        },
-                        onLikeClick = {
-                            viewModel.onTriggerEvent(LikeClick)
-                        },
-                    )
-                    Toolbar(scrollState, movie.title, navigateBack, headerHeightPx, toolbarHeightPx)
-                    Title()
-                }
-
-            }
-            is Resource.Loading -> {
-                Column(
-                    modifier = Modifier.padding(paddingValues),
-                ) {
-//                    DetailsAppBar(
-//                        transparent = false,
-//                        title = "",
-//                        onNavigationClick = { navController.popBackStack() })
-                    Loading()
-                }
-            }
-            is Resource.Error -> {
-                Column(
-                    modifier = Modifier.padding(paddingValues),
-                ) {
-                    Error(
-                        modifier = Modifier.statusBarsPadding(),
-                        onRetry = { viewModel.onTriggerEvent(LoadMovie) }
-                    )
-                }
-            }
+        Box(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
+            DetailsBody(
+                movie = state.movie,
+                cast = state.cast,
+                videos = state.videos,
+                reviews = state.reviews,
+                scroll = scrollState
+            )
+            DetailsHeader(
+                state.movie,
+                state.liked,
+                scrollState.value.toFloat(),
+                headerHeightPx,
+                showDialog = {
+                    component.sendEvent(ShowDialog)
+                },
+                onLikeClick = {
+                    component.sendEvent(LikeClick)
+                },
+            )
+            Toolbar(
+                scrollState,
+                state.movie.title,
+                { component.sendEvent(NavigateBack) },
+                headerHeightPx,
+                toolbarHeightPx
+            )
         }
     }
 }
@@ -161,7 +128,7 @@ fun BackdropImage(backdropPath: String) {
 fun RatingBar(
     voteCount: Int,
     voteAverage: Double,
-    likeState: LikeState,
+    liked: Boolean,
     showDialog: () -> Unit,
     onLikeClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -217,7 +184,7 @@ fun RatingBar(
                     .fillMaxHeight(),
                 contentAlignment = Alignment.Center
             ) {
-                AnimatedLikeButton(state = likeState, onClick = onLikeClick)
+                AnimatedLikeButton(liked, onClick = onLikeClick)
             }
         }
     }
@@ -226,8 +193,8 @@ fun RatingBar(
 @Composable
 fun DetailsHeader(
     movie: Movie,
-    likeState: LikeState,
-    scroll: ScrollState,
+    liked: Boolean,
+    scroll: Float,
     headerHeightPx: Float,
     showDialog: () -> Unit,
     onLikeClick: () -> Unit,
@@ -237,8 +204,8 @@ fun DetailsHeader(
             .fillMaxWidth()
             .height(headerHeight)
             .graphicsLayer {
-                translationY = -scroll.value.toFloat() / 2f
-                alpha = (-1f / headerHeightPx) * scroll.value + 1
+                translationY = -scroll / 2f
+                alpha = (-1f / headerHeightPx) * scroll + 1
             }
     ) {
         BackdropImage(movie.backdropPath)
@@ -246,7 +213,7 @@ fun DetailsHeader(
         RatingBar(
             voteCount = movie.voteCount,
             voteAverage = movie.voteAverage,
-            likeState = likeState,
+            liked = liked,
             showDialog = showDialog,
             onLikeClick = onLikeClick,
             modifier = Modifier.align(Alignment.BottomStart)
@@ -304,7 +271,7 @@ fun Toolbar(
     toolbarHeightPx: Float
 ) {
     val toolbarBottom = headerHeightPx - toolbarHeightPx
-    val showToolbar by derivedStateOf { scroll.value >= toolbarBottom }
+    val showToolbar by remember { derivedStateOf { scroll.value >= toolbarBottom } }
 
     AnimatedVisibility(
         visible = showToolbar,
@@ -323,13 +290,6 @@ fun Toolbar(
             title = { Text(title) },
         )
     }
-}
-
-@Composable
-fun Title() {
-    Text(
-        text = "Text",
-    )
 }
 
 @Composable
@@ -353,7 +313,7 @@ fun VideosColumn(videos: List<Video>, onClick: () -> Unit) {
             vertical = 16.dp
         )
     ) {
-        Text(text = "Reviews", style = MaterialTheme.typography.titleLarge)
+        Text(text = "Videos", style = MaterialTheme.typography.titleLarge)
         Column {
             videos.forEach { video ->
                 VideoItem(name = video.name, onClick = onClick)

@@ -1,9 +1,16 @@
 package uz.suhrob.movieinfoapp.data.remote
 
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
 import retrofit2.Response
+import retrofit2.Retrofit
 import retrofit2.http.*
 import uz.suhrob.movieinfoapp.data.remote.model.MovieDto
 import uz.suhrob.movieinfoapp.data.remote.response.*
+import uz.suhrob.movieinfoapp.other.BASE_URL
 
 interface ApiService {
     @GET("genre/movie/list")
@@ -61,4 +68,21 @@ interface ApiService {
         @Query("guest_session_id") guestSessionId: String,
         @Body rate: RateBody
     ): Response<RateResponse>
+}
+
+@OptIn(ExperimentalSerializationApi::class)
+fun ApiService(): ApiService {
+    return Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(
+            json.asConverterFactory("application/json".toMediaType())
+        )
+        .client(OkHttpClient.Builder().addInterceptor(AuthInterceptor()).build())
+        .build()
+        .create(ApiService::class.java)
+}
+
+private val json = Json {
+    ignoreUnknownKeys = true
+    isLenient = true
 }

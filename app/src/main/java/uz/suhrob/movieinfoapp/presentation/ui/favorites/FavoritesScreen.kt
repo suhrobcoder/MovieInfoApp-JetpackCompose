@@ -3,24 +3,23 @@ package uz.suhrob.movieinfoapp.presentation.ui.favorites
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import uz.suhrob.movieinfoapp.domain.model.Movie
 import uz.suhrob.movieinfoapp.presentation.components.MovieGrid
 
 @ExperimentalCoroutinesApi
 @ExperimentalFoundationApi
 @Composable
 fun FavoritesScreen(
-    viewModel: FavoritesViewModel,
-    navigateToDetails: (Movie) -> Unit,
+    component: Favorites,
 ) {
-    val movies = viewModel.movies.collectAsState()
+    val state by component.state.subscribeAsState()
     MovieGrid(
-        movies = movies.value,
+        movies = state.movies,
         onChangeScrollPosition = { },
-        onMovieClicked = navigateToDetails,
+        onMovieClicked = { component.sendEvent(FavoritesEvent.MovieClick(it)) },
         onLastItemCreated = {},
         modifier = Modifier.fillMaxHeight(),
     )

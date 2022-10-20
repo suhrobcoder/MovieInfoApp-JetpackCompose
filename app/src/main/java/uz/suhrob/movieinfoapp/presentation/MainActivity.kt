@@ -3,85 +3,77 @@ package uz.suhrob.movieinfoapp.presentation
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.core.view.WindowCompat
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import dagger.hilt.android.AndroidEntryPoint
+import androidx.room.Room
+import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.defaultComponentContext
+import com.arkivanov.decompose.extensions.compose.jetpack.stack.Children
+import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.slide
+import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.stackAnimation
+import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.serialization.ExperimentalSerializationApi
+import uz.suhrob.movieinfoapp.data.local.DATABASE_NAME
+import uz.suhrob.movieinfoapp.data.local.MovieDatabase
+import uz.suhrob.movieinfoapp.data.pref.MovieInfoPref
 import uz.suhrob.movieinfoapp.presentation.theme.MovieInfoAppTheme
 import uz.suhrob.movieinfoapp.presentation.ui.details.DetailsScreen
-import uz.suhrob.movieinfoapp.presentation.ui.details.DetailsViewModel
 import uz.suhrob.movieinfoapp.presentation.ui.home.HomeScreen
+import uz.suhrob.movieinfoapp.presentation.ui.root.Root
+import uz.suhrob.movieinfoapp.presentation.ui.root.RootComponent
 
 @ExperimentalAnimationApi
 @ExperimentalSerializationApi
 @ExperimentalFoundationApi
-@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var database: MovieDatabase
+    private lateinit var movieInfoPref: MovieInfoPref
 
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
+        if (!::database.isInitialized) {
+            database = Room.databaseBuilder(
+                applicationContext,
+                MovieDatabase::class.java,
+                DATABASE_NAME
+            ).build()
+        }
+        if (!::movieInfoPref.isInitialized) {
+            movieInfoPref = MovieInfoPref(applicationContext)
+        }
+        val rootComponent = RootComponent(
+            defaultComponentContext(),
+            CoroutineScope(Dispatchers.IO),
+            database,
+            movieInfoPref,
+        )
         setContent {
-            MovieInfoApp()
+            MovieInfoApp(rootComponent)
         }
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalCoroutinesApi::class)
+@OptIn(
+    ExperimentalAnimationApi::class, ExperimentalCoroutinesApi::class,
+    ExperimentalDecomposeApi::class
+)
 @Composable
-fun MovieInfoApp() {
+fun MovieInfoApp(component: Root) {
     MovieInfoAppTheme {
-        val navController = rememberAnimatedNavController()
-        AnimatedNavHost(navController = navController, startDestination = "home") {
-            composable(
-                "home",
-                enterTransition = {
-                    slideIntoContainer(AnimatedContentScope.SlideDirection.Left, tween(100))
-                },
-                exitTransition = {
-                    slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, tween(100))
-                },
-                popEnterTransition = {
-                    slideIntoContainer(AnimatedContentScope.SlideDirection.Right, tween(100))
-                },
-                popExitTransition = {
-                    slideOutOfContainer(AnimatedContentScope.SlideDirection.Right, tween(100))
-                },
-            ) {
-                HomeScreen(navigateToDetails = { movie -> navController.navigate("details/${movie.id}") })
-            }
-            composable(
-                "details/{id}",
-                arguments = listOf(navArgument(name = "id") { type = NavType.IntType }),
-                enterTransition = {
-                    slideIntoContainer(AnimatedContentScope.SlideDirection.Left, tween(100))
-                },
-                exitTransition = {
-                    slideOutOfContainer(AnimatedContentScope.SlideDirection.Left, tween(100))
-                },
-                popEnterTransition = {
-                    slideIntoContainer(AnimatedContentScope.SlideDirection.Right, tween(100))
-                },
-                popExitTransition = {
-                    slideOutOfContainer(AnimatedContentScope.SlideDirection.Right, tween(100))
-                },
-            ) {
-                val id = it.arguments?.getInt("id") ?: 0
-                val viewModel = hiltViewModel<DetailsViewModel>()
-                viewModel.movieId = id
-                DetailsScreen(viewModel = viewModel, navigateBack = navController::popBackStack)
+        val childStack by component.childStack.subscribeAsState()
+        Children(stack = childStack, animation = stackAnimation(slide())) {
+            when (val child = it.instance) {
+                is Root.Child.DetailsChild -> DetailsScreen(component = child.component)
+                is Root.Child.HomeChild -> HomeScreen(home = child.component)
             }
         }
     }
