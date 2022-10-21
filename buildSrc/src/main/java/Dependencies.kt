@@ -48,7 +48,7 @@ object Dependencies {
     object Plugins {
         const val application = "com.android.application"
         const val kotlinAndroid = "kotlin-android"
-        const val kotlinKapt = "kotlin-kapt"
+        const val ksp = "com.google.devtools.ksp"
         const val kotlinxSerialization = "kotlinx-serialization"
         const val kotlinParcelize = "kotlin-parcelize"
         const val ktLint = "org.jlleitschuh.gradle.ktlint"

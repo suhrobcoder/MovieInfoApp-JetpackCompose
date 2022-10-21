@@ -1,7 +1,7 @@
 plugins {
     id(Dependencies.Plugins.application)
     id(Dependencies.Plugins.kotlinAndroid)
-    id(Dependencies.Plugins.kotlinKapt)
+    id(Dependencies.Plugins.ksp) version(Versions.kspVersion)
     id(Dependencies.Plugins.kotlinxSerialization)
     id(Dependencies.Plugins.kotlinParcelize)
     id(Dependencies.Plugins.ktLint) version(Versions.ktlintVersion)
@@ -76,7 +76,7 @@ dependencies {
     implementation(Dependencies.Coil.coilCompose)
 
     implementation(Dependencies.Room.roomRuntime)
-    kapt(Dependencies.Room.roomCompiler)
+    ksp(Dependencies.Room.roomCompiler)
     implementation(Dependencies.Room.roomKtx)
 
     implementation(Dependencies.Retrofit.retrofit)
