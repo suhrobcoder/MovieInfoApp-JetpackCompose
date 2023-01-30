@@ -6,6 +6,7 @@ import uz.suhrob.movieinfoapp.data.remote.ApiService
 import uz.suhrob.movieinfoapp.data.remote.mapper.*
 import uz.suhrob.movieinfoapp.data.remote.response.RateBody
 import uz.suhrob.movieinfoapp.domain.model.*
+import uz.suhrob.movieinfoapp.domain.repository.MovieRepository
 import uz.suhrob.movieinfoapp.other.MAX_CAST_COUNT
 import uz.suhrob.movieinfoapp.other.Resource
 import uz.suhrob.movieinfoapp.other.safeCall

@@ -7,6 +7,7 @@ import uz.suhrob.movieinfoapp.data.local.entity.relations.MovieGenreCrossRef
 import uz.suhrob.movieinfoapp.data.local.entity.relations.MovieWithGenre
 import uz.suhrob.movieinfoapp.data.local.mapper.MovieEntityMapper
 import uz.suhrob.movieinfoapp.domain.model.Movie
+import uz.suhrob.movieinfoapp.domain.repository.FavoritesRepository
 
 class FavoritesRepositoryImpl(
     private val movieDao: MovieDao

@@ -7,7 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -20,7 +20,7 @@ import uz.suhrob.movieinfoapp.data.local.mapper.MovieEntityMapper
 import uz.suhrob.movieinfoapp.domain.model.Genre
 import uz.suhrob.movieinfoapp.domain.model.Movie
 
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(AndroidJUnit4::class)
 class MovieDaoTest {
 
@@ -45,7 +45,7 @@ class MovieDaoTest {
     }
 
     @Test
-    fun insertMovie() = runBlockingTest {
+    fun insertMovie() = runTest {
         val movie = Movie(1, "title", "overview", "path", "path", listOf(), "", 1, false, 1, 1.0)
         val movieEntity = MovieEntityMapper.mapFromDomainModel(movie).movie
         dao.insertMovie(movieEntity)
@@ -56,7 +56,7 @@ class MovieDaoTest {
     }
 
     @Test
-    fun deleteMovie() = runBlockingTest {
+    fun deleteMovie() = runTest {
         val movie = Movie(1, "title", "overview", "path", "path", listOf(), "", 1, false, 1, 1.0)
         val movieEntity = MovieEntityMapper.mapFromDomainModel(movie).movie
         dao.insertMovie(movieEntity)
@@ -68,7 +68,7 @@ class MovieDaoTest {
     }
 
     @Test
-    fun insertMovieGenreCrossRef() = runBlockingTest {
+    fun insertMovieGenreCrossRef() = runTest {
         val genre1 = Genre(1, "genre1")
         val genre2 = Genre(2, "genre2")
         val genre3 = Genre(3, "genre3")
@@ -88,7 +88,7 @@ class MovieDaoTest {
     }
 
     @Test
-    fun isMovieFavorite() = runBlockingTest {
+    fun isMovieFavorite() = runTest {
         val movie = Movie(1, "title", "overview", "path", "path", listOf(), "", 1, false, 1, 1.0)
         val movieEntity = MovieEntityMapper.mapFromDomainModel(movie).movie
         dao.insertMovie(movieEntity)

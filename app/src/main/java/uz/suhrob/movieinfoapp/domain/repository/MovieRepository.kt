@@ -1,4 +1,4 @@
-package uz.suhrob.movieinfoapp.data.repository
+package uz.suhrob.movieinfoapp.domain.repository
 
 import uz.suhrob.movieinfoapp.domain.model.*
 import uz.suhrob.movieinfoapp.other.Resource

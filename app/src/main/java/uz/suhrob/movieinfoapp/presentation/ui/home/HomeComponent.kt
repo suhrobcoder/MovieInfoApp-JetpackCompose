@@ -10,8 +10,8 @@ import com.arkivanov.decompose.value.operator.map
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import kotlinx.coroutines.CoroutineScope
-import uz.suhrob.movieinfoapp.data.repository.FavoritesRepository
-import uz.suhrob.movieinfoapp.data.repository.MovieRepository
+import uz.suhrob.movieinfoapp.domain.repository.FavoritesRepository
+import uz.suhrob.movieinfoapp.domain.repository.MovieRepository
 import uz.suhrob.movieinfoapp.domain.model.Movie
 import uz.suhrob.movieinfoapp.presentation.ui.favorites.Favorites
 import uz.suhrob.movieinfoapp.presentation.ui.favorites.FavoritesComponent

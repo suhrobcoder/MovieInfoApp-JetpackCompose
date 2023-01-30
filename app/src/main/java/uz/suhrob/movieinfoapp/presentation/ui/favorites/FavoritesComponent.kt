@@ -5,7 +5,7 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.reduce
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import uz.suhrob.movieinfoapp.data.repository.FavoritesRepository
+import uz.suhrob.movieinfoapp.domain.repository.FavoritesRepository
 import uz.suhrob.movieinfoapp.domain.model.Movie
 
 class FavoritesComponent(

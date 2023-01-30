@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import uz.suhrob.movieinfoapp.data.repository.FavoritesRepository
-import uz.suhrob.movieinfoapp.data.repository.MovieRepository
+import uz.suhrob.movieinfoapp.domain.repository.FavoritesRepository
+import uz.suhrob.movieinfoapp.domain.repository.MovieRepository
 import uz.suhrob.movieinfoapp.domain.model.Movie
 import uz.suhrob.movieinfoapp.other.DEFAULT_PAGE
 import uz.suhrob.movieinfoapp.other.Resource

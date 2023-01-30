@@ -1,4 +1,4 @@
-package uz.suhrob.movieinfoapp.data.repository
+package uz.suhrob.movieinfoapp.domain.repository
 
 import kotlinx.coroutines.flow.Flow
 import uz.suhrob.movieinfoapp.domain.model.Movie

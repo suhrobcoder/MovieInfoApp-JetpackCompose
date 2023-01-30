@@ -21,6 +21,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.serialization.ExperimentalSerializationApi
 import uz.suhrob.movieinfoapp.data.local.DATABASE_NAME
 import uz.suhrob.movieinfoapp.data.local.MovieDatabase
+import uz.suhrob.movieinfoapp.data.pref.MovieInfoDataStore
 import uz.suhrob.movieinfoapp.data.pref.MovieInfoPref
 import uz.suhrob.movieinfoapp.presentation.theme.MovieInfoAppTheme
 import uz.suhrob.movieinfoapp.presentation.ui.details.DetailsScreen
@@ -34,7 +35,7 @@ import uz.suhrob.movieinfoapp.presentation.ui.root.RootComponent
 class MainActivity : AppCompatActivity() {
 
     private lateinit var database: MovieDatabase
-    private lateinit var movieInfoPref: MovieInfoPref
+    private lateinit var movieInfoDataStore: MovieInfoPref
 
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,14 +48,14 @@ class MainActivity : AppCompatActivity() {
                 DATABASE_NAME
             ).build()
         }
-        if (!::movieInfoPref.isInitialized) {
-            movieInfoPref = MovieInfoPref(applicationContext)
+        if (!::movieInfoDataStore.isInitialized) {
+            movieInfoDataStore = MovieInfoDataStore(applicationContext)
         }
         val rootComponent = RootComponent(
             defaultComponentContext(),
             CoroutineScope(Dispatchers.IO),
             database,
-            movieInfoPref,
+            movieInfoDataStore,
         )
         setContent {
             MovieInfoApp(rootComponent)

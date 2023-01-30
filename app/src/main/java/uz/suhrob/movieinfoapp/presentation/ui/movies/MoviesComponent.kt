@@ -6,7 +6,7 @@ import com.arkivanov.decompose.value.reduce
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import uz.suhrob.movieinfoapp.data.repository.MovieRepository
+import uz.suhrob.movieinfoapp.domain.repository.MovieRepository
 import uz.suhrob.movieinfoapp.domain.model.Genre
 import uz.suhrob.movieinfoapp.domain.model.Movie
 import uz.suhrob.movieinfoapp.domain.model.defaultGenre

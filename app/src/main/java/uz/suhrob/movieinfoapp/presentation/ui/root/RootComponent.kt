@@ -7,11 +7,12 @@ import com.arkivanov.essenty.parcelable.Parcelable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.parcelize.Parcelize
 import uz.suhrob.movieinfoapp.data.local.MovieDatabase
+import uz.suhrob.movieinfoapp.data.pref.MovieInfoDataStore
 import uz.suhrob.movieinfoapp.data.pref.MovieInfoPref
 import uz.suhrob.movieinfoapp.data.remote.ApiService
-import uz.suhrob.movieinfoapp.data.repository.FavoritesRepository
+import uz.suhrob.movieinfoapp.domain.repository.FavoritesRepository
 import uz.suhrob.movieinfoapp.data.repository.FavoritesRepositoryImpl
-import uz.suhrob.movieinfoapp.data.repository.MovieRepository
+import uz.suhrob.movieinfoapp.domain.repository.MovieRepository
 import uz.suhrob.movieinfoapp.data.repository.MovieRepositoryImpl
 import uz.suhrob.movieinfoapp.domain.model.Movie
 import uz.suhrob.movieinfoapp.presentation.ui.details.DetailsComponent
@@ -21,7 +22,7 @@ class RootComponent(
     componentContext: ComponentContext,
     private val ioScope: CoroutineScope,
     private val database: MovieDatabase,
-    private val movieInfoPref: MovieInfoPref,
+    private val movieInfoDataStore: MovieInfoPref,
 ) : Root, ComponentContext by componentContext {
 
     private val navigation = StackNavigation<Config>()
@@ -42,7 +43,7 @@ class RootComponent(
             favoritesRepository = FavoritesRepositoryImpl(database.getMovieDao())
         }
         if (!::movieRepository.isInitialized) {
-            movieRepository = MovieRepositoryImpl(ApiService(), movieInfoPref)
+            movieRepository = MovieRepositoryImpl(ApiService(), movieInfoDataStore)
         }
         return when (config) {
             is Config.Details -> Root.Child.DetailsChild(
