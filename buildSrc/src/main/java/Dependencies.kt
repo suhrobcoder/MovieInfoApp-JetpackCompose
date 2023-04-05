@@ -40,9 +40,12 @@ object Dependencies {
         const val roomCompiler = "androidx.room:room-compiler:${Versions.roomVersion}"
         const val roomKtx = "androidx.room:room-ktx:${Versions.roomVersion}"
     }
-    object Retrofit {
-        const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofitVersion}"
-        const val serializationConverter = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:${Versions.serializationConverterVersion}"
+
+    object Ktor {
+        const val core = "io.ktor:ktor-client-core:${Versions.ktorVersion}"
+        const val androidClient = "io.ktor:ktor-client-android:${Versions.ktorVersion}"
+        const val contentNegotiation = "io.ktor:ktor-client-content-negotiation:${Versions.ktorVersion}"
+        const val serializationJson = "io.ktor:ktor-serialization-kotlinx-json:${Versions.ktorVersion}"
     }
 
     object Plugins {
@@ -52,6 +55,7 @@ object Dependencies {
         const val kotlinxSerialization = "kotlinx-serialization"
         const val kotlinParcelize = "kotlin-parcelize"
         const val ktLint = "org.jlleitschuh.gradle.ktlint"
+        const val ktorfit = "de.jensklingenberg.ktorfit"
     }
 
     object Test {

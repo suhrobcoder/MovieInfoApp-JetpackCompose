@@ -11,7 +11,7 @@ object Versions {
     const val decomposeVersion = "1.0.0-alpha-06"
     const val coilVersion = "2.2.0"
     const val roomVersion = "2.4.3"
-    const val retrofitVersion = "2.9.0"
+    const val ktorVersion = "2.2.4"
     const val serializationConverterVersion = "0.8.0"
     const val datastoreVersion = "1.0.0"
     const val ktlintVersion = "11.0.0"

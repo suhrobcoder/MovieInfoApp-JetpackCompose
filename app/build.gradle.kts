@@ -85,8 +85,10 @@ dependencies {
     ksp(Dependencies.Room.roomCompiler)
     implementation(Dependencies.Room.roomKtx)
 
-    implementation(Dependencies.Retrofit.retrofit)
-    implementation(Dependencies.Retrofit.serializationConverter)
+    implementation(Dependencies.Ktor.core)
+    implementation(Dependencies.Ktor.androidClient)
+    implementation(Dependencies.Ktor.contentNegotiation)
+    implementation(Dependencies.Ktor.serializationJson)
 
     implementation(Dependencies.Kotlin.kotlinSerializationJson)
 

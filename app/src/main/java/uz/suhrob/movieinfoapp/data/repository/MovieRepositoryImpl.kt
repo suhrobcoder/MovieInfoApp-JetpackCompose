@@ -19,7 +19,7 @@ class MovieRepositoryImpl(
         return safeCall {
             Resource.Success(
                 GenreMapper.mapToList(
-                    service.getGenres().body()!!.genres
+                    service.getGenres().genres
                 )
             )
         }
@@ -29,7 +29,7 @@ class MovieRepositoryImpl(
         return safeCall {
             Resource.Success(
                 MovieMapper.mapToDomainModel(
-                    service.getMovie(movieId).body()!!
+                    service.getMovie(movieId)
                 )
             )
         }
@@ -39,7 +39,7 @@ class MovieRepositoryImpl(
         return safeCall {
             Resource.Success(
                 ReviewMapper.mapToList(
-                    service.getMovieReviews(movieId, page).body()!!.results
+                    service.getMovieReviews(movieId, page).results
                 )
             )
         }
@@ -49,7 +49,7 @@ class MovieRepositoryImpl(
         return safeCall {
             Resource.Success(
                 VideoMapper.mapToList(
-                    service.getMovieVideos(movieId).body()!!.results
+                    service.getMovieVideos(movieId).results
                 )
             )
         }
@@ -59,7 +59,7 @@ class MovieRepositoryImpl(
         return safeCall {
             Resource.Success(
                 MovieMapper.mapToList(
-                    service.getPopularMovies(page).body()!!.results
+                    service.getPopularMovies(page).results
                 )
             )
         }
@@ -69,7 +69,7 @@ class MovieRepositoryImpl(
         return safeCall {
             Resource.Success(
                 MovieMapper.mapToList(
-                    service.getTopRatedMovies(page).body()!!.results
+                    service.getTopRatedMovies(page).results
                 )
             )
         }
@@ -79,7 +79,7 @@ class MovieRepositoryImpl(
         return safeCall {
             Resource.Success(
                 MovieMapper.mapToList(
-                    service.getUpcomingMovies(page).body()!!.results
+                    service.getUpcomingMovies(page).results
                 )
             )
         }
@@ -89,7 +89,7 @@ class MovieRepositoryImpl(
         return safeCall {
             Resource.Success(
                 MovieMapper.mapToList(
-                    service.searchMovies(query, page).body()!!.results
+                    service.searchMovies(query, page).results
                 )
             )
         }
@@ -99,7 +99,7 @@ class MovieRepositoryImpl(
         return safeCall {
             Resource.Success(
                 CastDtoMapper.mapToList(
-                    service.getMovieCredits(movieId).body()!!.cast
+                    service.getMovieCredits(movieId).cast
                         .filter { it.order < MAX_CAST_COUNT }
                 )
             )
@@ -117,7 +117,7 @@ class MovieRepositoryImpl(
         return sessionId?.let { id ->
             safeCall {
                 Resource.Success(
-                    service.rateMovie(movieId, id, RateBody(value)).body()!!.statusMessage
+                    service.rateMovie(movieId, id, RateBody(value)).statusMessage
                         .contains("Success"),
                 )
             }
@@ -125,7 +125,11 @@ class MovieRepositoryImpl(
     }
 
     private suspend fun createSessionId(): String? {
-        val result = service.createGuestSession()
-        return result.body()?.guestSessionId
+        return try {
+            val result = service.createGuestSession()
+            result.guestSessionId
+        } catch (e: Exception) {
+            null
+        }
     }
 }
