@@ -93,6 +93,8 @@ dependencies {
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktorfit.lib)
 
+    implementation(libs.koin.android)
+
     implementation(libs.kotlin.serialization.json)
 
     implementation(libs.androidx.datastore.preferences)

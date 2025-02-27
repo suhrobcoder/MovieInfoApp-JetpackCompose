@@ -1,23 +1,20 @@
 package uz.suhrob.movieinfoapp.data.remote
 
-import de.jensklingenberg.ktorfit.Ktorfit
 import de.jensklingenberg.ktorfit.http.Body
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Headers
 import de.jensklingenberg.ktorfit.http.POST
 import de.jensklingenberg.ktorfit.http.Path
 import de.jensklingenberg.ktorfit.http.Query
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.android.Android
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.defaultRequest
-import io.ktor.http.URLProtocol
-import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.json.Json
 import uz.suhrob.movieinfoapp.data.remote.model.MovieDto
-import uz.suhrob.movieinfoapp.data.remote.response.*
-import uz.suhrob.movieinfoapp.other.API_KEY
-import uz.suhrob.movieinfoapp.other.BASE_URL
+import uz.suhrob.movieinfoapp.data.remote.response.CreditsResponse
+import uz.suhrob.movieinfoapp.data.remote.response.GenreResponse
+import uz.suhrob.movieinfoapp.data.remote.response.GuestSessionResponse
+import uz.suhrob.movieinfoapp.data.remote.response.MovieListResponse
+import uz.suhrob.movieinfoapp.data.remote.response.MovieReviewResponse
+import uz.suhrob.movieinfoapp.data.remote.response.MovieVideoResponse
+import uz.suhrob.movieinfoapp.data.remote.response.RateBody
+import uz.suhrob.movieinfoapp.data.remote.response.RateResponse
 
 interface ApiService {
 
@@ -64,30 +61,4 @@ interface ApiService {
         @Query("guest_session_id") guestSessionId: String,
         @Body rate: RateBody
     ): RateResponse
-}
-
-fun ApiService(): ApiService {
-    val httpClient = HttpClient(Android) {
-        install(ContentNegotiation) {
-            json(
-                Json {
-                    ignoreUnknownKeys = true
-                    isLenient = true
-                }
-            )
-        }
-        defaultRequest {
-            url {
-                protocol = URLProtocol.HTTPS
-                host = BASE_URL
-                parameters.append("api_key", API_KEY)
-            }
-        }
-    }
-
-    val ktorfit = Ktorfit.Builder()
-        .httpClient(httpClient)
-        .build()
-
-    return ktorfit.create<ApiService>()
 }
