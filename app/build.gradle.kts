@@ -1,27 +1,29 @@
 plugins {
-    id(Dependencies.Plugins.application)
-    id(Dependencies.Plugins.kotlinAndroid)
-    id(Dependencies.Plugins.ksp) version(Versions.kspVersion)
-    id(Dependencies.Plugins.kotlinxSerialization)
-    id(Dependencies.Plugins.kotlinParcelize)
-    id(Dependencies.Plugins.ktLint) version(Versions.ktlintVersion)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
-    compileSdk = Sdk.compileSdkVersion
+    compileSdk = 35
+    namespace = "uz.suhrob.movieinfoapp"
 
     defaultConfig {
-        applicationId = Sdk.applicationId
-        minSdk = Sdk.minSdkVersion
-        targetSdk = Sdk.targetSdkVersion
-        versionCode = Sdk.versionCode
-        versionName = Sdk.versionName
+        applicationId = "uz.suhrob.movieinfoapp"
+        minSdk = 23
+        targetSdk = 35
+        versionCode = 1
+        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
-        getByName("release") {
+        release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -30,17 +32,17 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.composeCompilerVersion
+        kotlinCompilerExtensionVersion = "1.3.2" // Could reference libs.versions.compose.compiler if dynamic
     }
 }
 
@@ -57,58 +59,57 @@ ktlint {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 }
 
 dependencies {
-
-    implementation(Dependencies.Kotlin.kotlinStdLib)
-    implementation(Dependencies.AndroidX.coreKtx)
-    implementation(Dependencies.AndroidX.AppCompat.appCompat)
+    implementation(libs.kotlin.stdlib)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
 
     // Compose
-    implementation(Dependencies.Compose.uiToolingPreview)
-    implementation(Dependencies.Compose.material3)
-    implementation(Dependencies.Compose.ui)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.ui)
 
-    implementation(Dependencies.AndroidX.Activity.activityCompose)
+    implementation(libs.androidx.activity.compose)
 
-    implementation(Dependencies.Decompose.decompose)
-    implementation(Dependencies.Decompose.composeExt)
+    implementation(libs.decompose)
+    implementation(libs.decompose.compose.ext)
 
-    implementation(Dependencies.Compose.composeShimmer)
+    implementation(libs.compose.shimmer)
 
-    implementation(Dependencies.Coil.coilCompose)
+    implementation(libs.coil.compose)
 
-    implementation(Dependencies.Room.roomRuntime)
-    ksp(Dependencies.Room.roomCompiler)
-    implementation(Dependencies.Room.roomKtx)
+    implementation(libs.room.runtime)
+    ksp(libs.room.compiler)
+    implementation(libs.room.ktx)
 
-    implementation(Dependencies.Ktor.core)
-    implementation(Dependencies.Ktor.androidClient)
-    implementation(Dependencies.Ktor.contentNegotiation)
-    implementation(Dependencies.Ktor.serializationJson)
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.android)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
 
-    implementation(Dependencies.Kotlin.kotlinSerializationJson)
+    implementation(libs.kotlin.serialization.json)
 
-    implementation(Dependencies.AndroidX.Datastore.preferences)
+    implementation(libs.androidx.datastore.preferences)
 
-    testImplementation(Dependencies.Test.Junit.junit)
-    testImplementation(Dependencies.Test.androidTestCore)
-    testImplementation(Dependencies.Test.archCoreTesting)
-    testImplementation(Dependencies.Test.coroutinesTest)
-    testImplementation(Dependencies.Test.googleTruth)
-    testImplementation(Dependencies.Test.mockitoCore)
+    testImplementation(libs.junit)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.androidx.arch.core.testing)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.google.truth)
+    testImplementation(libs.mockito.core)
 
-    androidTestImplementation(Dependencies.Test.Junit.junit)
-    androidTestImplementation(Dependencies.Test.coroutinesTest)
-    androidTestImplementation(Dependencies.Test.archCoreTesting)
-    androidTestImplementation(Dependencies.Test.googleTruth)
-    androidTestImplementation(Dependencies.Test.Junit.junitExt)
-    androidTestImplementation(Dependencies.Test.mockitoCore)
-    androidTestImplementation(Dependencies.Test.dexmakerMockito)
+    androidTestImplementation(libs.junit)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.androidx.arch.core.testing)
+    androidTestImplementation(libs.google.truth)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.mockito.core)
+    androidTestImplementation(libs.dexmaker.mockito)
 
-    debugImplementation(Dependencies.Compose.uiTooling)
-    debugImplementation(Dependencies.Compose.uiTestManifest)
+    debugImplementation(libs.compose.ui.tooling)
+    debugImplementation(libs.compose.ui.test.manifest)
 }
