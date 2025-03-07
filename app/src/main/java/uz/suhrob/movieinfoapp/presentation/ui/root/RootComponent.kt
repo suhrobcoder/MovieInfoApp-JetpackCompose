@@ -1,29 +1,24 @@
 package uz.suhrob.movieinfoapp.presentation.ui.root
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.stack.*
+import com.arkivanov.decompose.router.stack.ChildStack
+import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.childStack
+import com.arkivanov.decompose.router.stack.pop
+import com.arkivanov.decompose.router.stack.push
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.parcelable.Parcelable
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.parcelize.Parcelize
-import uz.suhrob.movieinfoapp.data.local.MovieDatabase
-import uz.suhrob.movieinfoapp.data.pref.MovieInfoDataStore
-import uz.suhrob.movieinfoapp.data.pref.MovieInfoPref
-import uz.suhrob.movieinfoapp.data.remote.ApiService
-import uz.suhrob.movieinfoapp.domain.repository.FavoritesRepository
-import uz.suhrob.movieinfoapp.data.repository.FavoritesRepositoryImpl
-import uz.suhrob.movieinfoapp.domain.repository.MovieRepository
-import uz.suhrob.movieinfoapp.data.repository.MovieRepositoryImpl
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import org.koin.core.parameter.parametersOf
 import uz.suhrob.movieinfoapp.domain.model.Movie
-import uz.suhrob.movieinfoapp.presentation.ui.details.DetailsComponent
-import uz.suhrob.movieinfoapp.presentation.ui.home.HomeComponent
+import uz.suhrob.movieinfoapp.presentation.ui.details.Details
+import uz.suhrob.movieinfoapp.presentation.ui.home.Home
 
 class RootComponent(
     componentContext: ComponentContext,
-    private val ioScope: CoroutineScope,
-    private val database: MovieDatabase,
-    private val movieInfoDataStore: MovieInfoPref,
-) : Root, ComponentContext by componentContext {
+) : Root, ComponentContext by componentContext, KoinComponent {
 
     private val navigation = StackNavigation<Config>()
 
@@ -35,41 +30,19 @@ class RootComponent(
     )
     override val childStack: Value<ChildStack<*, Root.Child>> = stack
 
-    private lateinit var favoritesRepository: FavoritesRepository
-    private lateinit var movieRepository: MovieRepository
-
     private fun child(config: Config, componentContext: ComponentContext): Root.Child {
-        if (!::favoritesRepository.isInitialized) {
-            favoritesRepository = FavoritesRepositoryImpl(database.getMovieDao())
-        }
-        if (!::movieRepository.isInitialized) {
-            movieRepository = MovieRepositoryImpl(ApiService(), movieInfoDataStore)
-        }
         return when (config) {
-            is Config.Details -> Root.Child.DetailsChild(
-                DetailsComponent(
-                    movie = config.movie,
-                    ioScope = ioScope,
-                    navigateBack = { navigation.pop() },
-                    favoritesRepository = favoritesRepository,
-                    movieRepository = movieRepository,
-                )
-            )
-            Config.Home -> Root.Child.HomeChild(
-                HomeComponent(
-                    componentContext,
-                    ioScope = ioScope,
-                    favoritesRepository = favoritesRepository,
-                    movieRepository = movieRepository,
-                    navigateToDetails = { navigation.push(Config.Details(it)) },
-                )
-            )
+            is Config.Details -> Root.Child.DetailsChild(get<Details>(parameters = { parametersOf(config.movie, { navigation.pop() }) }))
+            Config.Home -> {
+                val navigateToDetails: (Movie) -> Unit = { navigation.push(Config.Details(it)) }
+                Root.Child.HomeChild(get<Home>(parameters = { parametersOf(componentContext, navigateToDetails) }))
+            }
         }
     }
 
     private sealed interface Config : Parcelable {
         @Parcelize
-        object Home : Config
+        data object Home : Config
 
         @Parcelize
         class Details(val movie: Movie) : Config

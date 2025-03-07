@@ -40,7 +40,7 @@ fun HomeScreen(
         },
         bottomBar = {
             NavigationBar {
-                Tab.values().forEach { tab ->
+                Tab.entries.forEach { tab ->
                     NavigationBarItem(
                         icon = {
                             Icon(

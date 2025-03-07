@@ -15,10 +15,10 @@ import com.arkivanov.decompose.extensions.compose.jetpack.stack.Children
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.jetpack.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.serialization.ExperimentalSerializationApi
+import org.koin.android.ext.android.get
+import org.koin.core.parameter.parametersOf
 import uz.suhrob.movieinfoapp.data.local.DATABASE_NAME
 import uz.suhrob.movieinfoapp.data.local.MovieDatabase
 import uz.suhrob.movieinfoapp.data.pref.MovieInfoDataStore
@@ -27,7 +27,6 @@ import uz.suhrob.movieinfoapp.presentation.theme.MovieInfoAppTheme
 import uz.suhrob.movieinfoapp.presentation.ui.details.DetailsScreen
 import uz.suhrob.movieinfoapp.presentation.ui.home.HomeScreen
 import uz.suhrob.movieinfoapp.presentation.ui.root.Root
-import uz.suhrob.movieinfoapp.presentation.ui.root.RootComponent
 
 @ExperimentalAnimationApi
 @ExperimentalSerializationApi
@@ -51,12 +50,7 @@ class MainActivity : AppCompatActivity() {
         if (!::movieInfoDataStore.isInitialized) {
             movieInfoDataStore = MovieInfoDataStore(applicationContext)
         }
-        val rootComponent = RootComponent(
-            defaultComponentContext(),
-            CoroutineScope(Dispatchers.IO),
-            database,
-            movieInfoDataStore,
-        )
+        val rootComponent = get<Root>(parameters = { parametersOf(defaultComponentContext()) })
         setContent {
             MovieInfoApp(rootComponent)
         }

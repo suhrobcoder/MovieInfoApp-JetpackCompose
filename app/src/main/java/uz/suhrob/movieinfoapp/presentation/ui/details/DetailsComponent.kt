@@ -88,7 +88,7 @@ class DetailsComponent(
 
     private fun likeClick() {
         ioScope.launch {
-            if (state.value.liked) {
+            if (!state.value.liked) {
                 favoritesRepository.insertMovie(movie)
             } else {
                 favoritesRepository.deleteMovie(movie)

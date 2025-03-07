@@ -1,14 +1,14 @@
 package uz.suhrob.movieinfoapp.presentation.ui.details
 
 sealed interface DetailsEvent {
-    object LoadMovie : DetailsEvent
-    object LoadVideos : DetailsEvent
-    object LoadCast : DetailsEvent
-    object LoadReviews : DetailsEvent
-    object LikeClick : DetailsEvent
-    object SubmitRating : DetailsEvent
+    data object LoadMovie : DetailsEvent
+    data object LoadVideos : DetailsEvent
+    data object LoadCast : DetailsEvent
+    data object LoadReviews : DetailsEvent
+    data object LikeClick : DetailsEvent
+    data object SubmitRating : DetailsEvent
     data class SetRating(val rating: Int) : DetailsEvent
-    object ShowDialog : DetailsEvent
-    object CloseDialog : DetailsEvent
-    object NavigateBack : DetailsEvent
+    data object ShowDialog : DetailsEvent
+    data object CloseDialog : DetailsEvent
+    data object NavigateBack : DetailsEvent
 }

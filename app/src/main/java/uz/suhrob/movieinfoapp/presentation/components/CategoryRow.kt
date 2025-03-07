@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -24,7 +25,7 @@ enum class Category(val value: String) {
 
 @Composable
 fun CategoryRow(selectedCategory: Category, onCategorySelected: (Category) -> Unit) {
-    val categories = Category.values()
+    val categories = Category.entries
     Row(
         modifier = Modifier
             .horizontalScroll(rememberScrollState())
@@ -48,7 +49,7 @@ fun CategoryItem(category: Category, modifier: Modifier, selected: Boolean, onCl
     Column(
         modifier = modifier.clickable(
             onClick = onClick,
-            interactionSource = MutableInteractionSource(),
+            interactionSource = remember { MutableInteractionSource() },
             indication = null
         )
     ) {

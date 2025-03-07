@@ -1,9 +1,12 @@
 package uz.suhrob.movieinfoapp.di
 
 import androidx.room.Room
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import uz.suhrob.movieinfoapp.data.local.DATABASE_NAME
 import uz.suhrob.movieinfoapp.data.local.MovieDatabase
@@ -20,4 +23,5 @@ val appModule = module {
     }
     factory { get<MovieDatabase>().getMovieDao() }
     singleOf(::MovieInfoDataStore) { bind<MovieInfoPref>() }
+    single<CoroutineScope>(named("ioScope")) { CoroutineScope(Dispatchers.IO) }
 }

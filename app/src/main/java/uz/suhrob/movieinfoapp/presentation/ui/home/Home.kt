@@ -16,10 +16,6 @@ interface Home {
     val childStack: Value<ChildStack<*, Child>>
     val currentTab: Value<Tab>
 
-    val movies: Movies
-    val search: Search
-    val favorites: Favorites
-
     fun tabClick(tab: Tab)
 
     sealed class Child {

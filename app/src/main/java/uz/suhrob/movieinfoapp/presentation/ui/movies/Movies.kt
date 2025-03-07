@@ -14,8 +14,8 @@ interface Movies {
     fun sendEvent(event: MoviesEvent)
 
     data class MoviesState(
-        val selectedCategory: Category = Category.values().first(),
-        val categories: List<Category> = Category.values().toList(),
+        val selectedCategory: Category = Category.entries.first(),
+        val categories: List<Category> = Category.entries,
         val selectedGenre: Genre = defaultGenre,
         val genres: List<Genre> = listOf(),
         val movies: List<Movie> = listOf(),

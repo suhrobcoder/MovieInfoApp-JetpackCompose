@@ -37,7 +37,7 @@ fun ReviewItem(
                     )
                 }
             }
-            Divider()
+            HorizontalDivider()
             Text(
                 text = if (textCollapsed) content else getFirstSentence(content),
                 style = MaterialTheme.typography.bodyLarge
