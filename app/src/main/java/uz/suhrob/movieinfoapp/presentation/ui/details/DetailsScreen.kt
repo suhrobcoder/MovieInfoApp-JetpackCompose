@@ -1,7 +1,6 @@
 package uz.suhrob.movieinfoapp.presentation.ui.details
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -23,16 +22,17 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import uz.suhrob.movieinfoapp.presentation.base.CollectEffects
 import kotlin.math.roundToInt
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import uz.suhrob.movieinfoapp.R
 import uz.suhrob.movieinfoapp.domain.model.Cast
 import uz.suhrob.movieinfoapp.domain.model.Movie
@@ -46,62 +46,62 @@ private val headerHeight = 275.dp
 private val toolbarHeight = 56.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
-@ExperimentalAnimationApi
-@ExperimentalCoroutinesApi
 @Composable
-fun DetailsScreen(component: Details) {
-    val state by component.state.subscribeAsState()
-    val dialogState by component.dialogState.subscribeAsState()
+fun DetailsScreen(
+    viewModel: DetailsViewModel,
+    onBack: () -> Unit,
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
     val scrollState = rememberScrollState()
-    val snackBarHostState = SnackbarHostState()
-    LaunchedEffect(key1 = state.movie.id) {
-        component.snackBarFlow.collect {
-            snackBarHostState.showSnackbar(it)
+    val snackBarHostState = remember { SnackbarHostState() }
+
+    CollectEffects(viewModel.effect) { effect ->
+        when (effect) {
+            is DetailsEffect.NavigateBack -> onBack()
+            is DetailsEffect.ShowSnackbar -> snackBarHostState.showSnackbar(effect.message)
         }
     }
+
     Scaffold(
-        snackbarHost = {
-            SnackbarHost(hostState = snackBarHostState)
-        },
+        snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
     ) { paddingValues ->
-        if (dialogState.show) {
+        if (state.showDialog) {
             RatingDialog(
-                rating = dialogState.rating,
-                onChange = { component.sendEvent(DetailsEvent.SetRating(it)) },
-                onSubmit = { component.sendEvent(DetailsEvent.SubmitRating) },
-                onClose = { component.sendEvent(DetailsEvent.CloseDialog) }
+                rating = state.dialogRating,
+                onChange = { viewModel.sendEvent(DetailsEvent.SetRating(it)) },
+                onSubmit = { viewModel.sendEvent(DetailsEvent.SubmitRating) },
+                onClose = { viewModel.sendEvent(DetailsEvent.CloseDialog) }
             )
         }
         val headerHeightPx = with(LocalDensity.current) { headerHeight.toPx() }
         val toolbarHeightPx = with(LocalDensity.current) { toolbarHeight.toPx() }
 
-        Box(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
-            DetailsBody(
-                movie = state.movie,
-                cast = state.cast,
-                videos = state.videos,
-                reviews = state.reviews,
-                scroll = scrollState
-            )
-            DetailsHeader(
-                state.movie,
-                state.liked,
-                scrollState.value.toFloat(),
-                headerHeightPx,
-                showDialog = {
-                    component.sendEvent(DetailsEvent.ShowDialog)
-                },
-                onLikeClick = {
-                    component.sendEvent(DetailsEvent.LikeClick)
-                },
-            )
-            Toolbar(
-                scrollState,
-                state.movie.title,
-                { component.sendEvent(DetailsEvent.NavigateBack) },
-                headerHeightPx,
-                toolbarHeightPx
-            )
+        val movie = state.movie
+        if (movie != null) {
+            Box(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
+                DetailsBody(
+                    movie = movie,
+                    cast = state.cast,
+                    videos = state.videos,
+                    reviews = state.reviews,
+                    scroll = scrollState
+                )
+                DetailsHeader(
+                    movie,
+                    state.liked,
+                    scrollState.value.toFloat(),
+                    headerHeightPx,
+                    showDialog = { viewModel.sendEvent(DetailsEvent.ShowDialog) },
+                    onLikeClick = { viewModel.sendEvent(DetailsEvent.LikeClick) },
+                )
+                Toolbar(
+                    scrollState,
+                    movie.title,
+                    { viewModel.sendEvent(DetailsEvent.NavigateBack) },
+                    headerHeightPx,
+                    toolbarHeightPx
+                )
+            }
         }
     }
 }
@@ -111,8 +111,8 @@ fun BackdropImage(backdropPath: String) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
             .data(getImageUrl(backdropPath))
-            .placeholder(R.drawable.backdrop_placeholder)
             .build(),
+        placeholder = painterResource(R.drawable.backdrop_placeholder),
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 32.dp)

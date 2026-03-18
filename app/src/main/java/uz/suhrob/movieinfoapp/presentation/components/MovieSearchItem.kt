@@ -11,9 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
@@ -38,8 +39,8 @@ fun MovieSearchItem(
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data(getImageUrl(movie.posterPath))
-                .placeholder(R.drawable.poster_placeholder)
                 .build(),
+            placeholder = painterResource(R.drawable.poster_placeholder),
             modifier = Modifier
                 .size(size = 64.dp)
                 .padding(end = 16.dp),

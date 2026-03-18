@@ -7,30 +7,39 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import uz.suhrob.movieinfoapp.domain.model.Movie
 import uz.suhrob.movieinfoapp.other.UiState
+import uz.suhrob.movieinfoapp.presentation.base.CollectEffects
 import uz.suhrob.movieinfoapp.presentation.components.Error
 import uz.suhrob.movieinfoapp.presentation.components.MovieSearchItem
 import uz.suhrob.movieinfoapp.presentation.components.SearchField
 import uz.suhrob.movieinfoapp.presentation.components.SearchItemShimmer
 
-@ExperimentalCoroutinesApi
 @Composable
 fun SearchScreen(
-    component: Search,
+    viewModel: SearchViewModel,
+    onMovieClicked: (Movie) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    val state by component.state.subscribeAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    CollectEffects(viewModel.effect) { effect ->
+        when (effect) {
+            is SearchEffect.NavigateToDetails -> onMovieClicked(effect.movie)
+        }
+    }
+
     LazyColumn(
-        modifier = Modifier
+        modifier = modifier
             .padding(top = 8.dp)
             .fillMaxHeight(),
     ) {
         item {
             SearchField(
                 value = state.query,
-                onValueChange = { component.sendEvent(SearchEvent.QueryChange(it)) },
-                onSearch = { component.sendEvent(SearchEvent.ExecuteSearch) },
+                onValueChange = { viewModel.sendEvent(SearchEvent.QueryChange(it)) },
+                onSearch = { viewModel.sendEvent(SearchEvent.ExecuteSearch) },
                 modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 8.dp),
             )
         }
@@ -40,18 +49,16 @@ fun SearchScreen(
                 items(state.movies) { movie ->
                     MovieSearchItem(
                         movie = movie,
-                        onClick = { component.sendEvent(SearchEvent.MovieClick(movie)) },
+                        onClick = { viewModel.sendEvent(SearchEvent.MovieClick(movie)) },
                     )
                 }
             }
             UiState.loading -> {
-                items(10) {
-                    SearchItemShimmer()
-                }
+                items(10) { SearchItemShimmer() }
             }
             UiState.error -> {
                 item {
-                    Error(onRetry = { component.sendEvent(SearchEvent.ExecuteSearch) })
+                    Error(onRetry = { viewModel.sendEvent(SearchEvent.ExecuteSearch) })
                 }
             }
         }

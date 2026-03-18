@@ -10,45 +10,50 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.jetpack.subscribeAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import uz.suhrob.movieinfoapp.domain.model.Movie
 import uz.suhrob.movieinfoapp.other.UiState
 import uz.suhrob.movieinfoapp.other.getImageUrl
+import uz.suhrob.movieinfoapp.presentation.base.CollectEffects
 import uz.suhrob.movieinfoapp.presentation.components.*
 
-@ExperimentalCoroutinesApi
 @ExperimentalFoundationApi
 @Composable
 fun MoviesScreen(
-    component: Movies,
+    viewModel: MoviesViewModel,
+    onMovieClicked: (Movie) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    val state by component.state.subscribeAsState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    CollectEffects(viewModel.effect) { effect ->
+        when (effect) {
+            is MoviesEffect.NavigateToDetails -> onMovieClicked(effect.movie)
+        }
+    }
 
     val configuration = LocalConfiguration.current
     val lazyListState = rememberLazyListState()
 
     val endOfListReached by remember {
-        derivedStateOf {
-            lazyListState.isScrolledToEnd()
-        }
+        derivedStateOf { lazyListState.isScrolledToEnd() }
     }
 
     val shimmer = rememberShimmer(shimmerBounds = ShimmerBounds.Window)
 
     LaunchedEffect(endOfListReached) {
-        component.sendEvent(MoviesEvent.NextPage)
+        viewModel.sendEvent(MoviesEvent.NextPage)
     }
 
     LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         state = lazyListState,
     ) {
         item {
             CategoryRow(state.selectedCategory) { category ->
-                component.sendEvent(MoviesEvent.ChangeCategory(category))
+                viewModel.sendEvent(MoviesEvent.ChangeCategory(category))
             }
         }
         item {
@@ -58,7 +63,7 @@ fun MoviesScreen(
                 error = state.uiState == UiState.loading,
                 shimmer = shimmer,
             ) { genre ->
-                component.sendEvent(MoviesEvent.SelectGenre(genre))
+                viewModel.sendEvent(MoviesEvent.SelectGenre(genre))
             }
         }
         gridItems(
@@ -69,7 +74,7 @@ fun MoviesScreen(
                 title = movie.title,
                 imageUrl = getImageUrl(movie.posterPath),
                 rating = movie.voteAverage,
-                onClick = { component.sendEvent(MoviesEvent.MovieClicked(movie)) }
+                onClick = { viewModel.sendEvent(MoviesEvent.MovieClicked(movie)) }
             )
         }
         if (state.uiState == UiState.loading && state.movies.isNotEmpty()) {
@@ -85,10 +90,7 @@ fun MoviesScreen(
             }
         }
         if (state.uiState == UiState.loading && state.movies.isEmpty()) {
-            gridItems(
-                (1..4).toList(),
-                columnCount = 2,
-            ) {
+            gridItems((1..4).toList(), columnCount = 2) {
                 MovieItemShimmer(shimmer)
             }
         }

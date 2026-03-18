@@ -1,22 +1,20 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.ktlint)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.ktorfit.plugin)
 }
 
 android {
-    compileSdk = 35
+    compileSdk = 36
     namespace = "uz.suhrob.movieinfoapp"
 
     defaultConfig {
         applicationId = "uz.suhrob.movieinfoapp"
         minSdk = 23
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -36,31 +34,23 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+        }
     }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.3.2" // Could reference libs.versions.compose.compiler if dynamic
     }
 }
 
 ktlint {
     android.set(true)
     ignoreFailures.set(false)
-    disabledRules.set(listOf("final-newline", "no-wildcard-imports"))
     reporters {
         reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.PLAIN)
         reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE)
         reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.SARIF)
-    }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        jvmTarget = "17"
     }
 }
 
@@ -69,19 +59,28 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
 
-    // Compose
-    implementation(libs.compose.ui.tooling.preview)
-    implementation(libs.compose.material3)
+    // Compose BOM — pins all androidx.compose.* versions
+    implementation(platform(libs.compose.platform))
+    androidTestImplementation(platform(libs.compose.platform))
+
     implementation(libs.compose.ui)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.material.icons.extended)
+    implementation(libs.compose.ui.tooling.preview)
+    implementation(libs.compose.shimmer)
 
     implementation(libs.androidx.activity.compose)
 
-    implementation(libs.decompose)
-    implementation(libs.decompose.compose.ext)
+    implementation(libs.navigation.compose)
+    implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.lifecycle.runtime.compose)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
 
-    implementation(libs.compose.shimmer)
-
+    // Coil 3
     implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 
     implementation(libs.room.runtime)
     ksp(libs.room.compiler)
@@ -92,8 +91,7 @@ dependencies {
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktorfit.lib)
-
-    implementation(libs.koin.android)
+    ksp(libs.ktorfit.ksp)
 
     implementation(libs.kotlin.serialization.json)
 

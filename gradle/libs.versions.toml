@@ -1,30 +1,30 @@
 [versions]
-kotlin = "2.1.10"
-gradle-plugin = "8.8.2"
-core-ktx = "1.15.0"
-appcompat = "1.7.0"
-compose = "1.7.8"
-compose-material3 = "1.3.1"
-compose-shimmer = "1.0.3"
-activity-compose = "1.10.1"
-decompose = "1.0.0-alpha-06"
-coil = "2.2.0"
-room = "2.6.1"
-ktor = "3.1.0"
-ktorfit = "2.4.0"
-datastore = "1.1.3"
-koin = "4.0.2"
-ktlint = "11.0.0"
-ksp = "2.1.10-1.0.30"
+kotlin = "2.3.20"
+gradle-plugin = "9.1.0"
+ksp = "2.3.6"
+core-ktx = "1.18.0"
+appcompat = "1.7.1"
+compose-bom = "2026.03.00"
+compose-shimmer = "1.3.3"
+activity-compose = "1.13.0"
+navigation-compose = "2.9.7"
+lifecycle = "2.10.0"
+coil = "3.4.0"
+room = "2.8.4"
+ktor = "3.4.1"
+ktorfit = "2.7.2"
+datastore = "1.2.1"
+koin = "4.2.0"
+ktlint = "14.2.0"
 junit = "4.13.2"
-junit-ext = "1.2.1"
-test-core = "1.6.1"
+junit-ext = "1.3.0"
+test-core = "1.7.0"
 arch-core-testing = "2.2.0"
-coroutines-test = "1.10.1"
-google-truth = "1.1.3"
-mockito-core = "5.14.1"
-dexmaker-mockito = "2.28.3"
-kotlinx-serialization-json = "1.8.0"
+coroutines-test = "1.10.2"
+google-truth = "1.4.5"
+mockito-core = "5.23.0"
+dexmaker-mockito = "2.28.6"
+kotlinx-serialization-json = "1.10.0"
 
 [libraries]
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
@@ -33,24 +33,40 @@ androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "compose-material3" }
-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose" }
+
+# Compose BOM — manages all androidx.compose.* versions
+compose-platform = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
+compose-ui = { module = "androidx.compose.ui:ui" }
+compose-material3 = { module = "androidx.compose.material3:material3" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 compose-shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "compose-shimmer" }
-decompose = { module = "com.arkivanov.decompose:decompose", version.ref = "decompose" }
-decompose-compose-ext = { module = "com.arkivanov.decompose:extensions-compose-jetpack", version.ref = "decompose" }
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+
+navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
+lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
+
+# Coil 3
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
+
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktorfit-lib = { module = "de.jensklingenberg.ktorfit:ktorfit-lib", version.ref = "ktorfit" }
+ktorfit-ksp = { module = "de.jensklingenberg.ktorfit:ktorfit-ksp", version.ref = "ktorfit" }
+
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
+
 junit = { module = "junit:junit", version.ref = "junit" }
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "junit-ext" }
 androidx-test-core = { module = "androidx.test:core", version.ref = "test-core" }
@@ -62,10 +78,8 @@ dexmaker-mockito = { module = "com.linkedin.dexmaker:dexmaker-mockito", version.
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "gradle-plugin" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-ktorfit-plugin = { id = "de.jensklingenberg.ktorfit", version.ref = "ktorfit" }

@@ -1,6 +1,6 @@
 package uz.suhrob.movieinfoapp.domain.model
 
-import com.arkivanov.essenty.parcelable.Parcelable
+import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

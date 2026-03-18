@@ -58,6 +58,7 @@ fun GenreRow(
 
 @Composable
 fun GenreShimmer(shimmer: Shimmer?) {
+    shimmer ?: return
     Row(
         modifier = Modifier
             .fillMaxWidth()
